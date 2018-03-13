@@ -37,11 +37,17 @@ export const page500 = {
     component: () => import('@/views/error-page/500.vue')
 };
 
+/**
+ * 这个没有什么用了
+ * @type {{path: string, name: string, component: (()=>*)}}
+ */
+/*
 export const preview = {
     path: '/preview',
     name: 'preview',
     component: () => import('@/views/form/article-publish/preview.vue')
 };
+ */
 
 export const locking = {
     path: '/locking',
@@ -175,18 +181,6 @@ export const appRouter = [
 
         ]
     },
-    // {
-    //     path: '/charts',
-    //     icon: 'ios-analytics',
-    //     name: 'charts',
-    //     title: '图表',
-    //     component: Main,
-    //     children: [
-    //         { path: 'pie', title: '饼状图', name: 'pie', icon: 'ios-pie', component: resolve => { require('@/views/access/access.vue') },
-    //         { path: 'histogram', title: '柱状图', name: 'histogram', icon: 'stats-bars', component: resolve => { require('@/views/access/access.vue') }
-
-    //     ]
-    // },
     {
         path: '/tables',
         icon: 'ios-grid-view',
@@ -228,7 +222,7 @@ export const appRouter = [
 export const routers = [
     loginRouter,
     otherRouter,
-    preview,
+    // preview,  // 这个没有什么用了
     locking,
     ...appRouter,
     page500,

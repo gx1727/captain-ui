@@ -3,21 +3,21 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
-        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
-            <shrinkable-menu 
-                :shrink="shrink"
-                @on-change="handleSubmenuChange"
-                :theme="menuTheme" 
-                :before-push="beforePush"
-                :open-names="openedSubmenuArr"
-                :menu-list="menuList">
+        <div class="sidebar-menu-con" :style="{width: shrink ? '60px' : '200px', overflow: shrink ? 'visible': 'auto'}">
+            <shrinkable-menu
+                    :shrink="shrink"
+                    @on-change="handleSubmenuChange"
+                    :theme="menuTheme"
+                    :before-push="beforePush"
+                    :open-names="openedSubmenuArr"
+                    :menu-list="menuList">
                 <div slot="top" class="logo-con">
-                    <img v-show="!shrink"  src="../images/logo.jpg" key="max-logo" />
-                    <img v-show="shrink" src="../images/logo-min.jpg" key="min-logo" />
+                    <img v-show="!shrink" src="../images/logo.png" key="max-logo"/>
+                    <img v-show="shrink" src="../images/logo-min.png" key="min-logo"/>
                 </div>
             </shrinkable-menu>
         </div>
-        <div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
+        <div class="main-header-con" :style="{paddingLeft: shrink ? '60px' : '200px'}">
             <div class="main-header">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
@@ -34,7 +34,7 @@
                     <lock-screen></lock-screen>
                     <message-tip v-model="mesCount"></message-tip>
                     <theme-switch></theme-switch>
-                    
+
                     <div class="user-dropdown-menu-con">
                         <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                             <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
@@ -75,7 +75,7 @@
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
-    
+
     export default {
         components: {
             shrinkableMenu,
