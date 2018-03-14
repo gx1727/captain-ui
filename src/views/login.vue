@@ -40,13 +40,14 @@
 <script>
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
+    import api from '../api'
 
     export default {
         data () {
             return {
                 form: {
-                    userName: 'iview_admin',
-                    password: ''
+                    userName: 'admin',
+                    password: '111111'
                 },
                 rules: {
                     userName: [
@@ -62,8 +63,22 @@
             handleSubmit () {
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
-                        console.log(util.secret(this.form.userName));
-                        console.log(util.md5(this.form.userName));
+                        api.Login({
+                            'username': this.form.userName,
+                            'pwd': util.secret(this.form.password)
+                        }).then(function (response) {
+                            if (response.status === 200) {
+                                let ret = response.data
+                                // ret = JSON.parse(response.data)
+                                console.log(ret);
+                            }
+                        }).catch(function (e) {
+//                            commit('updateLoadingStatus', {isLoading: false})
+                            if (e.message === 'Network Error') {
+//                                commit('alert', {title: '', content: '网络错误，服务请求失败'})
+                            }
+                            console.log(e);
+                        });
 //                    Cookies.set('user', this.form.userName);
 //                    Cookies.set('password', this.form.password);
                         this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
