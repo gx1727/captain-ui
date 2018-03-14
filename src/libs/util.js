@@ -2,10 +2,10 @@ import axios from 'axios';
 import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
+import md5 from 'blueimp-md5'
+import NodeRSA from 'node-rsa'
 
-let util = {
-
-};
+let util = {};
 util.title = function (title) {
     title = title || 'Captain admin';
     window.document.title = title;
@@ -265,5 +265,37 @@ util.checkUpdate = function (vm) {
         }
     });
 };
+
+/**
+ * 加密字符串
+ * content = "" + md5(plaintext) + token;
+ * content = 倒序 content;
+ * @param plaintext
+ * @param token
+ * @returns {*}
+ */
+util.secret = function (plaintext, token) {
+    if (typeof token === 'undefined') {
+        token = '';
+    }
+    let content = "" + md5(plaintext) + token;
+    content = content.split('').reverse().join('');
+
+    let key = new NodeRSA('-----BEGIN PUBLIC KEY-----\n' +
+        'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwL4aIEULJOYYGnGNMvOR\n' +
+        'WZR978yUAysIITt1IfCSAeGf2tJVuKhTf8qgxZGJICH1BBd6mJZxOPSSlitznlrE\n' +
+        'ZJmDwHn+ktaCtCVcU6KrOO/ZJOnkmCe3seUVTorynTHQMNfvueL4/YGqTULwt6DM\n' +
+        's3XtVoDAXst9RR/6b4JINcYAdAvjaNXRepxYL7P+8H8jQ0OTom2nvDGGIhX6ylas\n' +
+        'q33nYXmCxmF4uajRbQ5JfE3WKlNgEAPpFST8FbcoZWjJWw5L8Pg8jwvRsbUHWpH6\n' +
+        'TYGSpAeADuvcrGmRqn99/pEXJFpEeDQQed7OwvFh5UDAL9dxNPtlYeY07WJRMCWv\n' +
+        'OQIDAQAB\n' +
+        '-----END PUBLIC KEY-----', {encryptionScheme: {scheme: 'pkcs1'}});
+
+    return key.encrypt(content, 'base64');
+};
+
+util.md5 = function(content) {
+    return md5(content);
+}
 
 export default util;
