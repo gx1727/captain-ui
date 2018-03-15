@@ -68,9 +68,15 @@
                             'pwd': util.secret(this.form.password)
                         }).then(function (response) {
                             if (response.status === 200) {
-                                let ret = response.data
-                                // ret = JSON.parse(response.data)
-                                console.log(ret);
+                                let res = response.data;
+                                if (typeof response.data === 'string') {
+                                    res = JSON.parse(response.data);
+                                }
+                                if(res.code === 0) {
+
+                                } else {
+                                    alert(res.msg);
+                                }
                             }
                         }).catch(function (e) {
 //                            commit('updateLoadingStatus', {isLoading: false})
@@ -79,9 +85,9 @@
                             }
                             console.log(e);
                         });
-//                    Cookies.set('user', this.form.userName);
-//                    Cookies.set('password', this.form.password);
-                        this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                    Cookies.set('user', this.form.userName);
+                    Cookies.set('password', this.form.password);
+                        this.$store.commit('setAvator', 'images/logo-min.png');
                         if (this.form.userName === 'iview_admin') {
                             Cookies.set('access', 0);
                         } else {
