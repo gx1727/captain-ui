@@ -61,40 +61,44 @@
         },
         methods: {
             handleSubmit () {
+                let _this = this;
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
+                        const msg = _this.$Message.loading({
+                            content: 'Loading...',
+                            duration: 0
+                        });
                         api.Login({
                             'username': this.form.userName,
                             'pwd': util.secret(this.form.password)
                         }).then(function (response) {
+                            _this.$Message.destroy();
                             if (response.status === 200) {
                                 let res = response.data;
                                 if (typeof response.data === 'string') {
                                     res = JSON.parse(response.data);
                                 }
                                 if(res.code === 0) {
-
+                                    localStorage.loginUser = JSON.stringify(res); //放在sessionStorage中
+                                    Cookies.set('user', _this.form.userName);
+                                    Cookies.set('user_code', res.user_code);
+                                    _this.$store.commit('setAvator', res.user_photo);
+                                    _this.$router.push({
+                                        name: 'manager_home'
+                                    });
                                 } else {
-                                    alert(res.msg);
+                                    _this.$Notice.warning({
+                                        title: '登录失败',
+                                        desc: res.msg
+                                    });
                                 }
                             }
                         }).catch(function (e) {
-//                            commit('updateLoadingStatus', {isLoading: false})
-                            if (e.message === 'Network Error') {
-//                                commit('alert', {title: '', content: '网络错误，服务请求失败'})
-                            }
-                            console.log(e);
-                        });
-                    Cookies.set('user', this.form.userName);
-                    Cookies.set('password', this.form.password);
-                        this.$store.commit('setAvator', 'images/logo-min.png');
-                        if (this.form.userName === 'iview_admin') {
-                            Cookies.set('access', 0);
-                        } else {
-                            Cookies.set('access', 1);
-                        }
-                        this.$router.push({
-                            name: 'home_index'
+                            _this.$Message.destroy();
+                            _this.$Notice.error({
+                                title: '网络错误，服务请求失败',
+                                desc: e.message
+                            });
                         });
                     }
                 });

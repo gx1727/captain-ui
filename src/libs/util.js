@@ -298,4 +298,18 @@ util.md5 = function (content) {
     return md5(content);
 }
 
+
+/**
+ *
+ * @param obj
+ * @param k
+ * @returns {boolean}
+ */
+util.isset = function (obj, k) {
+    if ((typeof(obj) == "array" || typeof(obj) == "object") && typeof(k) != 'undefined') {
+        return !(typeof(obj[k]) == "undefined");
+    } else {
+        return !(typeof(obj) == 'undefined');
+    }
+}
 export default util;
