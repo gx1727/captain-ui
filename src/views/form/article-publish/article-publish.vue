@@ -404,6 +404,7 @@ export default {
                 title: '缩写'
             }
         ];
+        tinyMCE.baseURL = '/dist';
         tinymce.init({
             selector: '#articleEditor',
             branding: false,
