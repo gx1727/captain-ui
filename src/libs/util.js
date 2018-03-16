@@ -6,22 +6,24 @@ import md5 from 'blueimp-md5';
 import NodeRSA from 'node-rsa';
 
 let util = {};
+
+/**
+ * 修改title
+ * @param title
+ */
 util.title = function (title) {
-    title = title || 'Captain admin';
+    title = title || 'Captain Admin';
     window.document.title = title;
 };
 
-const ajaxUrl = env === 'development'
-    ? 'http://127.0.0.1:8888'
-    : env === 'production'
-        ? 'https://www.url.com'
-        : 'https://debug.url.com';
 
-util.ajax = axios.create({
-    baseURL: ajaxUrl,
-    timeout: 30000
-});
-
+/**
+ * 判断两个数组是否有交集
+ *
+ * @param arr
+ * @param targetArr
+ * @returns {boolean}
+ */
 util.inOf = function (arr, targetArr) {
     let res = true;
     arr.forEach(item => {
@@ -32,6 +34,12 @@ util.inOf = function (arr, targetArr) {
     return res;
 };
 
+/**
+ * 判断数组中是否包含
+ * @param ele
+ * @param targetArr
+ * @returns {boolean}
+ */
 util.oneOf = function (ele, targetArr) {
     if (targetArr.indexOf(ele) >= 0) {
         return true;
@@ -40,6 +48,12 @@ util.oneOf = function (ele, targetArr) {
     }
 };
 
+/**
+ * 判断权限是否通过
+ * @param itAccess
+ * @param currentAccess
+ * @returns {boolean}
+ */
 util.showThisRoute = function (itAccess, currentAccess) {
     if (typeof itAccess === 'object' && Array.isArray(itAccess)) {
         return util.oneOf(currentAccess, itAccess);
@@ -48,6 +62,14 @@ util.showThisRoute = function (itAccess, currentAccess) {
     }
 };
 
+/**
+ * 通过路由名，获到路由对象
+ *
+ * 递归查找
+ * @param routers 路由库
+ * @param name 路由名
+ * @returns {*}
+ */
 util.getRouterObjByName = function (routers, name) {
     if (!name || !routers || !routers.length) {
         return null;
@@ -58,14 +80,23 @@ util.getRouterObjByName = function (routers, name) {
         if (item.name === name) {
             return item;
         }
-        routerObj = util.getRouterObjByName(item.children, name);
-        if (routerObj) {
-            return routerObj;
+        if(Array.isArray(item.children)) {
+            routerObj = util.getRouterObjByName(item.children, name);
+            if (routerObj) {
+                return routerObj;
+            }
         }
     }
     return null;
 };
 
+/**
+ * 获到 对象title
+ * 判断 处理i18n
+ * @param vm
+ * @param item 对象，必须含有item字段
+ * @returns {String}
+ */
 util.handleTitle = function (vm, item) {
     if (typeof item.title === 'object') {
         return vm.$t(item.title.i18n);
@@ -74,6 +105,13 @@ util.handleTitle = function (vm, item) {
     }
 };
 
+/**
+ * 设置当前的path
+ * 处理 面包屑数组
+ * @param vm
+ * @param name
+ * @returns {Array}
+ */
 util.setCurrentPath = function (vm, name) {
     let title = '';
     let isOtherRouter = false;

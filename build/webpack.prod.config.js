@@ -75,7 +75,7 @@ module.exports = merge(webpackBaseConfig, {
             ]
         }),
         new HtmlWebpackPlugin({
-            title: 'Captain admin v' + package.version,
+            title: 'Captain Admin v' + package.version,
             favicon: './favicon.ico',
             filename: '../index.html',
             template: '!!ejs-loader!./src/template/index.ejs',

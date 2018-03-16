@@ -1,4 +1,4 @@
-import {otherRouter, appRouter} from '@/router/router';
+import {otherRouter, locRouter, appRouter} from '@/router/router';
 import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
@@ -11,25 +11,26 @@ const app = {
         openedSubmenuArr: [], // 要展开的菜单数组
         menuTheme: 'dark', // 主题
         themeColor: '',
-        pageOpenedList: [{
+        pageOpenedList: [{ // 当前打开有窗口
             title: '首页',
             path: '',
             name: 'home_index'
         }],
-        currentPageName: '',
-        currentPath: [
+        currentPageName: '', // 当前打开的路由名称
+        currentPath: [ // 面包屑数组
             {
                 title: '首页',
                 path: '',
                 name: 'home_index'
             }
-        ], // 面包屑数组
+        ],
         menuList: [],
         routers: [
             otherRouter,
+            locRouter,
             ...appRouter
         ],
-        tagsList: [...otherRouter.children],
+        tagsList: [...otherRouter.children], // 所有路由
         messageCount: 0,
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
@@ -40,6 +41,12 @@ const app = {
         updateMenulist (state) {
             let accessCode = parseInt(Cookies.get('access'));
             let menuList = [];
+
+            locRouter.children.forEach((item, index) => {
+                menuList.push(item);
+            });
+            state.menuList = menuList;
+return;
             appRouter.forEach((item, index) => {
                 if (item.access !== undefined) {
                     if (Util.showThisRoute(item.access, accessCode)) {

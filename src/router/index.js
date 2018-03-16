@@ -3,7 +3,7 @@ import iView from 'iview';
 import Util from '../libs/util';
 import VueRouter from 'vue-router';
 import Cookies from 'js-cookie';
-import {routers, otherRouter, appRouter} from './router';
+import {routers, otherRouter, locRouter, appRouter} from './router';
 
 Vue.use(VueRouter);
 
@@ -36,7 +36,7 @@ router.beforeEach((to, from, next) => {
                 name: 'home_index'
             });
         } else {
-            const curRouterObj = Util.getRouterObjByName([otherRouter, ...appRouter], to.name);
+            const curRouterObj = Util.getRouterObjByName([otherRouter, ...locRouter, ...appRouter], to.name);
             if (curRouterObj && curRouterObj.access !== undefined) { // 需要判断权限的路由
                 if (curRouterObj.access === parseInt(Cookies.get('access'))) {
                     Util.toDefaultPage([otherRouter, ...appRouter], to.name, router, next); // 如果在地址栏输入的是一级菜单则默认打开其第一个二级菜单的页面
@@ -53,6 +53,10 @@ router.beforeEach((to, from, next) => {
     }
 });
 
+/**
+ * 路由后处理
+ * 主要是处理带参路由，在默认路由切换后，自己再带参处理一次
+ */
 router.afterEach((to) => {
     Util.openNewPage(router.app, to.name, to.params, to.query);
     iView.LoadingBar.finish();

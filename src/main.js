@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import iView from 'iview';
 import {router} from './router/index';
-import {appRouter} from './router/router';
+import {locRouter, appRouter} from './router/router';
 import store from './store';
 import App from './app.vue';
 import '@/locale';
@@ -39,6 +39,9 @@ new Vue({
                 tagsList.push(...item.children);
             }
         });
+
+        tagsList.push(...locRouter.children);
+
         this.$store.commit('setTagsList', tagsList);
     }
 });

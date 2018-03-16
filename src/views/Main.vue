@@ -162,7 +162,7 @@
                 }
             },
             handleSubmenuChange (val) {
-                // console.log(val)
+//                 console.log('点击菜单:' + val);
             },
             beforePush (name) {
                 // if (name === 'accesstest_index') {
