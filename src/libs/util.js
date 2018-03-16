@@ -134,6 +134,7 @@ util.setCurrentPath = function (vm, name) {
             });
         }
     });
+
     let currentPathArr = [];
     if (name === 'home_index') {
         currentPathArr = [

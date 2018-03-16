@@ -43,10 +43,16 @@ const app = {
             let menuList = [];
 
             locRouter.children.forEach((item, index) => {
-                menuList.push(item);
+                let tmp = {
+                    name: 'test' + index,
+                    title: '测试',
+                    icon: 'key',
+                    children: [item]
+                }
+                menuList.push(tmp);
             });
             state.menuList = menuList;
-return;
+            return;
             appRouter.forEach((item, index) => {
                 if (item.access !== undefined) {
                     if (Util.showThisRoute(item.access, accessCode)) {

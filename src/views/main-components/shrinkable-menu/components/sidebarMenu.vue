@@ -10,7 +10,7 @@
                 <span class="layout-text" :key="'title' + item.name">{{ itemTitle(item) }}</span>
             </MenuItem>
 
-            <Submenu v-if="item.children && item.children.length > 1" :name="item.name" :key="item.name">
+            <Submenu v-if="item.children && item.children.length >= 1" :name="item.name" :key="item.name">
                 <template slot="title">
                     <Icon :type="item.icon" :size="iconSize"></Icon>
                     <span class="layout-text">{{ itemTitle(item) }}</span>

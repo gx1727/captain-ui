@@ -64,7 +64,7 @@
                 let _this = this;
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
-                        const msg = _this.$Message.loading({
+                        _this.$Message.loading({
                             content: 'Loading...',
                             duration: 0
                         });
@@ -78,8 +78,8 @@
                                 if (typeof response.data === 'string') {
                                     res = JSON.parse(response.data);
                                 }
-                                if(res.code === 0) {
-                                    localStorage.loginUser = JSON.stringify(res); //放在sessionStorage中
+                                if (res.code === 0) {
+                                    localStorage.loginUser = JSON.stringify(res); // 放在localStorage中
                                     Cookies.set('user', _this.form.userName);
                                     Cookies.set('user_code', res.user_code);
                                     _this.$store.commit('setAvator', res.user_photo);
