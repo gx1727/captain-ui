@@ -2,8 +2,8 @@ import axios from 'axios';
 import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
-import md5 from 'blueimp-md5'
-import NodeRSA from 'node-rsa'
+import md5 from 'blueimp-md5';
+import NodeRSA from 'node-rsa';
 
 let util = {};
 util.title = function (title) {
@@ -294,7 +294,7 @@ util.secret = function (plaintext, token) {
     return key.encrypt(content, 'base64');
 };
 
-util.md5 = function(content) {
+util.md5 = function (content) {
     return md5(content);
 }
 
