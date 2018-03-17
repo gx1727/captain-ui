@@ -119,7 +119,7 @@
                         title: '去iView官网学习完整的iView组件'
                     },
                     {
-                        title: '去iView官网学习完整的iView组件 去iView官网学习完整的iView组件 去iView官网学习完整的iView组件 去iView官网学习完整的iView组件'
+                        title: '去iView官网学习完整的iView组件'
                     }
                 ],
                 count: {

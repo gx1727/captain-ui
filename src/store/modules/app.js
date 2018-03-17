@@ -11,7 +11,7 @@ const app = {
         openedSubmenuArr: [], // 要展开的菜单数组
         menuTheme: 'dark', // 主题
         themeColor: '',
-        pageOpenedList: [{ // 当前打开有窗口
+        pageOpenedList: [{ // 当前打开的所有窗口
             title: '首页',
             path: '',
             name: 'home_index'
