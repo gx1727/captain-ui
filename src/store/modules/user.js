@@ -2,12 +2,19 @@ import Cookies from 'js-cookie';
 
 const user = {
     state: {
-
+        user: '',
+        user_code: '',
+        role: '',
+        homeurl: ''
     },
     mutations: {
+        setAvator (state, path) {
+            localStorage.avatorImgPath = path;
+        },
         logout (state, vm) {
             Cookies.remove('user');
-            Cookies.remove('access');
+            Cookies.remove('user_code');
+            Cookies.remove('role');
             // 恢复默认样式
             let themeLink = document.querySelector('link[name="theme"]');
             themeLink.setAttribute('href', '');

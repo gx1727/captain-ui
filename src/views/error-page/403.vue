@@ -18,17 +18,18 @@
 </template>
 
 <script>
-export default {
-    name: 'Error403',
-    methods: {
-        backPage () {
-            this.$router.go(-1);
-        },
-        goHome () {
-            this.$router.push({
-                name: 'home_index'
-            });
+    import Cookies from 'js-cookie';
+    export default {
+        name: 'Error403',
+        methods: {
+            backPage () {
+                this.$router.go(-1);
+            },
+            goHome () {
+                this.$router.push({
+                    name: Cookies.get('homeurl')
+                });
+            }
         }
-    }
-};
+    };
 </script>

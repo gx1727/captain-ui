@@ -40,7 +40,7 @@
 <script>
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
-    import api from '../api'
+    import api from '../api';
 
     export default {
         data () {
@@ -82,9 +82,11 @@
                                     localStorage.loginUser = JSON.stringify(res); // 放在localStorage中
                                     Cookies.set('user', _this.form.userName);
                                     Cookies.set('user_code', res.user_code);
+                                    Cookies.set('role', res.role.role_name);
+                                    Cookies.set('homeurl', res.role.role_homeurl);
                                     _this.$store.commit('setAvator', res.user_photo);
                                     _this.$router.push({
-                                        name: 'manager_home'
+                                        name: res.role.role_homeurl
                                     });
                                 } else {
                                     _this.$Notice.warning({

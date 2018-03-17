@@ -39,7 +39,6 @@ const app = {
             state.tagsList.push(...list);
         },
         updateMenulist (state) {
-            let accessCode = parseInt(Cookies.get('access'));
             let menuList = [];
 
             locRouter.children.forEach((item, index) => {
@@ -50,53 +49,6 @@ const app = {
                     children: [item]
                 }
                 menuList.push(tmp);
-            });
-            state.menuList = menuList;
-            return;
-            appRouter.forEach((item, index) => {
-                if (item.access !== undefined) {
-                    if (Util.showThisRoute(item.access, accessCode)) {
-                        if (item.children.length === 1) {
-                            menuList.push(item);
-                        } else {
-                            let len = menuList.push(item);
-                            let childrenArr = [];
-                            childrenArr = item.children.filter(child => {
-                                if (child.access !== undefined) {
-                                    if (child.access === accessCode) {
-                                        return child;
-                                    }
-                                } else {
-                                    return child;
-                                }
-                            });
-                            menuList[len - 1].children = childrenArr;
-                        }
-                    }
-                } else {
-                    if (item.children.length === 1) {
-                        menuList.push(item);
-                    } else {
-                        let len = menuList.push(item);
-                        let childrenArr = [];
-                        childrenArr = item.children.filter(child => {
-                            if (child.access !== undefined) {
-                                if (Util.showThisRoute(child.access, accessCode)) {
-                                    return child;
-                                }
-                            } else {
-                                return child;
-                            }
-                        });
-                        if (childrenArr === undefined || childrenArr.length === 0) {
-                            menuList.splice(len - 1, 1);
-                        } else {
-                            let handledItem = JSON.parse(JSON.stringify(menuList[len - 1]));
-                            handledItem.children = childrenArr;
-                            menuList.splice(len - 1, 1, handledItem);
-                        }
-                    }
-                }
             });
             state.menuList = menuList;
         },
@@ -119,6 +71,11 @@ const app = {
                 state.openedSubmenuArr.push(name);
             }
         },
+        /**
+         * 关闭窗口，从cachePage中清除相应cache
+         * @param state
+         * @param name
+         */
         closePage (state, name) {
             state.cachePage.forEach((item, index) => {
                 if (item === name) {
@@ -149,6 +106,10 @@ const app = {
             state.pageOpenedList.splice(get.index, 1, openedPage);
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
+        /**
+         * 关闭所有标签
+         * @param state
+         */
         clearAllTags (state) {
             state.pageOpenedList.splice(1);
             state.cachePage.length = 0;
@@ -182,9 +143,6 @@ const app = {
         },
         setCurrentPageName (state, name) {
             state.currentPageName = name;
-        },
-        setAvator (state, path) {
-            localStorage.avatorImgPath = path;
         },
         switchLang (state, lang) {
             state.lang = lang;
