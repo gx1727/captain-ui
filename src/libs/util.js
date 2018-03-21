@@ -4,6 +4,7 @@ import semver from 'semver';
 import packjson from '../../package.json';
 import md5 from 'blueimp-md5';
 import NodeRSA from 'node-rsa';
+import Cookies from 'js-cookie';
 
 let util = {};
 
@@ -80,7 +81,7 @@ util.getRouterObjByName = function (routers, name) {
         if (item.name === name) {
             return item;
         }
-        if(Array.isArray(item.children)) {
+        if (Array.isArray(item.children)) {
             routerObj = util.getRouterObjByName(item.children, name);
             if (routerObj) {
                 return routerObj;
@@ -114,47 +115,14 @@ util.handleTitle = function (vm, item) {
  */
 util.setCurrentPath = function (vm, name) {
     let title = '';
-    let isOtherRouter = false;
-    vm.$store.state.app.routers.forEach(item => {
-        if (item.children.length === 1) {
-            if (item.children[0].name === name) {
-                title = util.handleTitle(vm, item);
-                if (item.name === 'otherRouter') {
-                    isOtherRouter = true;
-                }
-            }
-        } else {
-            item.children.forEach(child => {
-                if (child.name === name) {
-                    title = util.handleTitle(vm, child);
-                    if (item.name === 'otherRouter') {
-                        isOtherRouter = true;
-                    }
-                }
-            });
-        }
-    });
 
     let currentPathArr = [];
-    if (name === 'home_index') {
+    if (name === Cookies.get('homeurl')) {
         currentPathArr = [
             {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, Cookies.get('homeurl'))),
                 path: '',
-                name: 'home_index'
-            }
-        ];
-    } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'home_index') {
-        currentPathArr = [
-            {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
-                path: '/home',
-                name: 'home_index'
-            },
-            {
-                title: title,
-                path: '',
-                name: name
+                name: Cookies.get('homeurl')
             }
         ];
     } else {
@@ -174,6 +142,7 @@ util.setCurrentPath = function (vm, name) {
                 return false;
             }
         })[0];
+
         if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
             currentPathArr = [
                 {
@@ -217,7 +186,28 @@ util.setCurrentPath = function (vm, name) {
                 }
             ];
         }
+
+        currentPathArr = [
+            {
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, Cookies.get('homeurl'))),
+                path: '',
+                name: Cookies.get('homeurl')
+            },
+            {
+                title: '测试8',
+                path: '',
+                name: 'test8'
+            },
+            {
+                title: currentPathObj.title,
+                path: currentPathObj.path,
+                name: currentPathObj.name
+            }
+        ];
     }
+
+
+
     vm.$store.commit('setCurrentPath', currentPathArr);
 
     return currentPathArr;
@@ -264,23 +254,12 @@ util.openNewPage = function (vm, name, argu, query) {
 };
 
 util.toDefaultPage = function (routers, name, route, next) {
-    let len = routers.length;
-    let i = 0;
-    let notHandle = true;
-    while (i < len) {
-        if (routers[i].name === name && routers[i].children && routers[i].redirect === undefined) {
-            route.replace({
-                name: routers[i].children[0].name
-            });
-            notHandle = false;
-            next();
-            break;
-        }
-        i++;
+    if (name === 'appRouter') { // 回到自己的首页
+        route.replace({
+            name: Cookies.get('homeurl')
+        });
     }
-    if (notHandle) {
-        next();
-    }
+    next();
 };
 
 util.fullscreenEvent = function (vm) {
@@ -288,21 +267,6 @@ util.fullscreenEvent = function (vm) {
     // 权限菜单过滤相关
     vm.$store.commit('updateMenulist');
     // 全屏相关
-};
-
-util.checkUpdate = function (vm) {
-    axios.get('https://api.github.com/repos/iview/iview-admin/releases/latest').then(res => {
-        let version = res.data.tag_name;
-        vm.$Notice.config({
-            duration: 0
-        });
-        if (semver.lt(packjson.version, version)) {
-            vm.$Notice.info({
-                title: 'iview-admin更新啦',
-                desc: '<p>iView-admin更新到了' + version + '了，去看看有哪些变化吧</p><a style="font-size:13px;" href="https://github.com/iview/iview-admin/releases" target="_blank">前往github查看</a>'
-            });
-        }
-    });
 };
 
 /**

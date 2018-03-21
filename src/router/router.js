@@ -55,33 +55,22 @@ export const locking = {
     component: () => import('@/views/main-components/lockscreen/components/locking-page.vue')
 };
 
-// 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
-export const otherRouter = {
+export const appRouter = {
     path: '/',
-    name: 'otherRouter',
+    name: 'appRouter',
     icon: 'key',
     title: '',
     component: Main,
     children: [
+        {path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue')},
         {path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue')}, // 管理员home
         {path: 'admin/home', title: {i18n: 'home'}, name: 'admin_home', component: () => import('@/views/admin/admin_home.vue')}, // 管理员home
         {path: 'manager/home', title: {i18n: 'home'}, name: 'manager_home', component: () => import('@/views/manager/manager_home.vue')}, // manager home
-        {path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue')},
         {path: 'order/:order_id', title: '订单详情', name: 'order-info', component: () => import('@/views/advanced-router/component/order-info.vue')}, // 用于展示动态路由
         {path: 'shopping', title: '购物详情', name: 'shopping', component: () => import('@/views/advanced-router/component/shopping-info.vue')}, // 用于展示带参路由
-        {path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue')}
-    ]
-};
-
-export const locRouter = {
-    path: '/',
-    name: 'locRouter',
-    icon: 'key',
-    title: '',
-    component: Main,
-    children: [
+        {path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue')},
         {path: 'access/index', title: '权限管理', icon: 'key', name: 'access_index', component: () => import('@/views/access/access.vue')},
-        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', access: 0, component: () => import('@/views/access/access-test.vue')}
+        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')}
     ]
 };
 
@@ -91,7 +80,7 @@ export const locRouter = {
  */
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
-export const appRouter = [
+export const appRouter2 = [
     // {
     //     path: '/access',
     //     icon: 'key',
@@ -241,11 +230,9 @@ export const appRouter = [
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
-    otherRouter,
     preview,
     locking,
-    locRouter,
-    ...appRouter,
+    appRouter,
     page500,
     page403,
     page404

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import iView from 'iview';
 import {router} from './router/index';
-import {locRouter, appRouter} from './router/router';
+import {appRouter} from './router/router';
 import store from './store';
 import App from './app.vue';
 import '@/locale';
@@ -27,21 +27,18 @@ new Vue({
         this.$store.commit('initCachepage');
         // 权限菜单过滤相关
         this.$store.commit('updateMenulist');
-        // iview-admin检查更新
-        // util.checkUpdate(this);
     },
     created () {
         let tagsList = [];
-        appRouter.map((item) => {
-            if (item.children.length <= 1) {
-                tagsList.push(item.children[0]);
-            } else {
-                tagsList.push(...item.children);
-            }
-        });
+        // appRouter.map((item) => {
+        //     if (item.children.length <= 1) {
+        //         tagsList.push(item.children[0]);
+        //     } else {
+        //         tagsList.push(...item.children);
+        //     }
+        // });
 
-        tagsList.push(...locRouter.children);
-
+        tagsList.push(appRouter.children);
         this.$store.commit('setTagsList', tagsList);
     }
 });

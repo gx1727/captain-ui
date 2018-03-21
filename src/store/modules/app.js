@@ -1,4 +1,4 @@
-import {otherRouter, locRouter, appRouter} from '@/router/router';
+import {appRouter} from '@/router/router';
 import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
@@ -21,30 +21,28 @@ const app = {
             {
                 title: '首页',
                 path: '',
-                name: 'home_index'
+                name: ''
             }
         ],
         menuList: [],
         routers: [
-            otherRouter,
-            locRouter,
-            ...appRouter
+            appRouter
         ],
-        tagsList: [...otherRouter.children], // 所有路由
+        tagsList: [appRouter.children], // 所有路由
         messageCount: 0,
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
     mutations: {
         setTagsList (state, list) {
-            state.tagsList.push(...list);
+            state.tagsList.push(list);
         },
         updateMenulist (state) {
             let menuList = [];
 
-            locRouter.children.forEach((item, index) => {
+            appRouter.children.forEach((item, index) => {
                 let tmp = {
                     name: 'test' + index,
-                    title: '测试',
+                    title: '测试' +  + index,
                     icon: 'key',
                     children: [item]
                 }
@@ -136,7 +134,7 @@ const app = {
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
         setOpenedList (state) {
-            state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [otherRouter.children[0]];
+            state.pageOpenedList = localStorage.pageOpenedList ? JSON.parse(localStorage.pageOpenedList) : [appRouter.children[0]];
         },
         setCurrentPath (state, pathArr) {
             state.currentPath = pathArr;
