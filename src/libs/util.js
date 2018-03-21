@@ -206,8 +206,6 @@ util.setCurrentPath = function (vm, name) {
         ];
     }
 
-
-
     vm.$store.commit('setCurrentPath', currentPathArr);
 
     return currentPathArr;
@@ -231,7 +229,7 @@ util.openNewPage = function (vm, name, argu, query) {
         i++;
     }
     if (!tagHasOpened) {
-        let tag = vm.$store.state.app.tagsList.filter((item) => {
+        let tag = vm.$store.state.app.routers.filter((item) => {
             if (item.children) {
                 return name === item.children[0].name;
             } else {
@@ -239,6 +237,7 @@ util.openNewPage = function (vm, name, argu, query) {
             }
         });
         tag = tag[0];
+
         if (tag) {
             tag = tag.children ? tag.children[0] : tag;
             if (argu) {

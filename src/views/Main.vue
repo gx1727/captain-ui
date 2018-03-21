@@ -181,7 +181,7 @@
                 this.$store.commit('setCurrentPageName', to.name);
                 let pathArr = util.setCurrentPath(this, to.name);
                 if (pathArr.length > 2) {
-                    this.$store.commit('addOpenSubmenu', pathArr[1].name);
+                    this.$store.commit('addOpenSubmenu', pathArr[1].name); // 处理展开的二级菜单
                 }
                 this.checkTag(to.name);
                 localStorage.currentPageName = to.name;
