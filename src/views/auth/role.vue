@@ -1,17 +1,21 @@
 <style lang="less">
     @import '../../styles/common.less';
-    @import './components/table.less';
+    @import '../components/styles/table.less';
 </style>
 
 <template>
     <div>
         <Row class="margin-top-10">
             <Col span="24">
-            <Card>
+            <Card extra="hello">
                 <p slot="title">
                     <Icon type="clipboard"></Icon>
                     角色管理页
                 </p>
+                <a href="#" slot="extra">
+                    <Icon type="ios-loop-strong"></Icon>
+                    Change
+                </a>
                 <Row>
                     <Input v-model="searchConName3" placeholder="请输入姓名搜搜..." style="width: 200px" />
                     <span @click="handleSearch3" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
@@ -19,23 +23,21 @@
                 </Row>
                 <Row :gutter="10" class="margin-top-10">
                     <Col span="24">
-                        <Table stripe border :loading="loading" ref="selection" height="200" :columns="columns" :data="data" @on-sort-change="onSortChange"></Table>
+                        <common-table
+                                refs="table"
+                                v-model="editInlineAndCellData"
+                                @on-cell-change="handleCellChange"
+                                @on-change="handleChange"
+                                :hover-show="true"
+                                :editIncell="true"
+                                :columns-list="editInlineAndCellColumn"
+                        ></common-table>
                         <div class="margin-top-10">
                             <Button @click="handleSelectAll(true)">全选</Button>
                             <Button @click="handleSelectAll(false)">清空</Button>
                         </div>
+                        <Table stripe border :loading="loading" ref="selection" height="200" :columns="columns" :data="data" @on-sort-change="onSortChange"></Table>
 
-
-                        <div class="edittable-table-height-con margin-top-10">
-                            <can-edit-table
-                                    refs="table4"
-                                    v-model="editInlineAndCellData"
-                                    @on-cell-change="handleCellChange"
-                                    @on-change="handleChange"
-                                    :editIncell="true"
-                                    :columns-list="editInlineAndCellColumn"
-                            ></can-edit-table>
-                        </div>
                     </Col>
                 </Row>
             </Card>
@@ -45,19 +47,92 @@
 </template>
 
 <script>
-    import canEditTable from './components/canEditTable.vue';
+    import commonTable from '../components/commonTable.vue';
     import tableData from './components/table_data.js';
     export default {
         name: 'editable-table',
         components: {
-            canEditTable
+            commonTable
         },
         data () {
             return {
                 loading: false,
                 searchConName3: '',
-                editInlineAndCellData: [],
-                editInlineAndCellColumn: [],
+                editInlineAndCellData: [
+                    {
+                        name: 'Aresn',
+                        sex: '男',
+                        work: '前端开发'
+                    },
+                    {
+                        name: 'Lison',
+                        sex: '男',
+                        work: '前端开发'
+                    },
+                    {
+                        name: 'lisa',
+                        sex: '女',
+                        work: '程序员鼓励师'
+                    }
+                ],
+                editInlineAndCellColumn: [
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: '序号',
+                        type: 'index',
+                        width: 80,
+                        align: 'center'
+                    },
+                    {
+                        title: '姓名',
+                        align: 'center',
+                        key: 'name',
+                        width: 300,
+                        editable: true,
+                        sortable: 'name',
+                        filters: [
+                            {
+                                label: 'Greater than 25',
+                                value: 1
+                            },
+                            {
+                                label: 'Less than 25',
+                                value: 2
+                            }
+                        ],
+                        filterMultiple: false,
+                        filterMethod (value, row) {
+                            if (value === 1) {
+                                return row.age > 25;
+                            } else if (value === 2) {
+                                return row.age < 25;
+                            }
+                        }
+                    },
+                    {
+                        title: '性别',
+                        align: 'center',
+                        key: 'sex'
+                    },
+                    {
+                        title: '岗位',
+                        align: 'center',
+                        width: 300,
+                        key: 'work',
+                        editable: true
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        width: 200,
+                        key: 'handle',
+                        handle: ['edit', 'delete']
+                    }
+                ],
                 columns: [
                     {
                         type: 'selection',
@@ -178,6 +253,20 @@
         methods: {
             handleSelectAll (status) {
                 this.$refs.selection.selectAll(status);
+                this.editInlineAndCellData.push({
+                    name: 'Aresn',
+                    sex: '男',
+                    work: '前端开发'
+                });
+
+                this.data.push(
+                    {
+                        name: 'John Brown',
+                        age: 18,
+                        address: 'New York No. 1 Lake Park',
+                        date: '2016-10-03'
+                    }
+                );
             },
             onSortChange(sort) {
                 console.log(sort);
@@ -185,8 +274,6 @@
                 console.log(sort.order);
             },
             getData () {
-                this.editInlineAndCellColumn = tableData.editInlineAndCellColumn;
-                this.editInlineAndCellData = tableData.editInlineAndCellData;
             },
             handleNetConnect (state) {
                 this.breakConnect = state;
@@ -194,13 +281,12 @@
             handleLowSpeed (state) {
                 this.lowNetSpeed = state;
             },
-            getCurrentData () {
-                this.showCurrentTableData = true;
-            },
             handleCellChange (val, index, key) {
+                console.log(val);
                 this.$Message.success('修改了第 ' + (index + 1) + ' 行列名为 ' + key + ' 的数据');
             },
             handleChange (val, index) {
+                console.log(val);
                 this.$Message.success('修改了第' + (index + 1) + '行数据');
             },
             handleSearch3 () {
