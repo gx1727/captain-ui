@@ -46,25 +46,30 @@ const app = {
         updateMenulist (state) {
             let menuList = [];
             menuList.push({
-                name: 'test' + 1,
-                title: '测试' + 1,
-                icon: 'key',
+                name: 'auth_menu',
+                title: '目录管理',
+                icon: 'android-menu',
             });
             menuList.push({
-                name: 'test' + 2,
-                title: '测试' + 2,
+                name: 'auth',
+                title: '权限管理',
                 icon: 'key',
                 children: [{
-                    name: 'test' + 3,
-                    title: '测试' + 3,
+                    name: 'auth_role',
+                    title: '角色管理',
+                    icon: 'android-people',
+                }, {
+                    name: 'auth_resources',
+                    title: '资源管理',
                     icon: 'key',
-                },
-                    {
-                        name: 'test' + 4,
-                        title: '测试' + 4,
-                        icon: 'key',
-                    }]
+                }, {
+                    name: 'auth_permission',
+                    title: '角色权限',
+                    icon: 'key',
+                }
+                ]
             });
+            state.routers.auth_role.parent = 'auth';
             state.menuList = menuList;
         },
         changeMenuTheme (state, theme) {

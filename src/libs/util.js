@@ -112,10 +112,17 @@ util.setCurrentPath = function (vm, name) {
         let currentPathObj = vm.$store.state.app.routers[name];
 
         if (currentPathObj.parent) { //有父级菜单
+            let menu = null;
+            vm.$store.state.app.menuList.forEach(item => {
+                if (item.name == currentPathObj.parent) {
+                    menu = item;
+                }
+            })
+
             currentPathArr.push({
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, vm.$store.state.app.routers[currentPathObj.parent].title)),
-                path: vm.$store.state.app.routers[currentPathObj.parent].path,
-                name: vm.$store.state.app.routers[currentPathObj.parent].name,
+                title: menu.title,
+                path: '',
+                name: menu.name,
             })
         }
 
@@ -158,7 +165,11 @@ util.openNewPage = function (vm, name, argu, query) {
             if (query) {
                 tag.query = query;
             }
-            vm.$store.commit('increateTag', tag);
+            if(tag.name.indexOf('error') < 0) { // error页不进tag
+                vm.$store.commit('increateTag', tag);
+            }
+            vm.$store.commit('setCurrentPageName', name);
+
         } else {
             // 没有指定路由
             vm.$router.replace({
@@ -166,7 +177,6 @@ util.openNewPage = function (vm, name, argu, query) {
             });
         }
     }
-    vm.$store.commit('setCurrentPageName', name);
 };
 
 util.toDefaultPage = function (routers, name, route, next) {

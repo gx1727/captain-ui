@@ -70,7 +70,9 @@ export const appRouter = {
         {path: 'shopping', title: '购物详情', name: 'shopping', component: () => import('@/views/advanced-router/component/shopping-info.vue')}, // 用于展示带参路由
         {path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue')},
         {path: 'access/index', title: '权限管理', icon: 'key', name: 'access_index', component: () => import('@/views/access/access.vue')},
-        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')}
+        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')},
+        {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
+
     ]
 };
 
