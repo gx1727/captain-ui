@@ -61,7 +61,7 @@
                 editInlineAndCellData: [
                     {
                         name: 'Aresn',
-                        sex: '男',
+                        sex: "男<img src=\"http://localhost-c/img/qrcode.jpg\"/>",
                         work: '前端开发'
                     },
                     {
@@ -224,7 +224,7 @@
                 ],
                 data: [
                     {
-                        name: 'John Brown',
+                        name: 'John Brown<img src=\"http://localhost-c/img/qrcode.jpg\"/>',
                         age: 18,
                         address: 'New York No. 1 Lake Park',
                         date: '2016-10-03'
