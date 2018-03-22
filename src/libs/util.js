@@ -72,23 +72,7 @@ util.showThisRoute = function (itAccess, currentAccess) {
  * @returns {*}
  */
 util.getRouterObjByName = function (routers, name) {
-    if (!name || !routers || !routers.length) {
-        return null;
-    }
-    // debugger;
-    let routerObj = null;
-    for (let item of routers) {
-        if (item.name === name) {
-            return item;
-        }
-        if (Array.isArray(item.children)) {
-            routerObj = util.getRouterObjByName(item.children, name);
-            if (routerObj) {
-                return routerObj;
-            }
-        }
-    }
-    return null;
+    return routers[name];
 };
 
 /**
@@ -116,94 +100,30 @@ util.handleTitle = function (vm, item) {
 util.setCurrentPath = function (vm, name) {
     let title = '';
 
-    let currentPathArr = [];
-    if (name === Cookies.get('homeurl')) {
-        currentPathArr = [
-            {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, Cookies.get('homeurl'))),
-                path: '',
-                name: Cookies.get('homeurl')
-            }
-        ];
-    } else {
-        let currentPathObj = vm.$store.state.app.routers.filter(item => {
-            if (item.children.length <= 1) {
-                return item.children[0].name === name;
-            } else {
-                let i = 0;
-                let childArr = item.children;
-                let len = childArr.length;
-                while (i < len) {
-                    if (childArr[i].name === name) {
-                        return true;
-                    }
-                    i++;
-                }
-                return false;
-            }
-        })[0];
+    let currentPathArr = [
+        {
+            title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, Cookies.get('homeurl'))),
+            path: '',
+            name: Cookies.get('homeurl')
+        }
+    ];
+    if (name !== Cookies.get('homeurl')) {
 
-        if (currentPathObj.children.length <= 1 && currentPathObj.name === 'home') {
-            currentPathArr = [
-                {
-                    title: '首页',
-                    path: '',
-                    name: 'home_index'
-                }
-            ];
-        } else if (currentPathObj.children.length <= 1 && currentPathObj.name !== 'home') {
-            currentPathArr = [
-                {
-                    title: '首页',
-                    path: '/home',
-                    name: 'home_index'
-                },
-                {
-                    title: currentPathObj.title,
-                    path: '',
-                    name: name
-                }
-            ];
-        } else {
-            let childObj = currentPathObj.children.filter((child) => {
-                return child.name === name;
-            })[0];
-            currentPathArr = [
-                {
-                    title: '首页',
-                    path: '/home',
-                    name: 'home_index'
-                },
-                {
-                    title: currentPathObj.title,
-                    path: '',
-                    name: currentPathObj.name
-                },
-                {
-                    title: childObj.title,
-                    path: currentPathObj.path + '/' + childObj.path,
-                    name: name
-                }
-            ];
+        let currentPathObj = vm.$store.state.app.routers[name];
+
+        if (currentPathObj.parent) { //有父级菜单
+            currentPathArr.push({
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, vm.$store.state.app.routers[currentPathObj.parent].title)),
+                path: vm.$store.state.app.routers[currentPathObj.parent].path,
+                name: vm.$store.state.app.routers[currentPathObj.parent].name,
+            })
         }
 
-        currentPathArr = [
-            {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, Cookies.get('homeurl'))),
-                path: '',
-                name: Cookies.get('homeurl')
-            },
-            {
-                title: '测试8',
-                path: '',
-                name: 'test8'
-            },
-            {
-                title: currentPathObj.title,
-                path: currentPathObj.path,
-                name: currentPathObj.name
-            }
-        ];
+        currentPathArr.push({
+            title: currentPathObj.title,
+            path: currentPathObj.path,
+            name: currentPathObj.name
+        });
     }
 
     vm.$store.commit('setCurrentPath', currentPathArr);
@@ -229,15 +149,7 @@ util.openNewPage = function (vm, name, argu, query) {
         i++;
     }
     if (!tagHasOpened) {
-        let tag = vm.$store.state.app.routers.filter((item) => {
-            if (item.children) {
-                return name === item.children[0].name;
-            } else {
-                return name === item.name;
-            }
-        });
-        tag = tag[0];
-
+        let tag = vm.$store.state.app.routers[name];
         if (tag) {
             tag = tag.children ? tag.children[0] : tag;
             if (argu) {
@@ -247,6 +159,11 @@ util.openNewPage = function (vm, name, argu, query) {
                 tag.query = query;
             }
             vm.$store.commit('increateTag', tag);
+        } else {
+            // 没有指定路由
+            vm.$router.replace({
+                name: 'error-404'
+            });
         }
     }
     vm.$store.commit('setCurrentPageName', name);

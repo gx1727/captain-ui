@@ -29,5 +29,6 @@ new Vue({
         this.$store.commit('updateMenulist');
     },
     created () {
+        this.$store.commit('setRouters');
     }
 });

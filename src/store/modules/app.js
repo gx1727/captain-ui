@@ -1,4 +1,4 @@
-import {appRouter} from '@/router/router';
+import {routers, appRouter} from '@/router/router';
 import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
@@ -25,24 +25,45 @@ const app = {
             }
         ],
         menuList: [],
-        routers: [
-            appRouter
-        ],
+        routers: {},
         messageCount: 0,
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
     mutations: {
+        setRouters (state) {
+            routers.forEach(item => {
+                if (typeof item.children === 'undefined') {
+                    item.parent = '';
+                    state.routers[item.name] = item;
+                } else {
+                    item.children.forEach(children => {
+                        item.parent = '';
+                        state.routers[children.name] = children;
+                    })
+                }
+            })
+        },
         updateMenulist (state) {
             let menuList = [];
-
-            appRouter.children.forEach((item, index) => {
-                let tmp = {
-                    name: 'test' + index,
-                    title: '测试' +  + index,
+            menuList.push({
+                name: 'test' + 1,
+                title: '测试' + 1,
+                icon: 'key',
+            });
+            menuList.push({
+                name: 'test' + 2,
+                title: '测试' + 2,
+                icon: 'key',
+                children: [{
+                    name: 'test' + 3,
+                    title: '测试' + 3,
                     icon: 'key',
-                    children: [item]
-                }
-                menuList.push(tmp);
+                },
+                    {
+                        name: 'test' + 4,
+                        title: '测试' + 4,
+                        icon: 'key',
+                    }]
             });
             state.menuList = menuList;
         },
