@@ -4,7 +4,16 @@
 
 <template>
     <div>
-        <Table stripe border ref="commontable" :columns="columnsList" :data="thisTableData" :loading="loading" @on-sort-change="onSortChange"></Table>
+        <Table stripe border ref="commontable" :columns="columnsList" :data="thisTableData" :loading="loading"
+               @on-sort-change="onSortChange" :highlight-row="true" @on-current-change="onCurrentChange"
+                @on-selection-change="onSelectionChange"></Table>
+        <div class="margin-top-10" style="text-align: right;">
+            <Page :total="total" :page-size="pagesize" :current="page" :page-size-opts="[10, 20, 50, 100]"
+                  :show-total="true" placement="top" :transfer="true"
+                  size="small" :show-elevator="true" :show-sizer="true"
+            @on-change="onPageChange" @on-page-size-change="onPageSizeChange"></Page>
+        </div>
+
     </div>
 </template>
 
@@ -13,16 +22,35 @@
     export default {
         name: 'commonTable',
         props: {
+            remoteApi: String,
             columnsList: Array,
-            url: String,
-            editIncell: {
+            onCurrentChange: {
+                type: Function,
+                default: function () {
+                    console.log('单选');
+                }
+            },
+            onSelectionChange: {
+                type: Function,
+                default: function () {
+                    console.log('多选');
+                }
+            },
+            onRemoteData: {
+              type: Function,
+                default: function(data) {
+                    return data;
+                }
+            },
+            editIncell: { // 是否可以单元格修改
                 type: Boolean,
                 default: false
             },
-            hoverShow: {
+            hoverShow: { // 鼠标hover事件，显示修改按钮
                 type: Boolean,
                 default: false
-            }
+            },
+            searchParam: Object // api额外参数
         },
         data () {
             return {
@@ -30,7 +58,7 @@
                 pagesize: 10,
                 orderby: '',
                 ordertype: 'desc',
-                param: {}, // api额外参数
+                total: 0,
                 loading: false, // 列表加载 loading
                 remoteData: [], // 原始数据
                 columns: [],
@@ -41,6 +69,9 @@
         created () {
             this.remote();
 
+            /**
+             * 定义 refresh事件处理函数
+             */
             this.$on('refresh', function () {
                 this.remote();
             })
@@ -139,6 +170,23 @@
                                     children.push(editButton(this, h, currentRowData, param.index));
                                 } else if (item === 'delete') {
                                     children.push(deleteButton(this, h, currentRowData, param.index));
+                                } else {
+                                    // 其它按钮
+                                    children.push(
+                                        h('Button',{
+                                            props: {
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                margin: '0 5px'
+                                            },
+                                            on: {
+                                                'click': (() => {
+                                                    item.fun(currentRowData);
+                                                })
+                                            }
+                                        }, item.title)
+                                    );
                                 }
                             });
                             return h('div', children);
@@ -148,48 +196,72 @@
             },
             handleBackdata (data) {
                 let clonedData = JSON.parse(JSON.stringify(data));
-                clonedData.forEach(item => {
-                    delete item.editting;
-                    delete item.edittingCell;
-                    delete item.saving;
-                });
+                delete clonedData.editting;
+                delete clonedData.edittingCell;
+                delete clonedData.saving;
+//                clonedData.forEach(item => {
+//                    delete item.editting;
+//                    delete item.edittingCell;
+//                    delete item.saving;
+//                });
                 return clonedData;
             },
+            /**
+             * 处理排序事件
+             * @param sort
+             */
             onSortChange (sort) {
-                console.log(sort);
-                console.log(sort.key);
-                console.log(sort.order);
+                this.orderby = sort.key;
+                this.ordertype = sort.order;
+                this.$emit('refresh');
             },
-            remote () { // 获取服务器数据
-                let _this = this;
-                _this.loading = true;
-                api.RoleList(_this.getParam(), function (response) {
+            onPageChange (page) {
+                this.page = page;
+                this.$emit('refresh');
+            },
+            onPageSizeChange (pageSize) {
+                this.pagesize = pageSize;
+                this.$emit('refresh');
+            },
+            /**
+             * 获取服务器数据
+             */
+            remote () {
+                let vm = this;
+                vm.loading = true;
+                api[vm.remoteApi](vm.getParam(), function (response) {
                     if (response.code === 0) {
-                        _this.remoteData = response.data;
-                        _this.init();
+                        let remoteData = vm.onRemoteData(response); // 前端作最后的处理
+                        vm.remoteData = remoteData.data;
+                        vm.total = response.total;
+                        vm.init();
                     } else {
-                        _this.$Notice.warning({
+                        vm.$Notice.warning({
                             title: '警告',
                             desc: response.msg,
                         });
                     }
-                    console.log(response);
-                    _this.loading = false;
+                    vm.loading = false;
                 }, function (e, statusText) {
-                    _this.loading = false;
-                    _this.$Notice.error({
+                    vm.loading = false;
+                    vm.$Notice.error({
                         title: '网络错误，服务请求失败',
                         desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
                     });
                 })
+                vm.init();
             },
+            /**
+             * 获到附加参数
+             * @returns {({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name}))|({}&{page: *, pagesize: *, orderby: *, ordertype: *})|({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name})&W)|any}
+             */
             getParam() {
                 return Object.assign({}, {
                     page: this.page,
                     pagesize: this.pagesize,
                     orderby: this.orderby,
                     ordertype: this.ordertype
-                }, this.param);
+                }, this.searchParam);
             }
         },
         watch: {
@@ -199,6 +271,9 @@
         }
     };
 
+    /**
+     * 编辑按钮
+     */
     const editButton = (vm, h, currentRow, index) => {
         return h('Button', {
             props: {
@@ -227,13 +302,22 @@
                         edittingRow.editting = false;
                         edittingRow.saving = false;
                         vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                        vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                        vm.$emit('on-change', vm.handleBackdata(vm.thisTableData), index);
+//                        vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                        vm.$emit('on-change', vm.handleBackdata(vm.thisTableData[index]), index);
                     }
                 }
             }
         }, currentRow.editting ? '保存' : '编辑');
     };
+
+    /**
+     * 删除按钮
+     * @param vm
+     * @param h
+     * @param currentRow
+     * @param index
+     * @returns {*}
+     */
     const deleteButton = (vm, h, currentRow, index) => {
         return h('Poptip', {
             props: {
@@ -243,9 +327,7 @@
             },
             on: {
                 'on-ok': () => {
-                    vm.thisTableData.splice(index, 1);
-                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                    vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData), index);
+                    vm.$emit('on-delete', vm.handleBackdata(vm.thisTableData[index]), index);
                 }
             }
         }, [
@@ -261,8 +343,16 @@
             }, '删除')
         ]);
     };
+
+    /**
+     * 单元格edit按钮
+     * @param vm
+     * @param h
+     * @param param
+     * @returns {*}
+     */
     const inCellEditBtn = (vm, h, param) => {
-        if (vm.hoverShow) {
+        if (vm.hoverShow) { // 鼠标hover事件，显示修改按钮
             return h('div', {
                 'class': {
                     'show-edit-btn': vm.hoverShow
@@ -296,6 +386,14 @@
             });
         }
     };
+
+    /**
+     * 单元格保存按钮
+     * @param vm
+     * @param h
+     * @param param
+     * @returns {*}
+     */
     const saveIncellEditBtn = (vm, h, param) => {
         return h('Button', {
             props: {
@@ -306,12 +404,21 @@
                 click: (event) => {
                     vm.edittingStore[param.index].edittingCell[param.column.key] = false;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
-                    vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData), param.index, param.column.key);
+//                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                    vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData[param.index]), param.index, param.column.key);
                 }
             }
         });
     };
+
+    /**
+     * 单元格 文本框编辑器
+     * @param vm
+     * @param h
+     * @param param
+     * @param item
+     * @returns {*}
+     */
     const cellInput = (vm, h, param, item) => {
         return h('Input', {
             props: {
