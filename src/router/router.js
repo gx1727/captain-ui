@@ -4,6 +4,7 @@ import Main from '@/views/Main.vue';
 export const loginRouter = {
     path: '/login',
     name: 'login',
+    ignore: true,
     meta: {
         title: 'Login - 登录'
     },
@@ -13,6 +14,7 @@ export const loginRouter = {
 export const page404 = {
     path: '/*',
     name: 'error-404',
+    ignore: true,
     meta: {
         title: '404-页面不存在'
     },
@@ -21,6 +23,7 @@ export const page404 = {
 
 export const page403 = {
     path: '/403',
+    ignore: true,
     meta: {
         title: '403-权限不足'
     },
@@ -30,6 +33,7 @@ export const page403 = {
 
 export const page500 = {
     path: '/500',
+    ignore: true,
     meta: {
         title: '500-服务端错误'
     },
@@ -45,6 +49,7 @@ export const page500 = {
 export const preview = {
     path: '/preview',
     name: 'preview',
+    ignore: true,
     component: () => import('@/views/form/article-publish/preview.vue')
 };
 
@@ -52,6 +57,7 @@ export const preview = {
 export const locking = {
     path: '/locking',
     name: 'locking',
+    ignore: true,
     component: () => import('@/views/main-components/lockscreen/components/locking-page.vue')
 };
 

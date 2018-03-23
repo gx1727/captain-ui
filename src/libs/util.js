@@ -165,7 +165,7 @@ util.openNewPage = function (vm, name, argu, query) {
             if (query) {
                 tag.query = query;
             }
-            if(tag.name.indexOf('error') < 0) { // error页不进tag
+            if(tag.ignore !== true) { // 页不进tag
                 vm.$store.commit('increateTag', tag);
             }
             vm.$store.commit('setCurrentPageName', name);
