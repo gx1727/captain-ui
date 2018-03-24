@@ -6,12 +6,12 @@
     <div>
         <Table stripe border ref="commontable" :columns="columnsList" :data="thisTableData" :loading="loading"
                @on-sort-change="onSortChange" :highlight-row="true" @on-current-change="onCurrentChange"
-                @on-selection-change="onSelectionChange"></Table>
+               @on-selection-change="onSelectionChange"></Table>
         <div class="margin-top-10" style="text-align: right;">
-            <Page :total="total" :page-size="pagesize" :current="page" :page-size-opts="[10, 20, 50, 100]"
+            <Page v-if="total > pageSizeOpts[0]" :total="total" :page-size="pagesize" :current="page" :page-size-opts="pageSizeOpts"
                   :show-total="true" placement="top" :transfer="true"
-                  size="small" :show-elevator="true" :show-sizer="true"
-            @on-change="onPageChange" @on-page-size-change="onPageSizeChange"></Page>
+                  size="small" :show-elevator="(total / pagesize) > 10" :show-sizer="total > 50"
+                  @on-change="onPageChange" @on-page-size-change="onPageSizeChange"></Page>
         </div>
 
     </div>
@@ -37,8 +37,8 @@
                 }
             },
             onRemoteData: {
-              type: Function,
-                default: function(data) {
+                type: Function,
+                default: function (data) {
                     return data;
                 }
             },
@@ -63,7 +63,8 @@
                 remoteData: [], // 原始数据
                 columns: [],
                 thisTableData: [],
-                edittingStore: []
+                edittingStore: [],
+                pageSizeOpts: [10, 20, 50, 100]
             };
         },
         created () {
@@ -173,7 +174,7 @@
                                 } else {
                                     // 其它按钮
                                     children.push(
-                                        h('Button',{
+                                        h('Button', {
                                             props: {
                                                 size: 'small'
                                             },

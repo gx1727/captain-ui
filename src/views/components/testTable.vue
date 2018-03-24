@@ -122,7 +122,7 @@
                                 title: '测试',
                                 fun: this.testButton
                             }
-                            ]
+                        ]
                     }
                 ]
             };
