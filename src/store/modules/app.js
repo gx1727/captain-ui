@@ -66,10 +66,15 @@ const app = {
                     name: 'auth_permission',
                     title: '角色权限',
                     icon: 'key',
+                }, {
+                    name: 'auth_menu',
+                    title: '菜单管理',
+                    icon: 'android-menu',
                 }
                 ]
             });
             state.routers.auth_role.parent = 'auth';
+            state.routers.auth_menu.parent = 'auth';
             state.menuList = menuList;
         },
         changeMenuTheme (state, theme) {

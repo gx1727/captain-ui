@@ -78,6 +78,8 @@ export const appRouter = {
         {path: 'access/index', title: '权限管理', icon: 'key', name: 'access_index', component: () => import('@/views/access/access.vue')},
         {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')},
         {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
+        {path: 'auth/menu', title: '菜单管理', icon: 'android-menu', name: 'auth_menu', component: () => import('@/views/auth/menu.vue')},
+        {path: 'form/artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue')},
 
     ]
 };

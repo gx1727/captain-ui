@@ -6,7 +6,9 @@ import axios from 'axios'
 import {
     LoginApi,
     RoleListApi,
-    RoleEditApi
+    RoleEditApi,
+    MenuGetByRoleApi,
+    MenuGetTreeApi
 } from './config'
 
 export default {
@@ -18,6 +20,10 @@ export default {
                 return RoleListApi;
             case 'RoleEditApi':
                 return RoleEditApi;
+            case 'MenuGetByRoleApi':
+                return MenuGetByRoleApi;
+            case 'MenuGetTreeApi':
+                return MenuGetTreeApi;
         }
     },
     ManageFaild (e, statusText) {

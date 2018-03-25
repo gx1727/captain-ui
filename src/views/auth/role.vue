@@ -7,7 +7,7 @@
     <div>
         <Row class="margin-top-10">
             <Col span="24">
-            <Card extra="hello">
+            <Card>
                 <p slot="title">
                     <Icon type="clipboard"></Icon>
                     角色管理页
@@ -45,7 +45,7 @@
     import commonTable from '../components/commonTable.vue';
     import api from '../../api';
     export default {
-        name: 'editable-table',
+        name: 'role-view',
         components: {
             commonTable
         },
