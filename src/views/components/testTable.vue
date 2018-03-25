@@ -156,15 +156,6 @@
             refresh () { // 刷新列表
                 this.$refs.table.$emit('refresh'); // 解发列表刷新事件
             },
-            /**
-             * 处理排序
-             * @param sort
-             */
-            handleSortChange(sort) {
-                console.log(sort);
-                console.log(sort.key);
-                console.log(sort.order);
-            },
             getData () {
             },
             handleNetConnect (state) {

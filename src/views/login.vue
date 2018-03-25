@@ -61,10 +61,10 @@
         },
         methods: {
             handleSubmit () {
-                let _this = this;
+                let vm = this;
                 this.$refs.loginForm.validate((valid) => {
                     if (valid) {
-                        _this.$Message.loading({
+                        vm.$Message.loading({
                             content: 'Loading...',
                             duration: 0
                         });
@@ -72,7 +72,7 @@
                             'username': this.form.userName,
                             'pwd': util.secret(this.form.password)
                         }).then(function (response) {
-                            _this.$Message.destroy();
+                            vm.$Message.destroy();
                             if (response.status === 200) {
                                 let res = response.data;
                                 if (typeof response.data === 'string') {
@@ -80,24 +80,24 @@
                                 }
                                 if (res.code === 0) {
                                     localStorage.loginUser = JSON.stringify(res); // 放在localStorage中
-                                    Cookies.set('user', _this.form.userName);
+                                    Cookies.set('user', vm.form.userName);
                                     Cookies.set('user_code', res.user_code);
                                     Cookies.set('role', res.role.role_name);
                                     Cookies.set('homeurl', res.role.role_homeurl);
-                                    _this.$store.commit('setAvator', res.user_photo);
-                                    _this.$router.push({
+                                    vm.$store.commit('setAvator', res.user_photo);
+                                    vm.$router.push({
                                         name: res.role.role_homeurl
                                     });
                                 } else {
-                                    _this.$Notice.warning({
+                                    vm.$Notice.warning({
                                         title: '登录失败',
                                         desc: res.msg
                                     });
                                 }
                             }
                         }).catch(function (e) {
-                            _this.$Message.destroy();
-                            _this.$Notice.error({
+                            vm.$Message.destroy();
+                            vm.$Notice.error({
                                 title: '网络错误，服务请求失败',
                                 desc: e.message
                             });

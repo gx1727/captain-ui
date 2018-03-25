@@ -10,7 +10,7 @@
         <div class="margin-top-10" style="text-align: right;">
             <Page v-if="total > pageSizeOpts[0]" :total="total" :page-size="pagesize" :current="page" :page-size-opts="pageSizeOpts"
                   :show-total="true" placement="top" :transfer="true"
-                  size="small" :show-elevator="(total / pagesize) > 10" :show-sizer="total > 50"
+                  size="small" :show-elevator="(total / pagesize) > 1" :show-sizer="total > 10"
                   @on-change="onPageChange" @on-page-size-change="onPageSizeChange"></Page>
         </div>
 
@@ -27,13 +27,11 @@
             onCurrentChange: {
                 type: Function,
                 default: function () {
-                    console.log('单选');
                 }
             },
             onSelectionChange: {
                 type: Function,
                 default: function () {
-                    console.log('多选');
                 }
             },
             onRemoteData: {
@@ -87,6 +85,7 @@
                         }
                     }
                 });
+
                 let res = [];
                 res = this.remoteData.map((item, index) => {
                     let isEditting = false;
@@ -101,6 +100,7 @@
                             }
                         }
                     }
+
                     if (isEditting) {
                         return this.thisTableData[index];
                     } else {
