@@ -7,8 +7,10 @@ import {
     LoginApi,
     RoleListApi,
     RoleEditApi,
-    MenuGetByRoleApi,
-    MenuGetTreeApi
+    MenuGetTreeApi,
+    MenuGetItemApi,
+    MenuFormItemApi,
+    MenuDelItemApi
 } from './config'
 
 export default {
@@ -20,10 +22,14 @@ export default {
                 return RoleListApi;
             case 'RoleEditApi':
                 return RoleEditApi;
-            case 'MenuGetByRoleApi':
-                return MenuGetByRoleApi;
             case 'MenuGetTreeApi':
                 return MenuGetTreeApi;
+            case 'MenuGetItemApi':
+                return MenuGetItemApi;
+            case 'MenuFormItemApi':
+                return MenuFormItemApi;
+            case 'MenuDelItemApi':
+                return MenuDelItemApi;
         }
     },
     ManageFaild (e, statusText) {
