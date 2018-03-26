@@ -67,30 +67,7 @@ const app = {
                     }
                     menuList.push(menuNode);
                 })
-                console.log(menuList);
-                // menuList.push({
-                //     name: 'auth',
-                //     title: '权限管理',
-                //     icon: 'key',
-                //     children: [{
-                //         name: 'auth_role',
-                //         title: '角色管理',
-                //         icon: 'android-people',
-                //     }, {
-                //         name: 'auth_resources',
-                //         title: '资源管理',
-                //         icon: 'key',
-                //     }, {
-                //         name: 'auth_permission',
-                //         title: '角色权限',
-                //         icon: 'key',
-                //     }, {
-                //         name: 'auth_menu',
-                //         title: '菜单管理',
-                //         icon: 'android-menu',
-                //     }
-                //     ]
-                // });
+
                 state.menuList = menuList;
             }
         },
