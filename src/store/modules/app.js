@@ -24,7 +24,7 @@ const app = {
                 name: ''
             }
         ],
-        menuList: [],
+        menuData: [],
         routers: {},
         messageCount: 0,
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
@@ -44,38 +44,55 @@ const app = {
             })
         },
         updateMenulist (state) {
-            let menuList = [];
-            menuList.push({
-                name: 'auth_menu',
-                title: '目录管理',
-                icon: 'android-menu',
-            });
-            menuList.push({
-                name: 'auth',
-                title: '权限管理',
-                icon: 'key',
-                children: [{
-                    name: 'auth_role',
-                    title: '角色管理',
-                    icon: 'android-people',
-                }, {
-                    name: 'auth_resources',
-                    title: '资源管理',
-                    icon: 'key',
-                }, {
-                    name: 'auth_permission',
-                    title: '角色权限',
-                    icon: 'key',
-                }, {
-                    name: 'auth_menu',
-                    title: '菜单管理',
-                    icon: 'android-menu',
-                }
-                ]
-            });
-            state.routers.auth_role.parent = 'auth';
-            state.routers.auth_menu.parent = 'auth';
-            state.menuList = menuList;
+            if (localStorage.menuTreeData) {
+                let menu = JSON.parse(localStorage.menuTreeData);
+                let menuList = [];
+                menu.forEach(function (item) {
+                    let menuNode = {
+                        name: item.name,
+                        title: item.title,
+                        icon: item.icon
+                    };
+                    if (item.children) {
+                        menuNode.children = [];
+                        item.children.forEach(function (child) {
+                            menuNode.children.push(
+                                {
+                                    name: child.name,
+                                    title: child.title,
+                                    icon: child.icon
+                                }
+                            )
+                        })
+                    }
+                    menuList.push(menuNode);
+                })
+                console.log(menuList);
+                // menuList.push({
+                //     name: 'auth',
+                //     title: '权限管理',
+                //     icon: 'key',
+                //     children: [{
+                //         name: 'auth_role',
+                //         title: '角色管理',
+                //         icon: 'android-people',
+                //     }, {
+                //         name: 'auth_resources',
+                //         title: '资源管理',
+                //         icon: 'key',
+                //     }, {
+                //         name: 'auth_permission',
+                //         title: '角色权限',
+                //         icon: 'key',
+                //     }, {
+                //         name: 'auth_menu',
+                //         title: '菜单管理',
+                //         icon: 'android-menu',
+                //     }
+                //     ]
+                // });
+                state.menuList = menuList;
+            }
         },
         changeMenuTheme (state, theme) {
             state.menuTheme = theme;

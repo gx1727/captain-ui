@@ -85,6 +85,16 @@
                                     Cookies.set('role', res.role.role_name);
                                     Cookies.set('homeurl', res.role.role_homeurl);
                                     vm.$store.commit('setAvator', res.user_photo);
+                                    api.Post('MenuGetTreeApi', {role_id: res.role.role_id}, function (res) {
+                                        if (res.code === 0) {
+                                            localStorage.menuTreeData = JSON.stringify(res.menuTree);
+                                        } else {
+                                            vm.$Notice.warning({
+                                                title: '获到菜单数据失败',
+                                                desc: res.msg
+                                            });
+                                        }
+                                    });
                                     vm.$router.push({
                                         name: res.role.role_homeurl
                                     });

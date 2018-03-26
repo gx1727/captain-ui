@@ -52,7 +52,7 @@
                 <Form :model="menuNode" :label-width="80" :rules="ruleValidate" ref="formMenu">
                     <FormItem label="上级菜单" prop="menu_parent">
                         <Select v-model="menuNode.menu_parent">
-                            <Option v-for="item in parentMenuList" :value="item.name">{{ item.title }}</Option>
+                            <Option v-for="item in parentMenuList" :value="item.name" :key="item.name">{{ item.title }}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="菜单标题" prop="menu_title">
