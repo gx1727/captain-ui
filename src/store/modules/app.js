@@ -56,6 +56,7 @@ const app = {
                     if (item.children) {
                         menuNode.children = [];
                         item.children.forEach(function (child) {
+                            state.routers[child.name].parent = item.name;
                             menuNode.children.push(
                                 {
                                     name: child.name,
@@ -67,7 +68,6 @@ const app = {
                     }
                     menuList.push(menuNode);
                 })
-
                 state.menuList = menuList;
             }
         },

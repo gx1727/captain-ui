@@ -79,8 +79,11 @@ export const appRouter = {
         {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')},
         {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
         {path: 'auth/menu', title: '菜单管理', icon: 'android-menu', name: 'auth_menu', component: () => import('@/views/auth/menu.vue')},
+        {path: 'cms/article', title: '文章发布', icon: 'android-menu', name: 'cms_article', component: () => import('@/views/cms/article.vue')},
+        {path: 'cms/sort', title: '文章分类', icon: 'android-menu', name: 'cms_sort', component: () => import('@/views/cms/sort.vue')},
+        {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/my-components/text-editor/text-editor.vue')},
+        {path: 'cms/view', title: '栏目管理', icon: 'android-menu', name: 'cms_view', component: () => import('@/views/cms/view.vue')},
         {path: 'form/artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue')},
-
     ]
 };
 

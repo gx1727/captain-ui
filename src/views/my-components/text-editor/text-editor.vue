@@ -28,7 +28,7 @@ export default {
             this.$nextTick(() => {
                 let vm = this;
                 let height = document.body.offsetHeight - 300;
-                tinyMCE.baseURL = '/dist';
+                tinymce.baseURL = '/dist';
                 tinymce.init({
                     selector: '#tinymceEditer',
                     branding: false,
