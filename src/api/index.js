@@ -10,28 +10,22 @@ import {
     MenuGetTreeApi,
     MenuGetItemApi,
     MenuFormItemApi,
-    MenuDelItemApi
+    MenuDelItemApi,
+    CmsSortFormItemApi,
+    CmsSortGetTreeApi,
+    CmsSortGetItemApi,
+    CmsSortDelItemApi,
+    CmsTagGroupListApi,
+    CmsTagGroupAddApi,
+    CmsTagGroupEditApi,
+    CmsTagGroupDelApi,
+    CmsTagListApi,
+    CmsTagAddApi,
+    CmsTagEditApi,
+    CmsTagDelApi
 } from './config'
 
 export default {
-    GetApiPath (apiName) {
-        switch (apiName) {
-            case 'LoginApi':
-                return LoginApi;
-            case 'RoleListApi':
-                return RoleListApi;
-            case 'RoleEditApi':
-                return RoleEditApi;
-            case 'MenuGetTreeApi':
-                return MenuGetTreeApi;
-            case 'MenuGetItemApi':
-                return MenuGetItemApi;
-            case 'MenuFormItemApi':
-                return MenuFormItemApi;
-            case 'MenuDelItemApi':
-                return MenuDelItemApi;
-        }
-    },
     ManageFaild (e, statusText) {
         console.log(typeof e == 'object' ? e.message : (e + '[' + statusText + ']'));
     },
@@ -52,17 +46,6 @@ export default {
             faild(e, '');
         })
     },
-    RoleList (param, success, faild) {
-        axios.post(RoleListApi, param).then(function (response) {
-            if (response.status === 200) {
-                success(manageResponse(response.data));
-            } else {
-                faild(response.status, response.statusText);
-            }
-        }).catch(function (e) {
-            faild(e, '');
-        })
-    },
     RoleEdit (param, success, faild) {
         axios.post(RoleEditApi, param).then(function (response) {
             if (response.status === 200) {
@@ -73,7 +56,49 @@ export default {
         }).catch(function (e) {
             faild(e, '');
         })
-    }
+    },
+    GetApiPath (apiName) {
+        switch (apiName) {
+            case 'LoginApi':
+                return LoginApi;
+            case 'RoleListApi':
+                return RoleListApi;
+            case 'RoleEditApi':
+                return RoleEditApi;
+            case 'MenuGetTreeApi':
+                return MenuGetTreeApi;
+            case 'MenuGetItemApi':
+                return MenuGetItemApi;
+            case 'MenuFormItemApi':
+                return MenuFormItemApi;
+            case 'MenuDelItemApi':
+                return MenuDelItemApi;
+            case 'CmsSortFormItemApi':
+                return CmsSortFormItemApi;
+            case 'CmsSortGetTreeApi':
+                return CmsSortGetTreeApi;
+            case 'CmsSortGetItemApi':
+                return CmsSortGetItemApi;
+            case 'CmsSortDelItemApi':
+                return CmsSortDelItemApi;
+            case 'CmsTagGroupListApi':
+                return CmsTagGroupListApi;
+            case 'CmsTagGroupAddApi':
+                return CmsTagGroupAddApi;
+            case 'CmsTagGroupEditApi':
+                return CmsTagGroupEditApi;
+            case 'CmsTagGroupDelApi':
+                return CmsTagGroupDelApi;
+            case 'CmsTagListApi':
+                return CmsTagListApi;
+            case 'CmsTagAddApi':
+                return CmsTagAddApi;
+            case 'CmsTagEditApi':
+                return CmsTagEditApi;
+            case 'CmsTagDelApi':
+                return CmsTagDelApi;
+        }
+    },
 }
 
 const manageResponse = function (response) {

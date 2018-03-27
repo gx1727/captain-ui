@@ -35,7 +35,7 @@
             <Card>
                 <p slot="title">
                     <Icon type="android-menu"></Icon>
-                    菜单明细 [{{ enuTitle }}]
+                    菜单明细 [{{ menuTitle }}]
                 </p>
                 <Poptip slot="extra" placement="bottom" confirm @on-ok="delMenu" title="您确认删除这个菜单项吗？" v-if="menuNode.menu_id > 0">
                     <Button type="error" size="small" shape="circle" class="margin-right-10">删除</Button>
@@ -85,7 +85,7 @@
         data () {
             return {
                 roleMenuTitle: '', // 标题
-                enuTitle: '',
+                menuTitle: '',
                 currectRole: {},
                 currectTreeRoot: {},
                 roleColumn: [
@@ -173,7 +173,7 @@
             refreshMenu: function () {
                 let vm = this;
                 if (vm.menuNode.menu_id > 0) {
-                    vm.enuTitle = '编辑 ' + vm.menuNode.menu_title;
+                    vm.menuTitle = '编辑 ' + vm.menuNode.menu_title;
 
                     api.Post('MenuGetItemApi', {menu_id: vm.menuNode.menu_id}, function (res) {
                         if (res.code === 0) {
@@ -194,7 +194,7 @@
                 }
             },
             cleanMenuNode: function () {
-                this.enuTitle = '新增';
+                this.menuTitle = '新增';
                 this.menuNode.menu_id = 0;
                 this.menuNode.menu_title = '';
                 this.menuNode.menu_href = '';
@@ -232,20 +232,16 @@
             },
             delMenu: function () {
                 let vm = this;
-                this.$refs['formMenu'].validate((valid) => {
-                    if (valid) {
-                        api.Post('MenuDelItemApi', {menu_id: vm.menuNode.menu_id}, function (res) {
-                            if (res.code === 0) {
-                                vm.refreshMenuTree();
-                            } else {
-                                vm.$Notice.warning({
-                                    title: '错误',
-                                    desc: res.msg
-                                });
-                            }
+                api.Post('MenuDelItemApi', {menu_id: vm.menuNode.menu_id}, function (res) {
+                    if (res.code === 0) {
+                        vm.refreshMenuTree();
+                    } else {
+                        vm.$Notice.warning({
+                            title: '错误',
+                            desc: res.msg
                         });
                     }
-                })
+                });
             }
         },
         mounted () {

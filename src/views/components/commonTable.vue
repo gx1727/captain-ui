@@ -213,7 +213,7 @@
              */
             onSortChange (sort) {
                 this.orderby = sort.key;
-                this.ordertype = sort.order;
+                this.ordertype = sort.order == 'asc' ? 'asc' : ( sort.order == 'desc' ? 'desc' : '');
                 this.$emit('refresh');
             },
             onPageChange (page) {
@@ -230,7 +230,7 @@
             remote () {
                 let vm = this;
                 vm.loading = true;
-                api[vm.remoteApi](vm.getParam(), function (response) {
+                api.Post(vm.remoteApi, vm.getParam(), function (response) {
                     if (response.code === 0) {
                         let remoteData = vm.onRemoteData(response); // 前端作最后的处理
                         vm.remoteData = remoteData.data;

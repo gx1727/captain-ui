@@ -57,6 +57,7 @@ const app = {
                         menuNode.children = [];
                         item.children.forEach(function (child) {
                             state.routers[child.name].parent = item.name;
+                            state.routers[child.name].title = child.title;
                             menuNode.children.push(
                                 {
                                     name: child.name,
