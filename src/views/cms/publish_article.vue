@@ -27,21 +27,24 @@
                     发布
                 </p>
                 <p class="margin-top-10">
-                    <Icon type="android-time"></Icon>状态：
-                    <Tag size="small" color="blue">已发布 03-28 12:03</Tag>
+                    <Icon type="android-time"></Icon>
+                    状态：
+                    <Tag size="small" color="blue"><a href="//www.baidu.com" target="_blank">已发布 2018-03-28 12:03:09</a></Tag>
                 </p>
                 <p class="margin-top-10">
-                    <Icon type="eye"></Icon>草稿：
+                    <Icon type="eye"></Icon>
+                    草稿：
                     <Tag size="small"> 2018-03-28 12:03:00</Tag>
+                    <a href="//www.baidu.com" target="_blank">预览</a>
                 </p>
                 <p class="margin-top-10">
                     <Icon type="ios-calendar-outline"></Icon>&nbsp;&nbsp;
-                    <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ publishTime }}</span>
+                    <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
                     <Button v-show="!editPublishTime" size="small" @click="handleEditPublishTime" type="text">修改</Button>
                     <transition name="publish-time">
                         <div v-show="editPublishTime" class="publish-time-picker-con">
                             <div class="margin-top-10">
-                                <DatePicker @on-change="setPublishTime" type="datetime" style="width:200px;" placeholder="选择日期和时间" ></DatePicker>
+                                <DatePicker @on-change="setPublishTime" :value="article.a_publish_time" type="datetime" style="width:200px;" placeholder="选择日期和时间"></DatePicker>
                             </div>
                             <div class="margin-top-10">
                                 <Button type="primary" @click="handleSavePublishTime">确认</Button>
@@ -51,7 +54,6 @@
                     </transition>
                 </p>
                 <Row class="margin-top-20 publish-button-con">
-                    <span class="publish-button"><Button @click="handlePreview">预览</Button></span>
                     <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
                     <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
                 </Row>
@@ -60,7 +62,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-pricetags-outline"></Icon>
-                        {{ tagGroupItem.title  }}
+                        {{ tagGroupItem.title }}
                     </p>
                     <Row>
                         <Col span="24">
@@ -80,7 +82,7 @@
                     <Tabs type="card">
                         <TabPane label="所有分类目录">
                             <div class="classification-con">
-                                <Tree :data="sortList" @on-check-change="setClassificationInAll" show-checkbox></Tree>
+                                <Tree :data="sortList" @on-check-change="selectSort" show-checkbox></Tree>
                             </div>
                         </TabPane>
                     </Tabs>
@@ -107,7 +109,7 @@
                         <div v-show="addingNewTag" class="add-new-tag-con">
                             <Row>
                                 <Col span="14">
-                                <Input v-model="newTagName" placeholder="请输入标签名" />
+                                <Input v-model="newTagName" placeholder="请输入标签名"/>
                                 </Col>
                                 <Col span="5" class="padding-left-10">
                                 <Button @click="createNewTag" long type="primary">确定</Button>
@@ -144,11 +146,10 @@
                     a_content: '',
                     a_count: '',
                     a_extended: '',
-                    a_publish_time: 0,
+                    a_publish_time: '',
                     a_status: 3
                 },
                 topArticle: false,
-                publishTime: '',
                 publishTimeType: 'immediately',
                 editPublishTime: false, // 是否正在编辑发布时间
                 articleTagList: [], // 所有标签列表
@@ -162,37 +163,62 @@
         },
         computed: {},
         methods: {
-            handleArticletitleBlur () {
+            handleArticletitleBlur () { // 文章标题blur事件
+                let vm = null;
                 if (this.article.a_title.length !== 0) {
+                    if (!this.article.a_id) { // 如果没有文章ID,则新建一篇文章
+                        api.Post('CmsArticleCreateApi', {}, function (res) {
+                            if (res.code === 0) {
+                                console.log(res);
+                            } else {
+                                vm.$Notice.warning({
+                                    title: '错误',
+                                    desc: res.msg
+                                });
+                            }
+                        });
+                    }
+
                 } else {
                     this.$Message.error('文章标题不可为空哦');
                 }
             },
-            editArticlePath () {
-            },
+            /**
+             * 修改发布时间按钮
+             */
             handleEditPublishTime () {
                 this.editPublishTime = !this.editPublishTime;
             },
+            setPublishTime (datetime) {
+                this.article.a_publish_time = datetime;
+            },
             handleSavePublishTime () {
-                this.publishTimeType = 'timing';
-                this.editPublishTime = false;
+                if (this.article.a_publish_time) {
+                    this.publishTimeType = 'timing';
+                    this.editPublishTime = false;
+                } else {
+                    this.publishTimeType = 'immediately';
+                    this.editPublishTime = false;
+                }
             },
             cancelEditPublishTime () {
+                this.article.a_publish_time = '';
                 this.publishTimeType = 'immediately';
                 this.editPublishTime = false;
             },
-            setPublishTime (datetime) {
-                this.publishTime = datetime;
-            },
-            setClassificationInAll (selectedArray) {
-                this.classificationFinalSelected = selectedArray.map(item => {
-                    return item.title;
+
+            selectSort (selectedSort) {
+                this.classificationFinalSelected = selectedSort.map(item => {
+                    return item.name;
                 });
                 localStorage.classificationSelected = JSON.stringify(this.classificationFinalSelected); // 本地存储所选目录列表
             },
             handleAddNewTag () {
                 this.addingNewTag = !this.addingNewTag;
             },
+            /**
+             * 创建新的TAG
+             */
             createNewTag () {
                 let vm = this;
                 if (vm.newTagName.length !== 0) {
@@ -202,7 +228,7 @@
                     }, function (res) {
                         if (res.code === 0) {
                             vm.addingNewTag = false;
-                            vm.otherTagDB.push ({
+                            vm.otherTagDB.push({
                                 name: res.ct_name,
                                 title: res.ct_title,
                             });
@@ -212,7 +238,7 @@
                             });
                         } else if (res.code === 6) {
                             vm.addingNewTag = false;
-                            vm.otherTagDB.push ({
+                            vm.otherTagDB.push({
                                 name: res.ct_name,
                                 title: res.ct_title,
                             });
@@ -250,26 +276,6 @@
                     return true;
                 }
             },
-            handlePreview () {
-                if (this.canPublish()) {
-                    if (this.publishTimeType === 'immediately') {
-                        let date = new Date();
-                        let year = date.getFullYear();
-                        let month = date.getMonth() + 1;
-                        let day = date.getDate();
-                        let hour = date.getHours();
-                        let minute = date.getMinutes();
-                        let second = date.getSeconds();
-                        localStorage.publishTime = year + ' 年 ' + month + ' 月 ' + day + ' 日 -- ' + hour + ' : ' + minute + ' : ' + second;
-                    } else {
-                        localStorage.publishTime = this.publishTime; // 本地存储发布时间
-                    }
-                    localStorage.content = tinymce.activeEditor.getContent();
-                    this.$router.push({
-                        name: 'preview'
-                    });
-                }
-            },
             handleSaveDraft () {
                 if (!this.canPublish()) {
                     //
@@ -302,27 +308,27 @@
                 let vm = this;
                 api.Post('CmsTagGetApi', {cs_id: 0}, function (res) {
                     if (res.code === 0) {
-                        for(let ctg_name in res.tagData) {
-                            if(ctg_name === 'other') {
+                        for (let ctg_name in res.tagData) {
+                            if (ctg_name === 'other') {
                                 res.tagData[ctg_name].tagList.forEach((item) => {
-                                    vm.otherTagDB.push ({
+                                    vm.otherTagDB.push({
                                         name: item.ct_name,
-                                        title: item.ct_title,
+                                        title: item.ct_title
                                     });
-                                })
+                                });
                             } else {
                                 let tagList = [];
                                 res.tagData[ctg_name].tagList.forEach((item) => {
-                                    tagList.push ({
+                                    tagList.push({
                                         name: item.ct_name,
-                                        title: item.ct_title,
+                                        title: item.ct_title
                                     });
                                 })
                                 vm.tagDB.push({
                                     name: res.tagData[ctg_name].ctg_name,
                                     title: res.tagData[ctg_name].ctg_title,
                                     tagList: tagList
-                                })
+                                });
                             }
                             vm.articleTagSelected[ctg_name] = [];
                         }
@@ -342,8 +348,7 @@
                 let vm = this;
                 api.Post('CmsSortGetTreeApi', {cs_id: 0}, function (res) {
                     if (res.code === 0) {
-                        console.log(res.sortTree);
-                        vm.sortList  = res.sortTree;
+                        vm.sortList = res.sortTree;
                     } else {
                         vm.$Notice.warning({
                             title: '错误',

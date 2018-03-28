@@ -23,7 +23,8 @@ import {
     CmsTagAddApi,
     CmsTagEditApi,
     CmsTagDelApi,
-    CmsTagGetApi
+    CmsTagGetApi,
+    CmsArticleCreateApi
 } from './config'
 
 export default {
@@ -100,8 +101,10 @@ export default {
                 return CmsTagDelApi;
             case 'CmsTagGetApi':
                 return CmsTagGetApi;
+            case 'CmsArticleCreateApi':
+                return CmsArticleCreateApi;
         }
-    },
+    }
 }
 
 const manageResponse = function (response) {
