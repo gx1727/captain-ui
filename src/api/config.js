@@ -26,3 +26,5 @@ export const CmsTagListApi = API_ROOT.concat('/cms/tag/list') // TAG列表
 export const CmsTagAddApi = API_ROOT.concat('/cms/tag/add') // 增加TAG
 export const CmsTagEditApi = API_ROOT.concat('/cms/tag/edit') // 编辑TAG
 export const CmsTagDelApi = API_ROOT.concat('/cms/tag/del') // 删除TAG
+
+export const CmsTagGetApi = API_ROOT.concat('/cms/tag/get') // 获到TAG数据

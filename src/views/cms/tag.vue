@@ -304,6 +304,9 @@
                         });
                         vm.tableColumn[1].filters = filters;
                         vm.tableColumn[1].filterRemote = function (values, key) {
+                            if (key == 'ctg_name_title') {
+                                key = 'ctg_name';
+                            }
                             if (values.length <= 0) {
                                 delete vm.searchParam[key];
                             } else {

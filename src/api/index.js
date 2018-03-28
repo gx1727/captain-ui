@@ -22,7 +22,8 @@ import {
     CmsTagListApi,
     CmsTagAddApi,
     CmsTagEditApi,
-    CmsTagDelApi
+    CmsTagDelApi,
+    CmsTagGetApi
 } from './config'
 
 export default {
@@ -97,6 +98,8 @@ export default {
                 return CmsTagEditApi;
             case 'CmsTagDelApi':
                 return CmsTagDelApi;
+            case 'CmsTagGetApi':
+                return CmsTagGetApi;
         }
     },
 }

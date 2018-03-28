@@ -185,6 +185,9 @@
                             if (res.code === 0) {
                                 vm.refreshCmsSortTree();
                                 vm.refreshCmsSort();
+                                vm.$Notice.success({
+                                    title: '编辑成功'
+                                });
                             } else if (res.code === 6) {
                                 vm.$Notice.info({
                                     title: '提示',
