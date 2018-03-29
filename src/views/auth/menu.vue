@@ -175,7 +175,7 @@
                 if (vm.menuNode.menu_id > 0) {
                     vm.menuTitle = '编辑 ' + vm.menuNode.menu_title;
 
-                    api.Post('MenuGetItemApi', {menu_id: vm.menuNode.menu_id}, function (res) {
+                    api.Post('MenuGetApi', {menu_id: vm.menuNode.menu_id}, function (res) {
                         if (res.code === 0) {
                             vm.menuNode.menu_title = res.menu_title;
                             vm.menuNode.menu_href = res.menu_href;
@@ -217,7 +217,7 @@
                 let vm = this;
                 this.$refs['formMenu'].validate((valid) => {
                     if (valid) {
-                        api.Post('MenuFormItemApi', this.menuNode, function (res) {
+                        api.Post('MenuFormApi', this.menuNode, function (res) {
                             if (res.code === 0) {
                                 vm.refreshMenuTree();
                             } else {
@@ -232,7 +232,7 @@
             },
             delMenu: function () {
                 let vm = this;
-                api.Post('MenuDelItemApi', {menu_id: vm.menuNode.menu_id}, function (res) {
+                api.Post('MenuDelApi', {menu_id: vm.menuNode.menu_id}, function (res) {
                     if (res.code === 0) {
                         vm.refreshMenuTree();
                     } else {

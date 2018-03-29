@@ -29,12 +29,16 @@
                 <p class="margin-top-10">
                     <Icon type="android-time"></Icon>
                     状态：
-                    <Tag size="small" color="blue"><a href="//www.baidu.com" target="_blank">已发布 2018-03-28 12:03:09</a></Tag>
+                    <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
+                    <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
+                    <Tag v-if="article.a_status === 1" size="small" color="blue"><a href="//www.baidu.com" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
+                    <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
+                    <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
                 </p>
-                <p class="margin-top-10">
+                <p class="margin-top-10" v-if="article.draft_etime">
                     <Icon type="eye"></Icon>
                     草稿：
-                    <Tag size="small"> 2018-03-28 12:03:00</Tag>
+                    <Tag size="small"> {{ article.draft_etime }}</Tag>
                     <a href="//www.baidu.com" target="_blank">预览</a>
                 </p>
                 <p class="margin-top-10">
@@ -146,13 +150,14 @@
                     a_content: '',
                     a_count: '',
                     a_extended: '',
-                    a_publish_time: '',
-                    a_status: 3
+                    a_publish_time: '', // 计划发布时间
+                    a_status: -1,
+                    publish_time: '2018-03-28 12:03:09', // 最新已发布时间
+                    draft_etime: '' // 最新草稿时间 2018-03-28 12:03:00
                 },
                 topArticle: false,
                 publishTimeType: 'immediately',
                 editPublishTime: false, // 是否正在编辑发布时间
-                articleTagList: [], // 所有标签列表
                 sortList: [],
                 classificationSelected: [], // 在所有分类目录中选中的目录数组
                 classificationFinalSelected: [], // 最后实际选择的目录
@@ -164,10 +169,12 @@
         computed: {},
         methods: {
             handleArticletitleBlur () { // 文章标题blur事件
-                let vm = null;
+                let vm = this;
                 if (this.article.a_title.length !== 0) {
                     if (!this.article.a_id) { // 如果没有文章ID,则新建一篇文章
-                        api.Post('CmsArticleCreateApi', {}, function (res) {
+                        api.Post('CmsArticleCreateApi', {
+                            a_title: vm.article.a_title
+                        }, function (res) {
                             if (res.code === 0) {
 
                                 console.log(res);
@@ -256,7 +263,6 @@
                         }
                     });
 
-                    this.articleTagList.push({value: this.newTagName});
                     this.addingNewTag = false;
                     setTimeout(() => {
                         this.newTagName = '';
@@ -407,14 +413,26 @@
             }
         },
         mounted () {
-            this.articleTagList = [
-                {value: 'vue'},
-                {value: 'iview'},
-                {value: 'ES6'},
-                {value: 'webpack'},
-                {value: 'babel'},
-                {value: 'eslint'}
-            ];
+            let vm = this;
+            if(this.$route.params.a_id) {
+                let a_id = parseInt(this.$route.params.a_id.toString());
+                if(a_id) { // 编辑
+                    localStorage.article_a_id = a_id.toString(); // 记录到本地缓存中
+                } else { // 新增
+
+                }
+            } else {
+                console.log('here');
+                console.log(localStorage.article_a_id);
+                if(localStorage.article_a_id) {
+                    let argu = { a_id: localStorage.article_a_id };
+                    this.$router.push({
+                        name: 'cms_publish_article_edit',
+                        params: argu
+                    });
+                }
+            }
+
 
             this.initTagData();
             this.initSortList();

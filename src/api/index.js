@@ -8,9 +8,9 @@ import {
     RoleListApi,
     RoleEditApi,
     MenuGetTreeApi,
-    MenuGetItemApi,
-    MenuFormItemApi,
-    MenuDelItemApi,
+    MenuGetApi,
+    MenuFormApi,
+    MenuDelApi,
     CmsSortFormItemApi,
     CmsSortGetTreeApi,
     CmsSortGetItemApi,
@@ -27,18 +27,23 @@ import {
     CmsArticleCreateApi
 } from './config'
 
+const service = axios.create({
+    timeout: 5000, // 请求的超时时间
+    withCredentials: true // 允许携带cookie
+});
+
 export default {
     ManageFaild (e, statusText) {
         console.log(typeof e == 'object' ? e.message : (e + '[' + statusText + ']'));
     },
     Login (param) {
-        return axios.post(LoginApi, param);
+        return service.post(LoginApi, param);
     },
     Post (api, param, success, faild) {
         if (typeof faild != 'function') {
             faild = this.ManageFaild;
         }
-        axios.post(this.GetApiPath(api), param).then(function (response) {
+        service.post(this.GetApiPath(api), param).then(function (response) {
             if (response.status === 200) {
                 success(manageResponse(response.data));
             } else {
@@ -49,7 +54,7 @@ export default {
         })
     },
     RoleEdit (param, success, faild) {
-        axios.post(RoleEditApi, param).then(function (response) {
+        service.post(RoleEditApi, param).then(function (response) {
             if (response.status === 200) {
                 success(manageResponse(response.data));
             } else {
@@ -69,12 +74,12 @@ export default {
                 return RoleEditApi;
             case 'MenuGetTreeApi':
                 return MenuGetTreeApi;
-            case 'MenuGetItemApi':
-                return MenuGetItemApi;
-            case 'MenuFormItemApi':
-                return MenuFormItemApi;
-            case 'MenuDelItemApi':
-                return MenuDelItemApi;
+            case 'MenuGetApi':
+                return MenuGetApi;
+            case 'MenuFormApi':
+                return MenuFormApi;
+            case 'MenuDelApi':
+                return MenuDelApi;
             case 'CmsSortFormItemApi':
                 return CmsSortFormItemApi;
             case 'CmsSortGetTreeApi':

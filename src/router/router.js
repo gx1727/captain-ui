@@ -80,7 +80,10 @@ export const appRouter = {
         {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
         {path: 'auth/menu', title: '菜单管理', icon: 'android-menu', name: 'auth_menu', component: () => import('@/views/auth/menu.vue')},
         {path: 'cms/article', title: '文章发布', icon: 'android-menu', name: 'cms_article', component: () => import('@/views/cms/article.vue')},
-        {path: 'cms/publish_article', title: '文章发布', icon: 'android-menu', name: 'cms_publish_article', component: () => import('@/views/cms/publish_article.vue')},
+
+        {path: 'cms/article/list', title: '文章列表', icon: 'android-menu', name: 'cms_article_list', component: () => import('@/views/cms/article_list.vue')},
+        {path: 'cms/article/publish/:a_id', title: '文章发布', icon: 'android-menu', name: 'cms_article_publish', component: () => import('@/views/cms/article_publish.vue')},
+
         {path: 'cms/sort', title: '文章分类', icon: 'android-menu', name: 'cms_sort', component: () => import('@/views/cms/sort.vue')},
         {path: 'cms/tag_group', title: '文章TAG分组2', icon: 'android-menu', name: 'cms_tag_group', component: () => import('@/views/cms/tag-group.vue')},
         {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/cms/tag.vue')},
