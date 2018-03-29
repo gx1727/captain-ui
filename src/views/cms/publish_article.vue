@@ -169,6 +169,7 @@
                     if (!this.article.a_id) { // 如果没有文章ID,则新建一篇文章
                         api.Post('CmsArticleCreateApi', {}, function (res) {
                             if (res.code === 0) {
+
                                 console.log(res);
                             } else {
                                 vm.$Notice.warning({
