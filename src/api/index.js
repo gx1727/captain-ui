@@ -24,7 +24,12 @@ import {
     CmsTagEditApi,
     CmsTagDelApi,
     CmsTagGetApi,
-    CmsArticleCreateApi
+    CmsArticleGetApi,
+    CmsArticleListApi,
+    CmsArticleCreateApi,
+    CmsArticleEditApi,
+    CmsArticlePublishApi,
+    CmsArticleDelApi
 } from './config'
 
 const service = axios.create({
@@ -34,7 +39,7 @@ const service = axios.create({
 
 export default {
     ManageFaild (e, statusText) {
-        console.log(typeof e == 'object' ? e.message : (e + '[' + statusText + ']'));
+        // console.log((typeof e === 'object') ? e.message : (e + '[' + statusText + ']'));
     },
     Login (param) {
         return service.post(LoginApi, param);
@@ -106,8 +111,18 @@ export default {
                 return CmsTagDelApi;
             case 'CmsTagGetApi':
                 return CmsTagGetApi;
+            case 'CmsArticleGetApi':
+                return CmsArticleGetApi;
+            case 'CmsArticleListApi':
+                return CmsArticleListApi;
             case 'CmsArticleCreateApi':
                 return CmsArticleCreateApi;
+            case 'CmsArticleEditApi':
+                return CmsArticleEditApi;
+            case 'CmsArticlePublishApi':
+                return CmsArticlePublishApi;
+            case 'CmsArticleDelApi':
+                return CmsArticleDelApi;
         }
     }
 }

@@ -24,7 +24,7 @@ const app = {
                 name: ''
             }
         ],
-        menuData: [],
+        menuList: [],
         routers: {},
         messageCount: 0,
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)

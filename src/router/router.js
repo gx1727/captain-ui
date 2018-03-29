@@ -89,6 +89,7 @@ export const appRouter = {
         {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/cms/tag.vue')},
         {path: 'cms/view', title: '栏目管理', icon: 'android-menu', name: 'cms_view', component: () => import('@/views/cms/view.vue')},
         {path: 'form/artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue')},
+        {path: 'mutative-router', title: '动态路由', name: 'mutative-router', icon: 'link', component: () => import('@/views/advanced-router/mutative-router.vue')},
     ]
 };
 
