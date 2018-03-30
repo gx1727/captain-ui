@@ -157,18 +157,17 @@
                     a_publish_time: '', // 计划发布时间
                     a_status: -1,
                     publish_time: '', // 最新已发布时间
-                    draft_etime: '', // 最新草稿时间 2018-03-28 12:03:00
+                    draft_etime: '' // 最新草稿时间 2018-03-28 12:03:00
                 },
-                topArticle: false,
                 publishTimeType: 'immediately',
                 editPublishTime: false, // 是否正在编辑发布时间
-                sortList: [],
+                sortList: [], // 分类树
                 sortSelected: [], // 最后实际选择的目录
                 tagSelected: [], // 最后实际选择的tag
                 publishLoading: false,
                 addingNewTag: false, // 添加新标签
                 newTagName: '' // 新建标签名
-            }
+            };
         },
         computed: {},
         methods: {
@@ -224,6 +223,9 @@
                     return item.name;
                 });
             },
+            /**
+             * 打开新建TAG页面
+             */
             handleAddNewTag () {
                 this.addingNewTag = !this.addingNewTag;
             },
@@ -241,7 +243,7 @@
                             vm.addingNewTag = false;
                             vm.otherTagDB.push({
                                 name: res.ct_name,
-                                title: res.ct_title,
+                                title: res.ct_title
                             });
                             vm.articleTagSelected.other.push(res.ct_name);
                             vm.$Notice.success({
@@ -251,7 +253,7 @@
                             vm.addingNewTag = false;
                             vm.otherTagDB.push({
                                 name: res.ct_name,
-                                title: res.ct_title,
+                                title: res.ct_title
                             });
                             vm.articleTagSelected.other.push(res.ct_name);
                             vm.$Notice.info({
@@ -295,7 +297,7 @@
                     this.article.a_content = tinymce.get('articleEditor').getContent();
 
                     this.tagSelected = [];
-                    for(let key in this.articleTagSelected) {
+                    for (let key in this.articleTagSelected) {
                         this.articleTagSelected[key].forEach((item) => {
                             this.tagSelected.push(item);
                         });
@@ -303,8 +305,8 @@
 
                     api.Post('CmsArticleEditApi',
                         Object.assign({}, this.article, {tag: JSON.stringify(this.tagSelected), sort: JSON.stringify(this.sortSelected)}),
-                        function(res){
-                            if(res.code === 0) {
+                        function (res) {
+                            if (res.code === 0) {
                                 vm.article.draft_etime = res.draft_etime;
                                 vm.$Message.info('草稿保存成功');
                             } else {
@@ -313,7 +315,7 @@
                                     desc: res.msg
                                 });
                             }
-                        }, function(e, statusText){
+                        }, function (e, statusText) {
                             vm.$Notice.error({
                                 title: '网络错误，服务请求失败',
                                 desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
@@ -349,7 +351,7 @@
                 api.Post('CmsTagGetApi', {cs_id: 0}, function (res) {
                     if (res.code === 0) {
                         for (let ctg_name in res.tagData) {
-                            if(!vm.articleTagSelected[ctg_name]) {
+                            if (!vm.articleTagSelected[ctg_name]) {
                                 vm.articleTagSelected[ctg_name] = [];
                             }
                             if (ctg_name === 'other') {
@@ -358,7 +360,7 @@
                                         name: item.ct_name,
                                         title: item.ct_title
                                     });
-                                    if(util.oneOf(item.ct_name, vm.tagSelected)) { // 已选中
+                                    if (util.oneOf(item.ct_name, vm.tagSelected)) { // 已选中
                                         vm.articleTagSelected[ctg_name].push(item.ct_name);
                                     }
                                 });
@@ -369,7 +371,7 @@
                                         name: item.ct_name,
                                         title: item.ct_title
                                     });
-                                    if(util.oneOf(item.ct_name, vm.tagSelected)) { // 已选中
+                                    if (util.oneOf(item.ct_name, vm.tagSelected)) { // 已选中
                                         vm.articleTagSelected[ctg_name].push(item.ct_name);
                                     }
                                 })
@@ -389,6 +391,26 @@
                 });
             },
 
+            getSortTree (sortTree) {
+                let tree = [];
+                let sortTreeLength = sortTree.length;
+                for (let key = 0; key < sortTreeLength; key++) {
+                    let node = {
+                        name: sortTree[key].name,
+                        title: sortTree[key].title,
+                        expand: true
+                    };
+                    if (util.oneOf(sortTree[key].name, this.sortSelected)) {
+                        node.checked = true;
+                    }
+                    if (sortTree[key].children) {
+                        node.children = this.getSortTree(sortTree[key].children);
+                    }
+                    tree.push(node);
+                }
+                return tree;
+            },
+
             /**
              * 初始化分类树
              */
@@ -396,7 +418,7 @@
                 let vm = this;
                 api.Post('CmsSortGetTreeApi', {cs_id: 0}, function (res) {
                     if (res.code === 0) {
-                        vm.sortList = res.sortTree;
+                        vm.sortList = vm.getSortTree(res.sortTree);
                     } else {
                         vm.$Notice.warning({
                             title: '错误',
@@ -453,7 +475,7 @@
              * 恢复最后一次编辑草稿
              */
             reloadLastDraft () {
-                let argu = { a_id: localStorage.article_a_id };
+                let argu = {a_id: localStorage.article_a_id};
                 this.$router.replace({
                     name: 'cms_article_publish',
                     params: argu
@@ -503,7 +525,7 @@
                     vm.initTagData();
                     vm.initSortList();
                     vm.initEditor();
-                }, function(e, statusText){
+                }, function (e, statusText) {
                     vm.initTagData();
                     vm.initSortList();
                     vm.initEditor();
@@ -517,16 +539,21 @@
         },
         computed: {
             isReloadLastDraft () { // 就否显示 恢复按钮
-                return  localStorage.article_a_id && parseInt(localStorage.article_a_id) !== this.article.a_id;
+                return localStorage.article_a_id && parseInt(localStorage.article_a_id) !== this.article.a_id;
             },
         },
         mounted () {
             let a_id = parseInt(this.$route.params.a_id.toString());
-            if(a_id) { // 编辑
+            if (a_id) { // 编辑
                 localStorage.article_a_id = a_id.toString(); // 记录到本地缓存中
                 this.article.a_id = a_id;
                 this.refreshArticle();
+            } else {
+                this.initTagData();
+                this.initSortList();
+                this.initEditor();
             }
+
         },
         created () {
         },

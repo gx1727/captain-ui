@@ -44,6 +44,7 @@ const app = {
             })
         },
         updateMenulist (state) {
+
             if (localStorage.menuTreeData) {
                 let menu = JSON.parse(localStorage.menuTreeData);
                 let menuList = [];
