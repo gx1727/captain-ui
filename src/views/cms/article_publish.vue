@@ -434,12 +434,38 @@
             initEditor () {
                 this.$nextTick(() => {
                     let vm = this;
+                    let height = document.body.offsetHeight - 300;
                     tinymce.baseURL = '/dist';
+                        tinymce.init({
+                            selector: '#articleEditor',
+                            height: height,
+                            language: 'zh_CN.GB2312',
+                            menubar: 'edit insert view format table tools',
+                            plugins: [
+                                'advlist autolink lists link image charmap print preview hr anchor pagebreak imagetools',
+                                'searchreplace visualblocks visualchars code fullscreen fullpage',
+                                'insertdatetime media nonbreaking save table contextmenu directionality',
+                                'emoticons paste textcolor colorpicker textpattern imagetools codesample'
+                            ],
+                            setup: function (editor) {
+                                editor.on('init', function (e) {
+                                    vm.spinShow = false;
+                                    tinymce.get('articleEditor').setContent(vm.article.a_content);
+//                                if (localStorage.editorContent) {
+//                                    tinymce.get('articleEditor').setContent(localStorage.editorContent);
+//                                }
+                                });
+//                            editor.on('keydown', function (e) {
+//                                    localStorage.editorContent = tinymce.get('articleEditor').getContent();
+//                            });
+                            }
+                        });
+                        /*
                     tinymce.init({
                         selector: '#articleEditor',
                         branding: false,
                         elementpath: false,
-                        height: 600,
+                        height: height,
                         language: 'zh_CN.GB2312',
                         menubar: 'edit insert view format table tools',
                         theme: 'modern',
@@ -468,8 +494,8 @@
 //                                    localStorage.editorContent = tinymce.get('articleEditor').getContent();
 //                            });
                         }
-                    });
-                })
+                    });*/
+                });
             },
             /**
              * 恢复最后一次编辑草稿
