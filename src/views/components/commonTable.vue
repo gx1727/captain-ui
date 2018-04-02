@@ -166,16 +166,17 @@
                         item.render = (h, param) => {
                             let currentRowData = this.thisTableData[param.index];
                             let children = [];
-                            item.handle.forEach(item => {
-                                if (item === 'edit') {
+                            item.handle.forEach(itemNode => {
+                                if (itemNode === 'edit') {
                                     children.push(editButton(this, h, currentRowData, param.index));
-                                } else if (item === 'delete') {
+                                } else if (itemNode === 'delete') {
                                     children.push(deleteButton(this, h, currentRowData, param.index));
                                 } else {
                                     // 其它按钮
                                     children.push(
                                         h('Button', {
                                             props: {
+                                                type: itemNode.type ? itemNode.type : 'text',
                                                 size: 'small'
                                             },
                                             style: {
@@ -183,10 +184,12 @@
                                             },
                                             on: {
                                                 'click': (() => {
-                                                    item.fun(currentRowData);
+                                                    if (itemNode.fun) {
+                                                        itemNode.fun(currentRowData);
+                                                    }
                                                 })
                                             }
-                                        }, item.title)
+                                        }, itemNode.title)
                                     );
                                 }
                             });

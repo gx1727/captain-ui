@@ -28,7 +28,7 @@
                     <Col span="24">
                     <common-table
                             ref="table"
-                            remote-api="CmsTagListApi"
+                            remote-api="CmsArticleListApi"
                             @on-cell-change="handleCellChange"
                             @on-change="handleChange"
                             @on-delete="handleDelete"
@@ -67,14 +67,6 @@
                     ct_order: 0,
                     ct_img: ''
                 },
-                ruleValidate: {
-                    ctg_name: [
-                        {required: true, message: 'TAG标题不能为空', trigger: 'blur'}
-                    ],
-                    ct_title: [
-                        {required: true, message: 'TAG标题不能为空', trigger: 'blur'}
-                    ]
-                },
                 tableColumn: [
                     {
                         title: '#',
@@ -83,53 +75,53 @@
                         align: 'center'
                     },
                     {
-                        title: '分组名称',
+                        title: '文章标题',
                         align: 'center',
-                        key: 'ctg_name_title',
-                        width: 200,
-                        filters: [],
-                        filterMultiple: false,
-                        filterRemote (values, key) {
-                        }
+                        key: 'a_title'
                     },
                     {
-                        title: 'TAG名称',
+                        title: '创建时间',
                         align: 'center',
-                        key: 'ct_name',
-                        editable: true
+                        key: 'a_atime',
+                        sortable: 'a_atime',
+                        width: 150
                     },
                     {
-                        title: 'TAG标题',
+                        title: '修改时间',
                         align: 'center',
-                        key: 'ct_title',
-                        editable: true
+                        key: 'a_etime',
+                        sortable: 'a_etime',
+                        width: 150
                     },
                     {
-                        title: 'TAG模板',
+                        title: '查看次数',
                         align: 'center',
-                        key: 'ct_template',
-                        editable: true
+                        key: 'a_count',
+                        sortable: 'a_count',
+                        width: 100
                     },
                     {
-                        title: 'TAG排序',
+                        title: '状态',
                         align: 'center',
-                        key: 'ct_order',
-                        sortable: 'ct_order',
-                        editable: true
-                    },
-                    {
-                        title: 'TAG图片',
-                        align: 'center',
-                        key: 'ct_img',
-                        editable: true
+                        key: 'a_status',
+                        width: 100
                     },
                     {
                         title: '操作',
                         align: 'center',
-                        width: 150,
+                        width: 200,
                         key: 'handle',
                         handle: [
-                            'edit', 'delete'
+                            {
+                                title: '编辑',
+                                type: 'primary',
+                                fun: this.editButton
+                            }, {
+                                title: '预览',
+                                type: '',
+                                fun: this.previewButton
+                            },
+                            'delete'
                         ]
                     }
                 ]
@@ -140,12 +132,22 @@
             refresh () { // 刷新列表
                 this.$refs.table.$emit('refresh'); // 解发列表刷新事件
             },
+            editButton (row) {
+                let argu = {a_id: row.a_id};
+                this.$router.push({
+                    name: 'cms_article_publish',
+                    params: argu
+                });
+            },
+            previewButton (row) {
+                window.open('/' + row.a_id, '_blank');
+            },
             handleCancelSearch () {
                 this.searchParam.keyword = '';
                 this.refresh();
             },
             createArticle () { //新建文章
-                let argu = { a_id: 0 };
+                let argu = {a_id: 0};
                 this.$router.push({
                     name: 'cms_article_publish',
                     params: argu

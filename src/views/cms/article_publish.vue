@@ -31,7 +31,7 @@
                     状态：
                     <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
                     <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
-                    <Tag v-if="article.a_status === 1" size="small" color="blue"><a href="//www.baidu.com" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
+                    <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_id" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
                     <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
                     <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
                 </p>
@@ -42,7 +42,7 @@
                     <Icon type="eye"></Icon>
                     草稿：
                     <Tag size="small"> {{ article.draft_etime }}</Tag>
-                    <a href="//www.baidu.com" target="_blank">预览</a>
+                    <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
                 </p>
                 <p class="margin-top-10">
                     <Icon type="ios-calendar-outline"></Icon>&nbsp;&nbsp;
@@ -179,8 +179,12 @@
                             a_title: vm.article.a_title
                         }, function (res) {
                             if (res.code === 0) {
-
-                                console.log(res);
+                                let argu = {a_id: res.a_id};
+                                vm.$router.push({
+                                    name: 'cms_article_publish',
+                                    params: argu
+                                });
+                                location.reload();
                             } else {
                                 vm.$Notice.warning({
                                     title: '错误',
@@ -291,7 +295,7 @@
             /**
              * 保存草稿
              */
-            handleSaveDraft () {
+            handleSaveDraft (fun) {
                 let vm = this;
                 if (this.canPublish()) {
                     this.article.a_content = tinymce.get('articleEditor').getContent();
@@ -308,7 +312,11 @@
                         function (res) {
                             if (res.code === 0) {
                                 vm.article.draft_etime = res.draft_etime;
-                                vm.$Message.info('草稿保存成功');
+                                if (typeof fun === 'function') { // callback ，可以作发布用
+                                    fun(res);
+                                } else {
+                                    vm.$Message.info('草稿保存成功');
+                                }
                             } else {
                                 vm.$Notice.warning({
                                     title: '错误',
@@ -321,22 +329,34 @@
                                 desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
                             });
                         });
-
                 }
             },
             /**
              * 发布文章
              */
             handlePublish () {
-                if (this.canPublish()) {
-                    this.publishLoading = true;
-                    setTimeout(() => {
-                        this.publishLoading = false;
-                        this.$Notice.success({
-                            title: '保存成功',
-                            desc: '文章《' + this.article.a_title + '》保存成功'
+                let vm = this;
+                if (vm.canPublish()) {
+                    vm.publishLoading = true;
+                    vm.handleSaveDraft(function (res) {
+                        api.Post('CmsArticlePublishApi', {
+                            a_id: vm.article.a_id,
+                            publish_time: vm.publishTimeType === 'immediately' ? '' : vm.article.publish_time
+                        }, function (res) {
+                            vm.publishLoading = false;
+                            vm.$Notice.success({
+                                title: '保存成功',
+                                desc: '文章《' + vm.article.a_title + '》保存成功'
+                            });
+                            console.log(res);
+                        }, function (e, statusText) {
+                            vm.$Notice.error({
+                                title: '网络错误，服务请求失败',
+                                desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
+                            });
                         });
-                    }, 1000);
+
+                    });
                 }
             },
             handleSelectTag () {
@@ -435,32 +455,7 @@
                 this.$nextTick(() => {
                     let vm = this;
                     let height = document.body.offsetHeight - 300;
-                    tinymce.baseURL = '/dist';
-                        tinymce.init({
-                            selector: '#articleEditor',
-                            height: height,
-                            language: 'zh_CN.GB2312',
-                            menubar: 'edit insert view format table tools',
-                            plugins: [
-                                'advlist autolink lists link image charmap print preview hr anchor pagebreak imagetools',
-                                'searchreplace visualblocks visualchars code fullscreen fullpage',
-                                'insertdatetime media nonbreaking save table contextmenu directionality',
-                                'emoticons paste textcolor colorpicker textpattern imagetools codesample'
-                            ],
-                            setup: function (editor) {
-                                editor.on('init', function (e) {
-                                    vm.spinShow = false;
-                                    tinymce.get('articleEditor').setContent(vm.article.a_content);
-//                                if (localStorage.editorContent) {
-//                                    tinymce.get('articleEditor').setContent(localStorage.editorContent);
-//                                }
-                                });
-//                            editor.on('keydown', function (e) {
-//                                    localStorage.editorContent = tinymce.get('articleEditor').getContent();
-//                            });
-                            }
-                        });
-                        /*
+
                     tinymce.init({
                         selector: '#articleEditor',
                         branding: false,
@@ -471,7 +466,7 @@
                         theme: 'modern',
                         plugins: [
                             'advlist autolink lists link image charmap print preview hr anchor pagebreak imagetools',
-                            'searchreplace visualblocks visualchars code fullscreen fullpage',
+                            'searchreplace visualblocks visualchars code fullscreen', /*fullpage*/
                             'insertdatetime media nonbreaking save table contextmenu directionality',
                             'emoticons paste textcolor colorpicker textpattern imagetools codesample'
                         ],
@@ -494,7 +489,7 @@
 //                                    localStorage.editorContent = tinymce.get('articleEditor').getContent();
 //                            });
                         }
-                    });*/
+                    });
                 });
             },
             /**
