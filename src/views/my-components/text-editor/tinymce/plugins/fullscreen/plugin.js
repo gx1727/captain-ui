@@ -8,7 +8,9 @@
         var fragments = id.split('.');
         var target = Function('return this;')();
         for (var i = 0; i < fragments.length - 1; ++i) {
-            if (target[fragments[i]] === undefined) { target[fragments[i]] = {}; }
+            if (target[fragments[i]] === undefined) {
+                target[fragments[i]] = {};
+            }
             target = target[fragments[i]];
         }
         target[fragments[fragments.length - 1]] = module;
@@ -20,14 +22,24 @@
         var definition = actual.defn;
         var len = dependencies.length;
         var instances = new Array(len);
-        for (var i = 0; i < len; ++i) { instances[i] = dem(dependencies[i]); }
+        for (var i = 0; i < len; ++i) {
+            instances[i] = dem(dependencies[i]);
+        }
         var defResult = definition.apply(null, instances);
-        if (defResult === undefined) { throw 'module [' + id + '] returned undefined'; }
+        if (defResult === undefined) {
+            throw 'module [' + id + '] returned undefined';
+        }
         actual.instance = defResult;
     };
 
     var def = function (id, dependencies, definition) {
-        if (typeof id !== 'string') { throw 'module id must be a string'; } else if (dependencies === undefined) { throw 'no dependencies for ' + id; } else if (definition === undefined) { throw 'no definition function for ' + id; }
+        if (typeof id !== 'string') {
+            throw 'module id must be a string';
+        } else if (dependencies === undefined) {
+            throw 'no dependencies for ' + id;
+        } else if (definition === undefined) {
+            throw 'no definition function for ' + id;
+        }
         defs[id] = {
             deps: dependencies,
             defn: definition,
@@ -37,14 +49,20 @@
 
     var dem = function (id) {
         var actual = defs[id];
-        if (actual === undefined) { throw 'module [' + id + '] was undefined'; } else if (actual.instance === undefined) { instantiate(id); }
+        if (actual === undefined) {
+            throw 'module [' + id + '] was undefined';
+        } else if (actual.instance === undefined) {
+            instantiate(id);
+        }
         return actual.instance;
     };
 
     var req = function (ids, callback) {
         var len = ids.length;
         var instances = new Array(len);
-        for (var i = 0; i < len; ++i) { instances[i] = dem(ids[i]); }
+        for (var i = 0; i < len; ++i) {
+            instances[i] = dem(ids[i]);
+        }
         callback.apply(null, instances);
     };
 
@@ -65,357 +83,362 @@
     var demand = dem;
 // this helps with minification when using a lot of global references
     var defineGlobal = function (id, ref) {
-        define(id, [], function () { return ref; });
+        define(id, [], function () {
+            return ref;
+        });
     };
-/* jsc
-["tinymce.plugins.fullscreen.Plugin","ephox.katamari.api.Cell","tinymce.core.PluginManager","tinymce.plugins.fullscreen.api.Api","tinymce.plugins.fullscreen.api.Commands","tinymce.plugins.fullscreen.ui.Buttons","global!tinymce.util.Tools.resolve","tinymce.plugins.fullscreen.core.Actions","global!document","global!window","tinymce.core.dom.DOMUtils","tinymce.plugins.fullscreen.api.Events"]
-jsc */
+    /* jsc
+     ["tinymce.plugins.fullscreen.Plugin","ephox.katamari.api.Cell","tinymce.core.PluginManager","tinymce.plugins.fullscreen.api.Api","tinymce.plugins.fullscreen.api.Commands","tinymce.plugins.fullscreen.ui.Buttons","global!tinymce.util.Tools.resolve","tinymce.plugins.fullscreen.core.Actions","global!document","global!window","tinymce.core.dom.DOMUtils","tinymce.plugins.fullscreen.api.Events"]
+     jsc */
     define(
-  'ephox.katamari.api.Cell',
+        'ephox.katamari.api.Cell',
 
-        [
-        ],
+        [],
 
-  function () {
-      var Cell = function (initial) {
-          var value = initial;
+        function () {
+            var Cell = function (initial) {
+                var value = initial;
 
-          var get = function () {
-              return value;
-          };
+                var get = function () {
+                    return value;
+                };
 
-          var set = function (v) {
-              value = v;
-          };
+                var set = function (v) {
+                    value = v;
+                };
 
-          var clone = function () {
-              return Cell(get());
-          };
+                var clone = function () {
+                    return Cell(get());
+                };
 
-          return {
-              get: get,
-              set: set,
-              clone: clone
-          };
-      };
+                return {
+                    get: get,
+                    set: set,
+                    clone: clone
+                };
+            };
 
-      return Cell;
-  }
-);
+            return Cell;
+        }
+    );
 
     defineGlobal('global!tinymce.util.Tools.resolve', tinymce.util.Tools.resolve);
-/**
- * ResolveGlobal.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
+    /**
+     * ResolveGlobal.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
     define(
-  'tinymce.core.PluginManager',
+        'tinymce.core.PluginManager',
         [
             'global!tinymce.util.Tools.resolve'
         ],
-  function (resolve) {
-      return resolve('tinymce.PluginManager');
-  }
-);
+        function (resolve) {
+            return resolve('tinymce.PluginManager');
+        }
+    );
 
-/**
- * Api.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
+    /**
+     * Api.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
     define(
-  'tinymce.plugins.fullscreen.api.Api',
-        [
-        ],
-  function () {
-      var get = function (fullscreenState) {
-          return {
-              isFullscreen: function () {
-                  return fullscreenState.get() !== null;
-              }
-          };
-      };
+        'tinymce.plugins.fullscreen.api.Api',
+        [],
+        function () {
+            var get = function (fullscreenState) {
+                return {
+                    isFullscreen: function () {
+                        return fullscreenState.get() !== null;
+                    }
+                };
+            };
 
-      return {
-          get: get
-      };
-  }
-);
+            return {
+                get: get
+            };
+        }
+    );
 
     defineGlobal('global!document', document);
     defineGlobal('global!window', window);
-/**
- * ResolveGlobal.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
+    /**
+     * ResolveGlobal.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
     define(
-  'tinymce.core.dom.DOMUtils',
+        'tinymce.core.dom.DOMUtils',
         [
             'global!tinymce.util.Tools.resolve'
         ],
-  function (resolve) {
-      return resolve('tinymce.dom.DOMUtils');
-  }
-);
+        function (resolve) {
+            return resolve('tinymce.dom.DOMUtils');
+        }
+    );
 
-/**
- * Events.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
-
-    define(
-  'tinymce.plugins.fullscreen.api.Events',
-        [
-        ],
-  function () {
-      var fireFullscreenStateChanged = function (editor, state) {
-          editor.fire('FullscreenStateChanged', { state: state });
-      };
-
-      return {
-          fireFullscreenStateChanged: fireFullscreenStateChanged
-      };
-  }
-);
-
-/**
- * Actions.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
+    /**
+     * Events.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
     define(
-  'tinymce.plugins.fullscreen.core.Actions',
+        'tinymce.plugins.fullscreen.api.Events',
+        [],
+        function () {
+            var fireFullscreenStateChanged = function (editor, state) {
+                editor.fire('FullscreenStateChanged', {state: state});
+            };
+
+            return {
+                fireFullscreenStateChanged: fireFullscreenStateChanged
+            };
+        }
+    );
+
+    /**
+     * Actions.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
+
+    define(
+        'tinymce.plugins.fullscreen.core.Actions',
         [
             'global!document',
             'global!window',
             'tinymce.core.dom.DOMUtils',
             'tinymce.plugins.fullscreen.api.Events'
         ],
-  function (document, window, DOMUtils, Events) {
-      var DOM = DOMUtils.DOM;
+        function (document, window, DOMUtils, Events) {
+            var DOM = DOMUtils.DOM;
 
-      var getWindowSize = function () {
-          var w, h, win = window, doc = document;
-          var body = doc.body;
+            var getWindowSize = function () {
+                var w, h, win = window, doc = document;
+                var body = doc.body;
 
-      // Old IE
-          if (body.offsetWidth) {
-              w = body.offsetWidth;
-              h = body.offsetHeight;
-          }
+                // Old IE
+                if (body.offsetWidth) {
+                    w = body.offsetWidth;
+                    h = body.offsetHeight;
+                }
 
-      // Modern browsers
-          if (win.innerWidth && win.innerHeight) {
-              w = win.innerWidth;
-              h = win.innerHeight;
-          }
+                // Modern browsers
+                if (win.innerWidth && win.innerHeight) {
+                    w = win.innerWidth;
+                    h = win.innerHeight;
+                }
 
-          return { w: w, h: h };
-      };
+                return {w: w, h: h};
+            };
 
-      var getScrollPos = function () {
-          var vp = DOM.getViewPort();
+            var getScrollPos = function () {
+                var vp = DOM.getViewPort();
 
-          return {
-              x: vp.x,
-              y: vp.y
-          };
-      };
+                return {
+                    x: vp.x,
+                    y: vp.y
+                };
+            };
 
-      var setScrollPos = function (pos) {
-          window.scrollTo(pos.x, pos.y);
-      };
+            var setScrollPos = function (pos) {
+                window.scrollTo(pos.x, pos.y);
+            };
 
-      var toggleFullscreen = function (editor, fullscreenInfo) {
-          var body = document.body, documentElement = document.documentElement, editorContainerStyle;
-          var editorContainer, iframe, iframeStyle;
+            var toggleFullscreen = function (editor, fullscreenInfo) {
+                var body = document.body, documentElement = document.documentElement, editorContainerStyle;
+                var editorContainer, iframe, iframeStyle;
 
-          var resize = function () {
-              DOM.setStyle(iframe, 'height', getWindowSize().h - (editorContainer.clientHeight - iframe.clientHeight));
-          };
+                var resize = function () {
+                    DOM.setStyle(iframe, 'height', getWindowSize().h - (editorContainer.clientHeight - iframe.clientHeight));
+                };
 
-          var removeResize = function () {
-              DOM.unbind(window, 'resize', resize);
-          };
+                var removeResize = function () {
+                    DOM.unbind(window, 'resize', resize);
+                };
 
-          editorContainer = editor.getContainer();
-          editorContainerStyle = editorContainer.style;
-          iframe = editor.getContentAreaContainer().firstChild;
-          iframeStyle = iframe.style;
+                editorContainer = editor.getContainer();
+                editorContainerStyle = editorContainer.style;
+                iframe = editor.getContentAreaContainer().firstChild;
+                iframeStyle = iframe.style;
 
-          if (!fullscreenInfo) {
-              var newFullScreenInfo = {
-                  scrollPos: getScrollPos(),
-                  containerWidth: editorContainerStyle.width,
-                  containerHeight: editorContainerStyle.height,
-                  iframeWidth: iframeStyle.width,
-                  iframeHeight: iframeStyle.height,
-                  resizeHandler: resize,
-                  removeHandler: removeResize
-              };
+                if (!fullscreenInfo) {
+                    var singlePageCon = document.getElementsByClassName("single-page-con")[0];
+                    singlePageCon.style['z-index'] = 21;
+                    singlePageCon.style['overflow'] = 'hidden';
+                    var newFullScreenInfo = {
+                        scrollPos: getScrollPos(),
+                        containerWidth: editorContainerStyle.width,
+                        containerHeight: editorContainerStyle.height,
+                        iframeWidth: iframeStyle.width,
+                        iframeHeight: iframeStyle.height,
+                        resizeHandler: resize,
+                        removeHandler: removeResize
+                    };
 
-              iframeStyle.width = iframeStyle.height = '100%';
-              editorContainerStyle.width = editorContainerStyle.height = '';
+                    iframeStyle.width = iframeStyle.height = '100%';
+                    editorContainerStyle.width = editorContainerStyle.height = '';
 
-              DOM.addClass(body, 'mce-fullscreen');
-              DOM.addClass(documentElement, 'mce-fullscreen');
-              DOM.addClass(editorContainer, 'mce-fullscreen');
+                    DOM.addClass(body, 'mce-fullscreen');
+                    DOM.addClass(documentElement, 'mce-fullscreen');
+                    DOM.addClass(editorContainer, 'mce-fullscreen');
 
-              DOM.bind(window, 'resize', resize);
-              editor.on('remove', removeResize);
+                    DOM.bind(window, 'resize', resize);
+                    editor.on('remove', removeResize);
 
-              resize();
+                    resize();
 
-              Events.fireFullscreenStateChanged(editor, true);
+                    Events.fireFullscreenStateChanged(editor, true);
 
-              return newFullScreenInfo;
-          } else {
-              iframeStyle.width = fullscreenInfo.iframeWidth;
-              iframeStyle.height = fullscreenInfo.iframeHeight;
+                    return newFullScreenInfo;
+                } else {
+                    var singlePageCon = document.getElementsByClassName("single-page-con")[0];
+                    singlePageCon.style['z-index'] = 1;
+                    singlePageCon.style['overflow'] = 'auto';
 
-              if (fullscreenInfo.containerWidth) {
-                  editorContainerStyle.width = fullscreenInfo.containerWidth;
-              }
+                    iframeStyle.width = fullscreenInfo.iframeWidth;
+                    iframeStyle.height = fullscreenInfo.iframeHeight;
 
-              if (fullscreenInfo.containerHeight) {
-                  editorContainerStyle.height = fullscreenInfo.containerHeight;
-              }
+                    if (fullscreenInfo.containerWidth) {
+                        editorContainerStyle.width = fullscreenInfo.containerWidth;
+                    }
 
-              DOM.removeClass(body, 'mce-fullscreen');
-              DOM.removeClass(documentElement, 'mce-fullscreen');
-              DOM.removeClass(editorContainer, 'mce-fullscreen');
-              setScrollPos(fullscreenInfo.scrollPos);
+                    if (fullscreenInfo.containerHeight) {
+                        editorContainerStyle.height = fullscreenInfo.containerHeight;
+                    }
 
-              DOM.unbind(window, 'resize', fullscreenInfo.resizeHandler);
-              editor.off('remove', fullscreenInfo.removeHandler);
+                    DOM.removeClass(body, 'mce-fullscreen');
+                    DOM.removeClass(documentElement, 'mce-fullscreen');
+                    DOM.removeClass(editorContainer, 'mce-fullscreen');
+                    setScrollPos(fullscreenInfo.scrollPos);
 
-              Events.fireFullscreenStateChanged(editor, false);
+                    DOM.unbind(window, 'resize', fullscreenInfo.resizeHandler);
+                    editor.off('remove', fullscreenInfo.removeHandler);
 
-              return null;
-          }
-      };
+                    Events.fireFullscreenStateChanged(editor, false);
 
-      return {
-          toggleFullscreen: toggleFullscreen
-      };
-  }
-);
+                    return null;
+                }
+            };
 
-/**
- * Commands.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
+            return {
+                toggleFullscreen: toggleFullscreen
+            };
+        }
+    );
+
+    /**
+     * Commands.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
     define(
-  'tinymce.plugins.fullscreen.api.Commands',
+        'tinymce.plugins.fullscreen.api.Commands',
         [
             'tinymce.plugins.fullscreen.core.Actions'
         ],
-  function (Actions) {
-      var register = function (editor, fullscreenState) {
-          editor.addCommand('mceFullScreen', function () {
-              fullscreenState.set(Actions.toggleFullscreen(editor, fullscreenState.get()));
-          });
-      };
+        function (Actions) {
+            var register = function (editor, fullscreenState) {
+                editor.addCommand('mceFullScreen', function () {
+                    fullscreenState.set(Actions.toggleFullscreen(editor, fullscreenState.get()));
+                });
+            };
 
-      return {
-          register: register
-      };
-  }
-);
+            return {
+                register: register
+            };
+        }
+    );
 
-/**
- * Buttons.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
-
-    define(
-  'tinymce.plugins.fullscreen.ui.Buttons',
-        [
-        ],
-  function () {
-      var postRender = function (editor) {
-          return function (e) {
-              var ctrl = e.control;
-
-              editor.on('FullscreenStateChanged', function (e) {
-                  ctrl.active(e.state);
-              });
-          };
-      };
-
-      var register = function (editor) {
-          editor.addMenuItem('fullscreen', {
-              text: 'Fullscreen',
-              shortcut: 'Ctrl+Shift+F',
-              selectable: true,
-              cmd: 'mceFullScreen',
-              onPostRender: postRender(editor),
-              context: 'view'
-          });
-
-          editor.addButton('fullscreen', {
-              tooltip: 'Fullscreen',
-              shortcut: 'Ctrl+Shift+F',
-              cmd: 'mceFullScreen',
-              onPostRender: postRender(editor)
-          });
-      };
-
-      return {
-          register: register
-      };
-  }
-);
-/**
- * Plugin.js
- *
- * Released under LGPL License.
- * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
- */
+    /**
+     * Buttons.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
 
     define(
-  'tinymce.plugins.fullscreen.Plugin',
+        'tinymce.plugins.fullscreen.ui.Buttons',
+        [],
+        function () {
+            var postRender = function (editor) {
+                return function (e) {
+                    var ctrl = e.control;
+
+                    editor.on('FullscreenStateChanged', function (e) {
+                        ctrl.active(e.state);
+                    });
+                };
+            };
+
+            var register = function (editor) {
+                editor.addMenuItem('fullscreen', {
+                    text: 'Fullscreen',
+                    shortcut: 'Ctrl+Shift+F',
+                    selectable: true,
+                    cmd: 'mceFullScreen',
+                    onPostRender: postRender(editor),
+                    context: 'view'
+                });
+
+                editor.addButton('fullscreen', {
+                    tooltip: 'Fullscreen',
+                    shortcut: 'Ctrl+Shift+F',
+                    cmd: 'mceFullScreen',
+                    onPostRender: postRender(editor)
+                });
+            };
+
+            return {
+                register: register
+            };
+        }
+    );
+    /**
+     * Plugin.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+     *
+     * License: http://www.tinymce.com/license
+     * Contributing: http://www.tinymce.com/contributing
+     */
+
+    define(
+        'tinymce.plugins.fullscreen.Plugin',
         [
             'ephox.katamari.api.Cell',
             'tinymce.core.PluginManager',
@@ -423,20 +446,21 @@ jsc */
             'tinymce.plugins.fullscreen.api.Commands',
             'tinymce.plugins.fullscreen.ui.Buttons'
         ],
-  function (Cell, PluginManager, Api, Commands, Buttons) {
-      PluginManager.add('fullscreen', function (editor) {
-          var fullscreenState = Cell(null);
+        function (Cell, PluginManager, Api, Commands, Buttons) {
+            PluginManager.add('fullscreen', function (editor) {
+                var fullscreenState = Cell(null);
 
-          Commands.register(editor, fullscreenState);
-          Buttons.register(editor);
+                Commands.register(editor, fullscreenState);
+                Buttons.register(editor);
 
-          editor.addShortcut('Ctrl+Shift+F', '', 'mceFullScreen');
+                editor.addShortcut('Ctrl+Shift+F', '', 'mceFullScreen');
 
-          return Api.get(fullscreenState);
-      });
+                return Api.get(fullscreenState);
+            });
 
-      return function () { };
-  }
-);
+            return function () {
+            };
+        }
+    );
     dem('tinymce.plugins.fullscreen.Plugin')();
 })();

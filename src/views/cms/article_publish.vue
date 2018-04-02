@@ -131,17 +131,22 @@
             </div>
             </Col>
         </Row>
+        <img-manager></img-manager>
     </div>
 </template>
 <script>
+    import imgManager from '../components/imgManager.vue';
     import tinymce from 'tinymce';
     import api from '../../api';
     import util from '@/libs/util.js';
     export default {
         name: 'publish-article',
-        components: {},
+        components: {
+            imgManager
+        },
         data () {
             return {
+                showCurrentTableData: true,
                 articleTagSelected: {}, // 文章选中的标签
                 tagDB: [],
                 otherTagDB: [],
@@ -456,6 +461,7 @@
                     let vm = this;
                     let height = document.body.offsetHeight - 300;
 
+                    tinymce.baseURL = '/dist';
                     tinymce.init({
                         selector: '#articleEditor',
                         branding: false,
@@ -466,13 +472,34 @@
                         theme: 'modern',
                         plugins: [
                             'advlist autolink lists link image charmap print preview hr anchor pagebreak imagetools',
-                            'searchreplace visualblocks visualchars code fullscreen', /*fullpage*/
+                            'searchreplace visualblocks visualchars code fullscreen', /*fullpage  imagetools*/
                             'insertdatetime media nonbreaking save table contextmenu directionality',
-                            'emoticons paste textcolor colorpicker textpattern imagetools codesample'
+                            'emoticons paste textcolor colorpicker textpattern codesample'
                         ],
-                        toolbar1: ' newnote print preview | undo redo | insert | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image emoticons media codesample',
+                        toolbar1: 'fullscreen newnote print preview | undo redo | insert | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image emoticons media codesample',
                         autosave_interval: '20s',
                         image_advtab: true,
+//                        imagetools_cors_hosts: ['localhost:8080', 'localhost-o'],
+//                        imagetools_proxy: 'http://localhost-o/tools/imagetools_proxy',
+//                        file_browser_callback: function(field_name, url, type, win) {
+//                            win.document.getElementById(field_name).value = 'my browser value';
+//                        },
+                        file_picker_callback: function (callback, value, meta) {
+                            // Provide file and text for the link dialog
+                            if (meta.filetype == 'file') {
+                                callback('mypage.html', {text: 'My text'});
+                            }
+
+                            // Provide image and alt text for the image dialog
+                            if (meta.filetype == 'image') {
+                                callback('myimage.jpg', {alt: 'My alt text'});
+                            }
+
+                            // Provide alternative source and posted for the media dialog
+                            if (meta.filetype == 'media') {
+                                callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
+                            }
+                        },
                         table_default_styles: {
                             width: '100%',
                             borderCollapse: 'collapse'
