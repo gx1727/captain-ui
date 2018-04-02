@@ -103,7 +103,7 @@
                     {
                         title: '状态',
                         align: 'center',
-                        key: 'a_status',
+                        key: 'a_status_title',
                         width: 100
                     },
                     {

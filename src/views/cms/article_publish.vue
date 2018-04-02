@@ -480,7 +480,7 @@
                         setup: function (editor) {
                             editor.on('init', function (e) {
                                 vm.spinShow = false;
-                                tinymce.get('articleEditor').setContent(vm.article.a_content);
+                                tinymce.get('articleEditor').setContent(vm.article.a_content ? vm.article.a_content : "");
 //                                if (localStorage.editorContent) {
 //                                    tinymce.get('articleEditor').setContent(localStorage.editorContent);
 //                                }
