@@ -46,6 +46,8 @@
                 </TabPane>
                 <TabPane label="本地上传">标签二的内容</TabPane>
                 <TabPane label="网络图片">标签三的内容</TabPane>
+                <Input v-model="searchKey" icon="ios-clock-outline" placeholder="输入关系词..."></Input>
+                <!--<Button type="ghost" @click="handleTabsAdd" size="small" slot="extra">增加</Button>-->
             </Tabs>
 
         </Modal>
