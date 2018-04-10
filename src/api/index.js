@@ -29,7 +29,8 @@ import {
     CmsArticleCreateApi,
     CmsArticleEditApi,
     CmsArticlePublishApi,
-    CmsArticleDelApi
+    CmsArticleDelApi,
+    SystemAttListApi
 } from './config'
 
 const service = axios.create({
@@ -123,6 +124,8 @@ export default {
                 return CmsArticlePublishApi;
             case 'CmsArticleDelApi':
                 return CmsArticleDelApi;
+            case 'SystemAttListApi':
+                return SystemAttListApi;
         }
     }
 }

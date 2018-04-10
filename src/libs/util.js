@@ -50,6 +50,22 @@ util.oneOf = function (ele, targetArr) {
 };
 
 /**
+ * 判断数组中是否包含
+ * @param ele
+ * @param targetArr
+ * @returns {boolean}
+ */
+util.inArray = function (ele, targetArr) {
+    var len = targetArr.length;
+    for (var i = 0; i < len; i++) {
+        if (targetArr[i] == ele) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
  * 判断权限是否通过
  * @param itAccess
  * @param currentAccess

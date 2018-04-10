@@ -34,3 +34,5 @@ export const CmsArticleCreateApi = API_ROOT.concat('/cms/article/create'); // �
 export const CmsArticleEditApi = API_ROOT.concat('/cms/article/edit'); // 编辑文章
 export const CmsArticlePublishApi = API_ROOT.concat('/cms/article/publish'); // 发布文章
 export const CmsArticleDelApi = API_ROOT.concat('/cms/article/del'); // 删除文章
+
+export const SystemAttListApi = API_ROOT.concat('/attachment/list'); // 附件列表

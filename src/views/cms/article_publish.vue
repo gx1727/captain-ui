@@ -6,129 +6,142 @@
     <div>
         <Row>
             <Col span="18">
-            <Card>
-                <Form :label-width="80">
-                    <FormItem label="文章标题">
-                        <Input v-model="article.a_title" @on-blur="handleArticletitleBlur" icon="android-list"/>
-                    </FormItem>
-                    <FormItem label="文章描述">
-                        <Input type="textarea" v-model="article.a_abstract"/>
-                    </FormItem>
-                </Form>
-                <div class="margin-top-20">
-                    <textarea id="articleEditor"></textarea>
-                </div>
-            </Card>
+                <Card>
+                    <Form :label-width="80">
+                        <FormItem label="文章标题">
+                            <Input v-model="article.a_title" @on-blur="handleArticletitleBlur" icon="android-list"/>
+                        </FormItem>
+                        <FormItem label="文章描述">
+                            <Input type="textarea" v-model="article.a_abstract"/>
+                        </FormItem>
+                    </Form>
+                    <div class="margin-top-20">
+                        <textarea id="articleEditor"></textarea>
+                    </div>
+                </Card>
             </Col>
             <Col span="6" class="padding-left-10">
-            <Card>
-                <p slot="title">
-                    <Icon type="paper-airplane"></Icon>
-                    发布
-                </p>
-                <p class="margin-top-10">
-                    <Icon type="android-time"></Icon>
-                    状态：
-                    <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
-                    <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
-                    <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_id" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
-                    <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
-                    <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
-                </p>
-                <p class="margin-top-10" v-if="isReloadLastDraft">
-                    <Button v-show="!editPublishTime" size="small" @click="reloadLastDraft" type="dashed">恢复最后一次编辑草稿</Button>
-                </p>
-                <p class="margin-top-10" v-if="article.draft_etime">
-                    <Icon type="eye"></Icon>
-                    草稿：
-                    <Tag size="small"> {{ article.draft_etime }}</Tag>
-                    <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
-                </p>
-                <p class="margin-top-10">
-                    <Icon type="ios-calendar-outline"></Icon>&nbsp;&nbsp;
-                    <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
-                    <Button v-show="!editPublishTime" size="small" @click="handleEditPublishTime" type="text">修改</Button>
-                    <transition name="publish-time">
-                        <div v-show="editPublishTime" class="publish-time-picker-con">
-                            <div class="margin-top-10">
-                                <DatePicker @on-change="setPublishTime" :value="article.a_publish_time" type="datetime" style="width:200px;" placeholder="选择日期和时间"></DatePicker>
-                            </div>
-                            <div class="margin-top-10">
-                                <Button type="primary" @click="handleSavePublishTime">确认</Button>
-                                <Button type="ghost" @click="cancelEditPublishTime">取消</Button>
-                            </div>
-                        </div>
-                    </transition>
-                </p>
-                <Row class="margin-top-20 publish-button-con">
-                    <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
-                    <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
-                </Row>
-            </Card>
-            <div class="margin-top-10" v-for="tagGroupItem in tagDB">
+            <Tabs type="card">
+                <TabPane label="属性">
                 <Card>
                     <p slot="title">
-                        <Icon type="ios-pricetags-outline"></Icon>
-                        {{ tagGroupItem.title }}
+                        <Icon type="paper-airplane"></Icon>
+                        发布
                     </p>
-                    <Row>
-                        <Col span="24">
-                        <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple>
-                            <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
-                        </Select>
-                        </Col>
+                    <p class="margin-top-10">
+                        <Icon type="android-time"></Icon>
+                        状态：
+                        <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
+                        <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
+                        <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_id" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
+                        <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
+                        <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
+                    </p>
+                    <p class="margin-top-10" v-if="isReloadLastDraft">
+                        <Button v-show="!editPublishTime" size="small" @click="reloadLastDraft" type="dashed">恢复最后一次编辑草稿</Button>
+                    </p>
+                    <p class="margin-top-10" v-if="article.draft_etime">
+                        <Icon type="eye"></Icon>
+                        草稿：
+                        <Tag size="small"> {{ article.draft_etime }}</Tag>
+                        <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
+                    </p>
+                    <p class="margin-top-10">
+                        <Icon type="ios-calendar-outline"></Icon>&nbsp;&nbsp;
+                        <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
+                        <Button v-show="!editPublishTime" size="small" @click="handleEditPublishTime" type="text">修改</Button>
+                        <transition name="publish-time">
+                            <div v-show="editPublishTime" class="publish-time-picker-con">
+                                <div class="margin-top-10">
+                                    <DatePicker @on-change="setPublishTime" :value="article.a_publish_time" type="datetime" style="width:200px;" placeholder="选择日期和时间"></DatePicker>
+                                </div>
+                                <div class="margin-top-10">
+                                    <Button type="primary" @click="handleSavePublishTime">确认</Button>
+                                    <Button type="ghost" @click="cancelEditPublishTime">取消</Button>
+                                </div>
+                            </div>
+                        </transition>
+                    </p>
+                    <Row class="margin-top-20 publish-button-con">
+                        <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
+                        <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
                     </Row>
                 </Card>
-            </div>
-            <div class="margin-top-10">
-                <Card>
-                    <p slot="title">
-                        <Icon type="navicon-round"></Icon>
-                        分类目录
-                    </p>
-                    <Tabs type="card">
-                        <TabPane label="所有分类目录">
-                            <div class="classification-con">
-                                <Tree :data="sortList" @on-check-change="handleSelectSort" show-checkbox></Tree>
-                            </div>
-                        </TabPane>
-                    </Tabs>
-                </Card>
-            </div>
-            <div class="margin-top-10">
-                <Card>
-                    <p slot="title">
-                        <Icon type="ios-pricetags-outline"></Icon>
-                        标签
-                    </p>
-                    <Row>
-                        <Col span="18">
+                <div class="margin-top-10" v-for="tagGroupItem in tagDB">
+                    <Card>
+                        <p slot="title">
+                            <Icon type="ios-pricetags-outline"></Icon>
+                            {{ tagGroupItem.title }}
+                        </p>
+                        <Row>
+                            <Col span="24">
+                            <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple>
+                                <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
+                            </Select>
+                            </Col>
+                        </Row>
+                    </Card>
+                </div>
+                <div class="margin-top-10">
+                    <Card>
+                        <p slot="title">
+                            <Icon type="navicon-round"></Icon>
+                            分类目录
+                        </p>
+                        <Tabs type="card">
+                            <TabPane label="所有分类目录">
+                                <div class="classification-con">
+                                    <Tree :data="sortList" @on-check-change="handleSelectSort" show-checkbox></Tree>
+                                </div>
+                            </TabPane>
+                        </Tabs>
+                    </Card>
+                </div>
+                <div class="margin-top-10">
+                    <Card>
+                        <p slot="title">
+                            <Icon type="ios-pricetags-outline"></Icon>
+                            标签
+                        </p>
+                        <Row>
+                            <Col span="18">
 
-                        <Select v-model="articleTagSelected['other']" multiple filterable @on-change="handleSelectTag" placeholder="请选择文章标签">
-                            <Option v-for="item in otherTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
-                        </Select>
-                        </Col>
-                        <Col span="6" class="padding-left-10">
-                        <Button v-show="!addingNewTag" @click="handleAddNewTag" long type="ghost">新建</Button>
-                        </Col>
-                    </Row>
-                    <transition name="add-new-tag">
-                        <div v-show="addingNewTag" class="add-new-tag-con">
-                            <Row>
-                                <Col span="14">
-                                <Input v-model="newTagName" placeholder="请输入标签名"/>
-                                </Col>
-                                <Col span="5" class="padding-left-10">
-                                <Button @click="createNewTag" long type="primary">确定</Button>
-                                </Col>
-                                <Col span="5" class="padding-left-10">
-                                <Button @click="cancelCreateNewTag" long type="ghost">取消</Button>
-                                </Col>
-                            </Row>
-                        </div>
-                    </transition>
-                </Card>
-            </div>
+                            <Select v-model="articleTagSelected['other']" multiple filterable @on-change="handleSelectTag" placeholder="请选择文章标签">
+                                <Option v-for="item in otherTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
+                            </Select>
+                            </Col>
+                            <Col span="6" class="padding-left-10">
+                            <Button v-show="!addingNewTag" @click="handleAddNewTag" long type="ghost">新建</Button>
+                            </Col>
+                        </Row>
+                        <transition name="add-new-tag">
+                            <div v-show="addingNewTag" class="add-new-tag-con">
+                                <Row>
+                                    <Col span="14">
+                                    <Input v-model="newTagName" placeholder="请输入标签名"/>
+                                    </Col>
+                                    <Col span="5" class="padding-left-10">
+                                    <Button @click="createNewTag" long type="primary">确定</Button>
+                                    </Col>
+                                    <Col span="5" class="padding-left-10">
+                                    <Button @click="cancelCreateNewTag" long type="ghost">取消</Button>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </transition>
+                    </Card>
+                </div>
+                </TabPane>
+                <TabPane label="图片">
+                    dd
+                </TabPane>
+                <TabPane label="房车">
+                    dd
+                </TabPane>
+                <TabPane label="营地">
+                    dd
+                </TabPane>
+            </Tabs>
             </Col>
         </Row>
         <img-manager></img-manager>

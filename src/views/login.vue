@@ -88,6 +88,7 @@
                                     api.Post('MenuGetTreeApi', {role_id: res.role.role_id}, function (res) {
                                         if (res.code === 0) {
                                             localStorage.menuTreeData = JSON.stringify(res.menuTree);
+                                            vm.$store.commit('updateMenulist');
                                         } else {
                                             vm.$Notice.warning({
                                                 title: '获到菜单数据失败',

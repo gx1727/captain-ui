@@ -75,19 +75,20 @@ export const appRouter = {
         {path: 'order/:order_id', title: '订单详情', name: 'order-info', component: () => import('@/views/advanced-router/component/order-info.vue')}, // 用于展示动态路由
         {path: 'shopping', title: '购物详情', name: 'shopping', component: () => import('@/views/advanced-router/component/shopping-info.vue')}, // 用于展示带参路由
         {path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue')},
-        {path: 'access/index', title: '权限管理', icon: 'key', name: 'access_index', component: () => import('@/views/access/access.vue')},
-        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')},
+
         {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
         {path: 'auth/menu', title: '菜单管理', icon: 'android-menu', name: 'auth_menu', component: () => import('@/views/auth/menu.vue')},
-        {path: 'cms/article', title: '文章发布', icon: 'android-menu', name: 'cms_article', component: () => import('@/views/cms/article.vue')},
 
+        {path: 'cms/article', title: '文章发布', icon: 'android-menu', name: 'cms_article', component: () => import('@/views/cms/article.vue')},
         {path: 'cms/article/list', title: '文章列表', icon: 'android-menu', name: 'cms_article_list', component: () => import('@/views/cms/article_list.vue')},
         {path: 'cms/article/publish/:a_id', title: '文章发布', icon: 'android-menu', name: 'cms_article_publish', component: () => import('@/views/cms/article_publish.vue')},
-
         {path: 'cms/sort', title: '文章分类', icon: 'android-menu', name: 'cms_sort', component: () => import('@/views/cms/sort.vue')},
-        {path: 'cms/tag_group', title: '文章TAG分组2', icon: 'android-menu', name: 'cms_tag_group', component: () => import('@/views/cms/tag-group.vue')},
+        {path: 'cms/tag_group', title: '文章TAG分组', icon: 'android-menu', name: 'cms_tag_group', component: () => import('@/views/cms/tag-group.vue')},
         {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/cms/tag.vue')},
         {path: 'cms/view', title: '栏目管理', icon: 'android-menu', name: 'cms_view', component: () => import('@/views/cms/view.vue')},
+
+        {path: 'access/index', title: '权限管理', icon: 'key', name: 'access_index', component: () => import('@/views/access/access.vue')},
+        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')},
         {path: 'form/artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue')},
         {path: 'mutative-router', title: '动态路由', name: 'mutative-router', icon: 'link', component: () => import('@/views/advanced-router/mutative-router.vue')},
     ]
