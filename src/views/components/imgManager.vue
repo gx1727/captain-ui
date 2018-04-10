@@ -16,23 +16,14 @@
                     <div v-if="!showImgList">
                         <div v-bind:class="['img-manager-img-list', checkSelected(item) ? 'img-manager-selected' : '']" :style="imgNodeSize" v-for="item in uploadList">
                             <img :src="item.url">
-                            <div class="img-manager-img-list-cover"  @click="handleSelect(item)">
+                            <div class="img-manager-img-list-cover" @click="handleSelect(item)">
                                 <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
                                 <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                             </div>
                         </div>
                     </div>
                     <div style="padding: 5px;" v-if="showImgList">
-                        <common-table
-                                ref="table"
-                                remote-api="SystemAttListApi"
-                                @on-delete="handleDelete"
-                                :on-current-change="handCurrentChange"
-                                :hover-show="true"
-                                :edit-incell="true"
-                                :columns-list="tableColumn"
-                                :search-param="searchParam"
-                        ></common-table>
+                        <Table :columns="tableColumn" :data="uploadList"></Table>
                     </div>
                 </TabPane>
                 <TabPane label="本地上传">
@@ -55,7 +46,7 @@
                     </Upload>
                     <div v-bind:class="['img-manager-img-list', checkSelected(item) ? 'img-manager-selected' : '']" :style="imgNodeSize" v-for="item in uploadListLast">
                         <img :src="item.url">
-                        <div class="img-manager-img-list-cover"  @click="handleSelect(item)">
+                        <div class="img-manager-img-list-cover" @click="handleSelect(item)">
                             <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
                             <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                         </div>
@@ -64,10 +55,10 @@
                 <TabPane label="网络图片"></TabPane>
                 <Row slot="extra" style="width: 45vw;overflow: hidden;">
                     <Col span="5">
-                        <Select>
-                            <Option value="">全部</Option>
-                            <Option value="collection">收藏</Option>
-                        </Select>
+                    <Select>
+                        <Option value="">全部</Option>
+                        <Option value="collection">收藏</Option>
+                    </Select>
                     </Col>
                     <Col span="5" style="text-align: center;">
                     <ButtonGroup>
@@ -76,20 +67,19 @@
                     </ButtonGroup>
                     </Col>
                     <Col span="14" style="text-align: right;">
-                    <Input v-model="searchParam.keyword" icon="ios-search"  @keyup.enter.native="search" placeholder="输入关键词..."></Input>
+                    <Input v-model="searchParam.keyword" icon="ios-search" @keyup.enter.native="search" placeholder="输入关键词..."></Input>
                     </Col>
                 </Row>
             </Tabs>
         </Modal>
         <Modal title="预览图片" v-model="visible">
             <div slot="footer"></div>
-            <img :src="imgViewUrl" v-if="visible" style="width: 100%">
+            <img :src="imgViewUrl" style="width: 100%">
         </Modal>
     </div>
 
 </template>
 <script>
-    import commonTable from '../components/commonTable.vue';
     import api from '../../api';
     import util from '@/libs/util.js';
     export default {
@@ -98,17 +88,12 @@
             multiple: { // 是否可以多选
                 type: Boolean,
                 default: false
-            },
-            showImgManager: { // 是否显示图片选择器
-                type: Boolean,
-                default: true
             }
         },
-        components: {
-            commonTable
-        },
+        components: {},
         data () {
             return {
+                showImgManager: false, // 是否显示图片选择器
                 imgViewUrl: '', // 预览图片地址
                 imgNodeSize: { // 图片尺寸
                     width: '158px',
@@ -161,35 +146,56 @@
                         title: '操作',
                         align: 'center',
                         width: 200,
-                        key: 'handle',
-                        handle: [
-                            {
-                                title: '预览',
-                                type: 'primary',
-                                fun: this.previewButton
-                            },
-                            'delete'
-                        ]
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        'click': () => {
+                                            console.log(params);
+                                        }
+                                    }
+                                }, '预览'),
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        'click': () => {
+                                            console.log(params);
+                                        }
+                                    }
+                                }, '删除')
+                            ]);
+                        }
                     }
                 ],
-                visible: false
+                visible: false,
+                callback: function () {}
             };
         },
-        computed: {
-
-        },
+        computed: {},
         methods: {
+            open () {
+                this.showImgManager = true;
+            },
+            close () {
+                this.showImgManager = false;
+            },
             refresh () {
                 let vm = this;
-//                this.uploadList = this.uploadList2;
                 api.Post('SystemAttListApi', {
                     page: this.page,
                     pagesize: this.pagesize
                 }, function (response) {
                     if (response.code === 0) {
-                        for(let i = 0; i< response.total; i++) {
+                        for (let i = 0; i < response.total; i++) {
                             vm.uploadList.push({
-                                'id' : response.data[i].att_id,
+                                'id': response.data[i].att_id,
                                 'name': response.data[i].att_originalname,
                                 'url': response.data[i].att_thumbnail ? response.data[i].att_thumbnail : ( response.data[i].att_domain + response.data[i].att_filepath)
                             });
@@ -205,28 +211,28 @@
                     vm.loading = false;
                     vm.$Notice.error({
                         title: '网络错误，服务请求失败',
-                        desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
+                        desc: typeof e === 'object' ? e.message : (e + '[' + statusText + ']')
                     });
-                })
+                });
             },
             search () {
-                this.$refs.table.$emit('refresh'); // 解发列表刷新事件
+                this.refresh(); // 列表刷新事件
             },
-            checkSelected (file) {
+            checkSelected (file) { // 查看是否选中
                 return util.inArray(file.id, this.selectedImg);
             },
             handleSelect (file) {
-                if(util.inArray(file.id, this.selectedImg)) {
+                if (util.inArray(file.id, this.selectedImg)) {
                     let len = this.selectedImg.length;
-                    let index ;
+                    let index;
                     for (index = 0; index < len; index++) {
-                        if (this.selectedImg[index] == file.id) {
+                        if (this.selectedImg[index] === file.id) {
                             break;
                         }
                     }
                     this.selectedImg.splice(index, 1);
                 } else {
-                    if(this.multiple) {
+                    if (this.multiple) {
                         this.selectedImg.push(file.id); // 选中图片
                     } else {
                         this.selectedImg = [file.id];
@@ -244,8 +250,8 @@
                 return false;
             },
 
-            //列表操作
-            handleDelete(val, index) {
+            // 列表操作
+            handleDelete (val, index) {
                 console.log('on-delete');
                 console.log(val);
             },
@@ -262,9 +268,9 @@
             // 上传文件
             handleSuccess (res, file) {
                 this.uploadListLast.push({
-                    'id' : res.att_id,
+                    'id': res.att_id,
                     'name': res.att_originalname,
-                    'url': res.att_thumbnail ? res.att_thumbnail : ( res.att_domain + res.att_filepath)
+                    'url': res.att_thumbnail ? res.att_thumbnail : (res.att_domain + res.att_filepath)
                 });
                 console.log(res);
                 console.log(file);
@@ -288,12 +294,13 @@
             },
             ok () {
                 this.$Message.info('Clicked ok');
-            },
+                this.callback(this.selectedImg);
+            }
         },
         mounted () {
             let vm = this;
             let imgManagerModel = this.$refs.imgManagerModel.$el;
-            this.$nextTick(function() {
+            this.$nextTick(function () {
                 let cur = imgManagerModel.querySelectorAll("div[class='ivu-tabs-tabpane']");
                 vm.imgNodeSize.width = (cur[0].clientWidth / 10 - (cur[0].clientWidth < 800 ? 5 : 4)) + 'px';
                 vm.imgNodeSize.height = vm.imgNodeSize.width;
@@ -301,6 +308,20 @@
             });
         },
         created () {
+            let vm = this;
+            /**
+             * 定义 open事件处理函数
+             */
+            this.$on('open', function (callback) {
+                vm.callback = callback;
+                vm.open();
+            });
+            /**
+             * 定义 close事件处理函数
+             */
+            this.$on('close', function () {
+                this.close();
+            });
         }
     }
 </script>
@@ -315,29 +336,34 @@
         overflow: hidden;
         background: #fff;
         position: relative;
-        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
         margin-right: 4px;
     }
+
     .img-manager-selected {
         background: #2d8cf0;
     }
-    .img-manager-img-list img{
+
+    .img-manager-img-list img {
         width: 100%;
         height: 100%;
     }
-    .img-manager-img-list-cover{
+
+    .img-manager-img-list-cover {
         display: none;
         position: absolute;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(0,0,0,.6);
+        background: rgba(0, 0, 0, .6);
     }
-    .img-manager-img-list:hover .img-manager-img-list-cover{
+
+    .img-manager-img-list:hover .img-manager-img-list-cover {
         display: block;
     }
-    .img-manager-img-list-cover i{
+
+    .img-manager-img-list-cover i {
         color: #fff;
         font-size: 20px;
         cursor: pointer;

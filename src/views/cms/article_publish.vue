@@ -144,7 +144,9 @@
             </Tabs>
             </Col>
         </Row>
-        <img-manager></img-manager>
+        <img-manager
+            ref="imgManager"
+        ></img-manager>
     </div>
 </template>
 <script>
@@ -184,7 +186,8 @@
                 tagSelected: [], // 最后实际选择的tag
                 publishLoading: false,
                 addingNewTag: false, // 添加新标签
-                newTagName: '' // 新建标签名
+                newTagName: '', // 新建标签名
+                showImgManager: true // 显示图片处理器
             };
         },
         computed: {},
@@ -505,7 +508,10 @@
 
                             // Provide image and alt text for the image dialog
                             if (meta.filetype == 'image') {
-                                callback('myimage.jpg', {alt: 'My alt text'});
+                                vm.$refs.imgManager.$emit('open', function () {
+                                    alert("dd");
+                                }); // 解发open事件
+//                                callback('myimage.jpg', {alt: 'My alt text'});
                             }
 
                             // Provide alternative source and posted for the media dialog
@@ -614,6 +620,8 @@
                 this.initSortList();
                 this.initEditor();
             }
+
+            this.$refs.imgManager.$emit('open'); // 解发open事件
 
         },
         created () {
