@@ -503,20 +503,25 @@
                         file_picker_callback: function (callback, value, meta) {
                             // Provide file and text for the link dialog
                             if (meta.filetype == 'file') {
-                                callback('mypage.html', {text: 'My text'});
+//                                callback('mypage.html', {text: 'My text'});
                             }
 
                             // Provide image and alt text for the image dialog
                             if (meta.filetype == 'image') {
-                                vm.$refs.imgManager.$emit('open', function () {
-                                    alert("dd");
+                                document.getElementById('mce-modal-block').style.zIndex = 998;
+                                if(document.getElementById('mce-modal-block').previousElementSibling) {
+                                    document.getElementById('mce-modal-block').previousElementSibling.style.zIndex = 999;
+                                }
+
+                                vm.$refs.imgManager.$emit('open', function (img) {
+                                    img = img[0];
+                                    callback(img.url, {alt: img.name});
                                 }); // 解发open事件
-//                                callback('myimage.jpg', {alt: 'My alt text'});
                             }
 
                             // Provide alternative source and posted for the media dialog
                             if (meta.filetype == 'media') {
-                                callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
+//                                callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
                             }
                         },
                         table_default_styles: {
@@ -621,7 +626,9 @@
                 this.initEditor();
             }
 
-            this.$refs.imgManager.$emit('open'); // 解发open事件
+            this.$refs.imgManager.$emit('open', function(selectedImg){
+                console.log(selectedImg);
+            }); // 解发open事件
 
         },
         created () {

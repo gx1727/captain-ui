@@ -18,13 +18,16 @@
                             <img :src="item.url">
                             <div class="img-manager-img-list-cover" @click="handleSelect(item)">
                                 <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-                                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                             </div>
                         </div>
                     </div>
                     <div style="padding: 5px;" v-if="showImgList">
                         <Table :columns="tableColumn" :data="uploadList"></Table>
                     </div>
+                    <div style="padding: 5px;text-align: center;">
+                        <Page :current="page" :total="total" :page-size="pagesize" @on-change="handlePageChange" show-total></Page>
+                    </div>
+
                 </TabPane>
                 <TabPane label="本地上传">
                     <Upload
@@ -48,7 +51,6 @@
                         <img :src="item.url">
                         <div class="img-manager-img-list-cover" @click="handleSelect(item)">
                             <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-                            <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                         </div>
                     </div>
                 </TabPane>
@@ -67,7 +69,7 @@
                     </ButtonGroup>
                     </Col>
                     <Col span="14" style="text-align: right;">
-                    <Input v-model="searchParam.keyword" icon="ios-search" @keyup.enter.native="search" placeholder="输入关键词..."></Input>
+                    <Input v-model="searchKeyword" icon="ios-search" @keyup.enter.native="search" placeholder="输入关键词..."></Input>
                     </Col>
                 </Row>
             </Tabs>
@@ -105,10 +107,8 @@
                 uploadListLast: [], // 最新上传的图片
                 uploadList: [], // 显示的图片
                 page: 1,
-                pagesize: 50,
-                searchParam: {
-                    keyword: ''
-                }, // 搜索参数
+                total: 0,
+                pagesize: 40,
                 tableColumn: [
                     {
                         title: '序号',
@@ -117,22 +117,23 @@
                         align: 'center'
                     },
                     {
-                        title: '',
+                        title: '图',
                         align: 'center',
+                        width: 100,
                         key: 'thumbnail',
                         type: 'html'
                     },
                     {
                         title: '名称',
-                        align: 'center',
+                        align: 'left',
                         key: 'att_originalname',
                         type: 'html'
                     },
                     {
                         title: '大小',
                         width: 100,
-                        align: 'att_size',
-                        key: 'att_size',
+                        align: 'center',
+                        key: 'size',
                         sortable: 'att_size',
                         type: 'html'
                     },
@@ -145,7 +146,7 @@
                     {
                         title: '操作',
                         align: 'center',
-                        width: 200,
+                        width: 100,
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -155,27 +156,17 @@
                                     },
                                     on: {
                                         'click': () => {
-                                            console.log(params);
+                                            this.handleView(params.row.url);
                                         }
                                     }
-                                }, '预览'),
-                                h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        'click': () => {
-                                            console.log(params);
-                                        }
-                                    }
-                                }, '删除')
+                                }, '预览')
                             ]);
                         }
                     }
                 ],
                 visible: false,
-                callback: function () {}
+                callback: function () {
+                }
             };
         },
         computed: {},
@@ -190,15 +181,15 @@
                 let vm = this;
                 api.Post('SystemAttListApi', {
                     page: this.page,
-                    pagesize: this.pagesize
+                    pagesize: this.pagesize,
+                    keyword: this.searchKeyword
                 }, function (response) {
                     if (response.code === 0) {
-                        for (let i = 0; i < response.total; i++) {
-                            vm.uploadList.push({
-                                'id': response.data[i].att_id,
-                                'name': response.data[i].att_originalname,
-                                'url': response.data[i].att_thumbnail ? response.data[i].att_thumbnail : ( response.data[i].att_domain + response.data[i].att_filepath)
-                            });
+                        vm.uploadList = [];
+                        vm.total = response.total;
+                        let len = response.data.length;
+                        for (let i = 0; i < len; i++) {
+                            vm.uploadList.push(response.data[i]);
                         }
                     } else {
                         vm.$Notice.warning({
@@ -244,26 +235,6 @@
                 this.visible = true;
                 return false;
             },
-            handleRemove (file) {
-                const fileList = this.$refs.upload.fileList;
-                this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-                return false;
-            },
-
-            // 列表操作
-            handleDelete (val, index) {
-                console.log('on-delete');
-                console.log(val);
-            },
-            /**
-             * 处理单选
-             * @param row 当前行
-             * @param oldRow 上一行
-             */
-            handCurrentChange (row, oldRow) {
-//                console.log(oldRow);
-                console.log(row);
-            },
 
             // 上传文件
             handleSuccess (res, file) {
@@ -290,11 +261,27 @@
             handleBeforeUpload () {
             },
             previewButton (row) { // 预览图片
-                this.handleView(row.att_domain + row.att_filepath);
+                this.handleView(row.url);
+            },
+            handlePageChange (page) {
+                this.page = page;
+                this.refresh();
             },
             ok () {
-                this.$Message.info('Clicked ok');
-                this.callback(this.selectedImg);
+                if (typeof this.callback === 'function') {
+                    let returnImage = [];
+                    for (let i = 0; i < this.uploadList.length; i++) {
+                        if (util.inArray(this.uploadList[i].id, this.selectedImg)) {
+                            returnImage.push(this.uploadList[i]);
+                        }
+                    }
+                    for (let i = 0; i < this.uploadListLast.length; i++) {
+                        if (util.inArray(this.uploadListLast[i].id, this.selectedImg)) {
+                            returnImage.push(this.uploadListLast[i]);
+                        }
+                    }
+                    this.callback(returnImage);
+                }
             }
         },
         mounted () {
@@ -302,7 +289,8 @@
             let imgManagerModel = this.$refs.imgManagerModel.$el;
             this.$nextTick(function () {
                 let cur = imgManagerModel.querySelectorAll("div[class='ivu-tabs-tabpane']");
-                vm.imgNodeSize.width = (cur[0].clientWidth / 10 - (cur[0].clientWidth < 800 ? 5 : 4)) + 'px';
+                console.log(cur[0].clientWidth);
+                vm.imgNodeSize.width = (cur[0].clientWidth / 8 - (cur[0].clientWidth < 800 ? 5 : 7)) + 'px';
                 vm.imgNodeSize.height = vm.imgNodeSize.width;
                 vm.refresh();
             });
