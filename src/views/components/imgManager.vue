@@ -10,6 +10,7 @@
                 :scrollable="true"
                 :mask-closable="false"
                 @on-ok="ok"
+                @on-visible-change="handleVisibleChange"
                 :styles="{top: '20px'}">
             <Tabs>
                 <TabPane label="素材库" style="height: 70vh;overflow: auto;">
@@ -130,6 +131,12 @@
                         type: 'html'
                     },
                     {
+                        title: 'URL',
+                        align: 'left',
+                        key: 'url',
+                        type: 'html'
+                    },
+                    {
                         title: '大小',
                         width: 100,
                         align: 'center',
@@ -173,9 +180,23 @@
         methods: {
             open () {
                 this.showImgManager = true;
+
+
             },
             close () {
                 this.showImgManager = false;
+            },
+            handleVisibleChange (flag) {
+                let vm = this;
+                if(flag) {
+                    let imgManagerModel = this.$refs.imgManagerModel.$el;
+                    this.$nextTick(function () {
+                        let cur = imgManagerModel.querySelectorAll("div[class='ivu-tabs-tabpane']");
+                        vm.imgNodeSize.width = (cur[0].clientWidth / 8 - (cur[0].clientWidth < 800 ? 5 : 7)) + 'px';
+                        vm.imgNodeSize.height = vm.imgNodeSize.width;
+                        vm.refresh();
+                    });
+                }
             },
             refresh () {
                 let vm = this;
@@ -285,15 +306,6 @@
             }
         },
         mounted () {
-            let vm = this;
-            let imgManagerModel = this.$refs.imgManagerModel.$el;
-            this.$nextTick(function () {
-                let cur = imgManagerModel.querySelectorAll("div[class='ivu-tabs-tabpane']");
-                console.log(cur[0].clientWidth);
-                vm.imgNodeSize.width = (cur[0].clientWidth / 8 - (cur[0].clientWidth < 800 ? 5 : 7)) + 'px';
-                vm.imgNodeSize.height = vm.imgNodeSize.width;
-                vm.refresh();
-            });
         },
         created () {
             let vm = this;

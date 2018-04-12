@@ -68,13 +68,8 @@ export const appRouter = {
     title: '',
     component: Main,
     children: [
-        {path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue')},
-        {path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue')}, // 管理员home
         {path: 'admin/home', title: {i18n: 'home'}, name: 'admin_home', component: () => import('@/views/admin/admin_home.vue')}, // 管理员home
         {path: 'manager/home', title: {i18n: 'home'}, name: 'manager_home', component: () => import('@/views/manager/manager_home.vue')}, // manager home
-        {path: 'order/:order_id', title: '订单详情', name: 'order-info', component: () => import('@/views/advanced-router/component/order-info.vue')}, // 用于展示动态路由
-        {path: 'shopping', title: '购物详情', name: 'shopping', component: () => import('@/views/advanced-router/component/shopping-info.vue')}, // 用于展示带参路由
-        {path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue')},
 
         {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
         {path: 'auth/menu', title: '菜单管理', icon: 'android-menu', name: 'auth_menu', component: () => import('@/views/auth/menu.vue')},
@@ -86,17 +81,15 @@ export const appRouter = {
         {path: 'cms/tag_group', title: '文章TAG分组', icon: 'android-menu', name: 'cms_tag_group', component: () => import('@/views/cms/tag-group.vue')},
         {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/cms/tag.vue')},
         {path: 'cms/view', title: '栏目管理', icon: 'android-menu', name: 'cms_view', component: () => import('@/views/cms/view.vue')},
-
-        {path: 'access/index', title: '权限管理', icon: 'key', name: 'access_index', component: () => import('@/views/access/access.vue')},
-        {path: 'access/test', title: '权限测试页', icon: 'lock-combination', name: 'accesstest_index', component: () => import('@/views/access/access-test.vue')},
-        {path: 'form/artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue')},
-        {path: 'mutative-router', title: '动态路由', name: 'mutative-router', icon: 'link', component: () => import('@/views/advanced-router/mutative-router.vue')},
     ]
 };
 
 /**
  * 所有路由
  * @type {Array}
+ *         {path: 'order/:order_id', title: '订单详情', name: 'order-info', component: () => import('@/views/advanced-router/component/order-info.vue')}, // 用于展示动态路由
+ {path: 'shopping', title: '购物详情', name: 'shopping', component: () => import('@/views/advanced-router/component/shopping-info.vue')}, // 用于展示带参路由
+ {path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue')},
  */
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里

@@ -52,18 +52,12 @@ export default {
         service.post(this.GetApiPath(api), param).then(function (response) {
             if (response.status === 200) {
                 success(manageResponse(response.data));
-            } else {
-                faild(response.status, response.statusText);
-            }
-        }).catch(function (e) {
-            faild(e, '');
-        })
-    },
-    RoleEdit (param, success, faild) {
-        service.post(RoleEditApi, param).then(function (response) {
-            if (response.status === 200) {
+            } else if (response.status === 997) {
                 success(manageResponse(response.data));
-            } else {
+            } else if (response.status === 998) {
+                alert("logout");
+                success(manageResponse(response.data));
+            }else {
                 faild(response.status, response.statusText);
             }
         }).catch(function (e) {

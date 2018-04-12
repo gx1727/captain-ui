@@ -65,21 +65,35 @@
                         <Input v-model="tagNode.ct_order" placeholder="请输入TAG排序"/>
                     </FormItem>
                     <FormItem label="TAG图片">
-                        <Input v-model="tagNode.ct_img" placeholder="请输入TAG图片"/>
+                        <Row>
+                            <Col span="18">
+                                <Input v-model="tagNode.ct_img" placeholder="请输入分类图片">
+                                <Button type="ghost" slot="append" @click="handleSelectImg" icon="ios-cloud-upload-outline">选择文件</Button>
+                                </Input>
+                            </Col>
+                            <Col span="6">
+                                <img v-if="tagNode.ct_img" :src="tagNode.ct_img" width="100%"/>
+                            </Col>
+                        </Row>
                     </FormItem>
                 </Form>
                 </Col>
             </Row>
         </Modal>
+        <img-manager
+                ref="imgManager"
+        ></img-manager>
     </div>
 </template>
 <script>
+    import imgManager from '../components/imgManager.vue';
     import commonTable from '../components/commonTable.vue';
     import api from '../../api';
     export default {
         name: 'cms-tag-group',
         components: {
-            commonTable
+            commonTable,
+            imgManager
         },
         data () {
             return {
@@ -108,14 +122,14 @@
                     {
                         title: '#',
                         type: 'index',
-                        width: 100,
+                        width: 60,
                         align: 'center'
                     },
                     {
                         title: '分组名称',
                         align: 'center',
                         key: 'ctg_name_title',
-                        width: 200,
+                        width: 100,
                         filters: [],
                         filterMultiple: false,
                         filterRemote (values, key) {
@@ -123,18 +137,21 @@
                     },
                     {
                         title: 'TAG名称',
+                        width: 100,
                         align: 'center',
                         key: 'ct_name',
                         editable: true
                     },
                     {
                         title: 'TAG标题',
+                        width: 100,
                         align: 'center',
                         key: 'ct_title',
                         editable: true
                     },
                     {
                         title: 'TAG模板',
+                        width: 100,
                         align: 'center',
                         key: 'ct_template',
                         editable: true
@@ -142,6 +159,7 @@
                     {
                         title: 'TAG排序',
                         align: 'center',
+                        width: 100,
                         key: 'ct_order',
                         sortable: 'ct_order',
                         editable: true
@@ -151,6 +169,13 @@
                         align: 'center',
                         key: 'ct_img',
                         editable: true
+                    },
+                    {
+                        title: '图片',
+                        align: 'center',
+                        key: 'img',
+                        width: 100,
+                        type: 'html'
                     },
                     {
                         title: '操作',
@@ -284,7 +309,14 @@
                     } else {
                     }
                 });
-            }
+            },
+            handleSelectImg () {
+                let vm = this;
+                this.$refs.imgManager.$emit('open', function(selectedImg){
+                    selectedImg = selectedImg[0];
+                    vm.tagNode.ct_img = selectedImg.url;
+                });
+            },
         },
         mounted () {
             let vm = this;

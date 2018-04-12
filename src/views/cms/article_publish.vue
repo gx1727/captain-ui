@@ -4,7 +4,7 @@
 </style>
 <template>
     <div>
-        <Row>
+        <Row style="margin-bottom: 200px;">
             <Col span="18">
                 <Card>
                     <Form :label-width="80">
@@ -47,7 +47,7 @@
                         <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
                     </p>
                     <p class="margin-top-10">
-                        <Icon type="ios-calendar-outline"></Icon>&nbsp;&nbsp;
+                        <Icon type="ios-calendar-outline"></Icon>
                         <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
                         <Button v-show="!editPublishTime" size="small" @click="handleEditPublishTime" type="text">修改</Button>
                         <transition name="publish-time">
@@ -62,26 +62,16 @@
                             </div>
                         </transition>
                     </p>
+                    <p class="margin-top-10">
+                        <Icon type="star"></Icon>
+                        <Checkbox v-model="article.a_recommend">推荐</Checkbox>
+                    </p>
                     <Row class="margin-top-20 publish-button-con">
                         <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
                         <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
                     </Row>
                 </Card>
-                <div class="margin-top-10" v-for="tagGroupItem in tagDB">
-                    <Card>
-                        <p slot="title">
-                            <Icon type="ios-pricetags-outline"></Icon>
-                            {{ tagGroupItem.title }}
-                        </p>
-                        <Row>
-                            <Col span="24">
-                            <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple>
-                                <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
-                            </Select>
-                            </Col>
-                        </Row>
-                    </Card>
-                </div>
+
                 <div class="margin-top-10">
                     <Card>
                         <p slot="title">
@@ -97,6 +87,27 @@
                         </Tabs>
                     </Card>
                 </div>
+
+                <Card>
+                    <p slot="title">
+                        <Icon type="ios-pricetags-outline"></Icon>
+                        功能
+                    </p>
+                    <Tabs type="card" class="margin-top-10">
+                        <TabPane :label="tagGroupItem.title" v-for="tagGroupItem in tagDB" :key="tagGroupItem.name">
+                            <div class="classification-con">
+                                <Row>
+                                    <Col span="24">
+                                    <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple transfer>
+                                        <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
+                                    </Select>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </TabPane>
+                    </Tabs>
+                </Card>
+
                 <div class="margin-top-10">
                     <Card>
                         <p slot="title">
@@ -105,8 +116,7 @@
                         </p>
                         <Row>
                             <Col span="18">
-
-                            <Select v-model="articleTagSelected['other']" multiple filterable @on-change="handleSelectTag" placeholder="请选择文章标签">
+                            <Select v-model="articleTagSelected['other']" multiple filterable transfer @on-change="handleSelectTag" placeholder="请选择文章标签">
                                 <Option v-for="item in otherTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
                             </Select>
                             </Col>
@@ -133,13 +143,18 @@
                 </div>
                 </TabPane>
                 <TabPane label="图片">
-                    dd
+                    <Card>
+                        <p slot="title">
+                            <Icon type="flag"></Icon>
+                            封面图
+                        </p>
+                        <Button slot="extra" type="ghost"  @click="handleSelectImg" icon="ios-cloud-upload-outline">选择文件</Button>
+                        <img :src="article.a_img" style="width: 100%">
+                    </Card>
                 </TabPane>
                 <TabPane label="房车">
-                    dd
                 </TabPane>
                 <TabPane label="营地">
-                    dd
                 </TabPane>
             </Tabs>
             </Col>
@@ -175,6 +190,7 @@
                     a_count: '',
                     a_extended: '',
                     a_publish_time: '', // 计划发布时间
+                    a_recommend: false,
                     a_status: -1,
                     publish_time: '', // 最新已发布时间
                     draft_etime: '' // 最新草稿时间 2018-03-28 12:03:00
@@ -253,6 +269,17 @@
              */
             handleAddNewTag () {
                 this.addingNewTag = !this.addingNewTag;
+            },
+
+            /**
+             *
+             */
+            handleSelectImg () {
+                let vm = this;
+                this.$refs.imgManager.$emit('open', function(selectedImg){
+                    selectedImg = selectedImg[0];
+                    vm.article.a_img = selectedImg.url;
+                });
             },
             /**
              * 创建新的TAG
@@ -574,6 +601,7 @@
                         vm.article.a_count = res.a_count;
                         vm.article.a_extended = res.a_extended;
                         vm.article.a_publish_time = res.a_publish_time;
+                        vm.article.a_recommend = res.a_recommend;
                         vm.article.a_status = res.a_status;
                         vm.article.publish_time = res.publish_time;
                         vm.article.draft_etime = res.draft_etime;
@@ -625,11 +653,6 @@
                 this.initSortList();
                 this.initEditor();
             }
-
-            this.$refs.imgManager.$emit('open', function(selectedImg){
-                console.log(selectedImg);
-            }); // 解发open事件
-
         },
         created () {
         },

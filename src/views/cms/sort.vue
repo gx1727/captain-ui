@@ -53,7 +53,16 @@
                         <Input v-model="cmsSort.cs_template" placeholder="请输入分类模板"/>
                     </FormItem>
                     <FormItem label="分类图片">
-                        <Input v-model="cmsSort.cs_img" placeholder="请输入分类图片"/>
+                        <Row>
+                            <Col span="18">
+                                <Input v-model="cmsSort.cs_img" placeholder="请输入分类图片">
+                                    <Button type="ghost" slot="append" @click="handleSelectImg" icon="ios-cloud-upload-outline">选择文件</Button>
+                                </Input>
+                            </Col>
+                            <Col span="6">
+                                <img v-if="cmsSort.cs_img" :src="cmsSort.cs_img" width="100%"/>
+                            </Col>
+                        </Row>
                     </FormItem>
                     <FormItem label="排序">
                         <InputNumber :max="99" :min="1" v-model="cmsSort.cs_order"></InputNumber>
@@ -65,13 +74,19 @@
             </Card>
             </Col>
         </Row>
+        <img-manager
+                ref="imgManager"
+        ></img-manager>
     </div>
 </template>
 <script>
+    import imgManager from '../components/imgManager.vue';
     import api from '../../api';
     export default {
         name: 'cms-sort',
-        components: {},
+        components: {
+            imgManager
+        },
         data () {
             return {
                 cmsTitle: '新增',
@@ -176,6 +191,13 @@
                 } else {
                     vm.cleanMenuNode();
                 }
+            },
+            handleSelectImg () {
+                let vm = this;
+                this.$refs.imgManager.$emit('open', function(selectedImg){
+                    selectedImg = selectedImg[0];
+                    vm.cmsSort.cs_img = selectedImg.url;
+                });
             },
             btnSubmit: function () {
                 let vm = this;
