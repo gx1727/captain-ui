@@ -192,7 +192,7 @@
                     let imgManagerModel = this.$refs.imgManagerModel.$el;
                     this.$nextTick(function () {
                         let cur = imgManagerModel.querySelectorAll("div[class='ivu-tabs-tabpane']");
-                        vm.imgNodeSize.width = (cur[0].clientWidth / 8 - (cur[0].clientWidth < 800 ? 5 : 7)) + 'px';
+                        vm.imgNodeSize.width = (cur[0].clientWidth / 8 - (cur[0].clientWidth < 800 ? 12 : 14)) + 'px';
                         vm.imgNodeSize.height = vm.imgNodeSize.width;
                         vm.refresh();
                     });
@@ -336,8 +336,9 @@
         overflow: hidden;
         background: #fff;
         position: relative;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
-        margin-right: 4px;
+        box-shadow: 0 0px 0px rgba(0, 0, 0, .2);
+        margin-right: 10px;
+        margin-bottom: 10px;
     }
 
     .img-manager-selected {

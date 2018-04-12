@@ -11,7 +11,7 @@ const user = {
         setAvator (state, path) {
             localStorage.avatorImgPath = path;
         },
-        logout (state, vm) {
+        logout (state) {
             Cookies.remove('user');
             Cookies.remove('user_code');
             Cookies.remove('role');

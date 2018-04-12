@@ -2,6 +2,8 @@
  * Created by gx1727 on 2018/3/14.
  */
 import axios from 'axios'
+import Vue from 'vue';
+import store from '../store';
 
 import {
     LoginApi,
@@ -40,24 +42,31 @@ const service = axios.create({
 
 export default {
     ManageFaild (e, statusText) {
-        // console.log((typeof e === 'object') ? e.message : (e + '[' + statusText + ']'));
+        let vm = Vue.prototype;
+        vm.$Notice.error({
+            title: '网络错误，服务请求失败',
+            desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
+        });
     },
     Login (param) {
         return service.post(LoginApi, param);
     },
     Post (api, param, success, faild) {
+
         if (typeof faild != 'function') {
             faild = this.ManageFaild;
         }
         service.post(this.GetApiPath(api), param).then(function (response) {
             if (response.status === 200) {
-                success(manageResponse(response.data));
-            } else if (response.status === 997) {
-                success(manageResponse(response.data));
-            } else if (response.status === 998) {
-                alert("logout");
-                success(manageResponse(response.data));
-            }else {
+                let res = manageResponse(response.data);
+                if(res.code === 998) { // 退出登录
+                    store.commit('logout');
+                    store.commit('clearOpenedSubmenu');
+                    location.reload();
+                } else {
+                    success(res);
+                }
+            } else {
                 faild(response.status, response.statusText);
             }
         }).catch(function (e) {

@@ -601,7 +601,7 @@
                         vm.article.a_count = res.a_count;
                         vm.article.a_extended = res.a_extended;
                         vm.article.a_publish_time = res.a_publish_time;
-                        vm.article.a_recommend = res.a_recommend;
+                        vm.article.a_recommend = res.a_recommend ? true : false;
                         vm.article.a_status = res.a_status;
                         vm.article.publish_time = res.publish_time;
                         vm.article.draft_etime = res.draft_etime;
