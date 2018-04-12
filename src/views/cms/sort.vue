@@ -65,7 +65,7 @@
                         </Row>
                     </FormItem>
                     <FormItem label="排序">
-                        <InputNumber :max="99" :min="1" v-model="cmsSort.cs_order"></InputNumber>
+                        <InputNumber :min="1" v-model="cmsSort.cs_order"></InputNumber>
                     </FormItem>
                     <FormItem>
                         <Button type="primary" @click="btnSubmit">确定</Button>
@@ -189,7 +189,7 @@
                         }
                     });
                 } else {
-                    vm.cleanMenuNode();
+                    vm.cleanCmsSort();
                 }
             },
             handleSelectImg () {

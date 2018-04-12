@@ -70,6 +70,12 @@
                         align: 'center'
                     },
                     {
+                        title: '分组类型',
+                        align: 'center',
+                        key: 'ctg_type',
+                        editable: true
+                    },
+                    {
                         title: '分组名称',
                         align: 'center',
                         key: 'ctg_name',
@@ -79,6 +85,18 @@
                         title: '分组标题',
                         align: 'center',
                         key: 'ctg_title',
+                        editable: true
+                    },
+                    {
+                        title: '分组排序',
+                        align: 'center',
+                        key: 'ctg_order',
+                        editable: true
+                    },
+                    {
+                        title: '分组图片',
+                        align: 'center',
+                        key: 'ctg_img',
                         editable: true
                     },
                     {
@@ -123,11 +141,6 @@
                             desc: res.msg
                         });
                     }
-                }, function (e, statusText) {
-                    vm.$Notice.error({
-                        title: '网络错误，服务请求失败',
-                        desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                    });
                 });
             },
             handleChange (val, index) {
@@ -148,11 +161,6 @@
                             desc: res.msg
                         });
                     }
-                }, function (e, statusText) {
-                    vm.$Notice.error({
-                        title: '网络错误，服务请求失败',
-                        desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                    });
                 });
             },
             handleDelete(val, index) {
@@ -174,11 +182,6 @@
                             desc: res.msg
                         });
                     }
-                }, function (e, statusText) {
-                    vm.$Notice.error({
-                        title: '网络错误，服务请求失败',
-                        desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                    });
                 });
             },
             addTagGroup () {
