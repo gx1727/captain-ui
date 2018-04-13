@@ -90,6 +90,7 @@
                                             localStorage.menuTreeData = JSON.stringify(res.menuTree);
                                             vm.$store.commit('updateMenulist');
                                         } else {
+                                            localStorage.menuTreeData = false;
                                             vm.$Notice.warning({
                                                 title: '获到菜单数据失败',
                                                 desc: res.msg

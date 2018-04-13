@@ -18,7 +18,7 @@
                         <Col span="16" style="padding-left:6px;">
                         <Row class-name="made-child-con-middle" type="flex" align="middle">
                             <div>
-                                <b class="card-user-infor-name">Admin</b>
+                                <b class="card-user-infor-name">{{ loginUser ? loginUser.user_name : '' }}</b>
                             </div>
                         </Row>
                         </Col>
@@ -27,6 +27,9 @@
                     <Row class="margin-top-8">
                         <Col span="8">
                         <p class="notwrap">{{ loginUser ? loginUser.role.role_title : '' }}</p>
+                        </Col>
+                        <Col span="8">
+                        <p class="notwrap">{{ loginUser ? loginUser.user_true_name : '' }}</p>
                         </Col>
                     </Row>
                 </Card>
@@ -106,27 +109,12 @@
         data () {
             return {
                 toDoList: [
-                    {
-                        title: '去iView官网学习完整的iView组件'
-                    },
-                    {
-                        title: '去iView官网学习完整的iView组件'
-                    },
-                    {
-                        title: '去iView官网学习完整的iView组件'
-                    },
-                    {
-                        title: '去iView官网学习完整的iView组件'
-                    },
-                    {
-                        title: '去iView官网学习完整的iView组件'
-                    }
                 ],
                 count: {
-                    createUser: 496,
-                    visit: 3264,
-                    collection: 24389305,
-                    transfer: 39503498
+                    createUser: 0,
+                    visit: 0,
+                    collection: 0,
+                    transfer: 0
                 },
                 showAddNewTodo: false,
                 newToDoItemValue: ''
