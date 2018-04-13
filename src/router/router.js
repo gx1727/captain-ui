@@ -81,6 +81,9 @@ export const appRouter = {
         {path: 'cms/tag_group', title: '文章TAG分组', icon: 'android-menu', name: 'cms_tag_group', component: () => import('@/views/cms/tag-group.vue')},
         {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/cms/tag.vue')},
         {path: 'cms/view', title: '栏目管理', icon: 'android-menu', name: 'cms_view', component: () => import('@/views/cms/view.vue')},
+
+        {path: 'cms/editor', title: '编辑列表', icon: 'android-menu', name: 'cms_editor', component: () => import('@/views/cms/editor_list.vue')},
+        {path: 'cms/editor/form/:user_id', title: '编辑人员信息', icon: 'android-menu', name: 'cms_editor_form', component: () => import('@/views/cms/editor_form.vue')}
     ]
 };
 

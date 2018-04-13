@@ -32,7 +32,12 @@ import {
     CmsArticleEditApi,
     CmsArticlePublishApi,
     CmsArticleDelApi,
-    SystemAttListApi
+    SystemAttListApi,
+    CmsEditorListApi,
+    CmsEditorFormApi,
+    CmsEditorDelApi,
+    CmsEditorAuthApi,
+    CmsEditorGetApi
 } from './config'
 
 const service = axios.create({
@@ -129,6 +134,16 @@ export default {
                 return CmsArticleDelApi;
             case 'SystemAttListApi':
                 return SystemAttListApi;
+            case 'CmsEditorListApi':
+                return CmsEditorListApi;
+            case 'CmsEditorFormApi':
+                return CmsEditorFormApi;
+            case 'CmsEditorDelApi':
+                return CmsEditorDelApi;
+            case 'CmsEditorAuthApi':
+                return CmsEditorAuthApi;
+            case 'CmsEditorGetApi':
+                return CmsEditorGetApi;
         }
     }
 }

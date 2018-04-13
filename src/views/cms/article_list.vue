@@ -48,14 +48,12 @@
     import commonTable from '../components/commonTable.vue';
     import api from '../../api';
     export default {
-        name: 'cms-tag-group',
+        name: 'cms-article-list',
         components: {
             commonTable
         },
         data () {
             return {
-                fromTag: false,
-                loading: true,
                 searchParam: {
                     keyword: ''
                 },
@@ -214,8 +212,8 @@
                 let vm = this;
                 vm.$Message.info('提交中...');
 
-                api.Post('CmsTagDelApi', {
-                    ct_id: val.ct_id,
+                api.Post('CmsArticleDelApi', {
+                    a_id: val.a_id,
                     postData: JSON.stringify(val)
                 }, function (res) {
                     vm.$Message.destroy();
@@ -230,41 +228,8 @@
                             desc: res.msg
                         });
                     }
-                }, function (e, statusText) {
-                    vm.$Notice.error({
-                        title: '网络错误，服务请求失败',
-                        desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                    });
                 });
             },
-            addTag () {
-                let vm = this;
-                this.$refs['formTag'].validate((valid) => {
-                    if (valid) {
-                        api.Post('CmsTagAddApi', vm.tagNode, function (res) {
-                            vm.fromTag = false;
-                            if (res.code === 0) {
-                                vm.refresh();
-                                vm.$Notice.success({
-                                    title: '新增TAG成功'
-                                });
-                            } else if (res.code === 6) {
-                                vm.$Notice.info({
-                                    title: '提示',
-                                    desc: res.msg
-                                });
-                                vm.refresh();
-                            } else {
-                                vm.$Notice.warning({
-                                    title: '错误',
-                                    desc: res.msg
-                                });
-                            }
-                        });
-                    } else {
-                    }
-                });
-            }
         },
         mounted () {
             let vm = this;
@@ -301,11 +266,6 @@
                         desc: res.msg
                     });
                 }
-            }, function (e, statusText) {
-                vm.$Notice.error({
-                    title: '网络错误，服务请求失败',
-                    desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                });
             });
         },
         created () {
