@@ -39,6 +39,16 @@
                     ></common-table>
                     </Col>
                 </Row>
+                <Alert>
+                    分组类型说明:
+                    <template slot="desc">
+                        0: 常规 <br/>
+                        1: 文章TAG <br/>
+                        2: 车型库 <br/>
+                        3: 营地 <br/>
+                        4: 功能性
+                    </template>
+                </Alert>
             </Card>
             </Col>
         </Row>

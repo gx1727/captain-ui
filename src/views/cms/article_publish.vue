@@ -116,8 +116,8 @@
                         </p>
                         <Row>
                             <Col span="18">
-                            <Select v-model="articleTagSelected['other']" multiple filterable transfer @on-change="handleSelectTag" placeholder="请选择文章标签">
-                                <Option v-for="item in otherTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
+                            <Select v-model="articleTagSelected['common']" multiple filterable transfer @on-change="handleSelectTag" placeholder="请选择文章标签">
+                                <Option v-for="item in commonTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
                             </Select>
                             </Col>
                             <Col span="6" class="padding-left-10">
@@ -179,7 +179,7 @@
                 showCurrentTableData: true,
                 articleTagSelected: {}, // 文章选中的标签
                 tagDB: [],
-                otherTagDB: [],
+                commonTagDB: [],
                 article: {
                     a_id: 0,
                     user_code: '',
@@ -288,26 +288,26 @@
                 let vm = this;
                 if (vm.newTagName.length !== 0) {
                     api.Post('CmsTagAddApi', {
-                        ctg_name: 'other',
+                        ctg_name: 'common',
                         ct_title: vm.newTagName
                     }, function (res) {
                         if (res.code === 0) {
                             vm.addingNewTag = false;
-                            vm.otherTagDB.push({
+                            vm.commonTagDB.push({
                                 name: res.ct_name,
                                 title: res.ct_title
                             });
-                            vm.articleTagSelected.other.push(res.ct_name);
+                            vm.articleTagSelected.common.push(res.ct_name);
                             vm.$Notice.success({
                                 title: '新增TAG成功'
                             });
                         } else if (res.code === 6) {
                             vm.addingNewTag = false;
-                            vm.otherTagDB.push({
+                            vm.commonTagDB.push({
                                 name: res.ct_name,
                                 title: res.ct_title
                             });
-                            vm.articleTagSelected.other.push(res.ct_name);
+                            vm.articleTagSelected.common.push(res.ct_name);
                             vm.$Notice.info({
                                 title: '提示',
                                 desc: res.msg
@@ -422,9 +422,9 @@
                             if (!vm.articleTagSelected[ctg_name]) {
                                 vm.articleTagSelected[ctg_name] = [];
                             }
-                            if (ctg_name === 'other') {
+                            if (ctg_name === 'common') {
                                 res.tagData[ctg_name].tagList.forEach((item) => {
-                                    vm.otherTagDB.push({
+                                    vm.commonTagDB.push({
                                         name: item.ct_name,
                                         title: item.ct_title
                                     });

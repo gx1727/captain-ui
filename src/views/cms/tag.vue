@@ -137,14 +137,14 @@
                     },
                     {
                         title: 'TAG名称',
-                        width: 100,
+                        width: 200,
                         align: 'center',
                         key: 'ct_name',
                         editable: true
                     },
                     {
                         title: 'TAG标题',
-                        width: 100,
+                        width: 150,
                         align: 'center',
                         key: 'ct_title',
                         editable: true
