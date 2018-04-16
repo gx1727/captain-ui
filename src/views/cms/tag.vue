@@ -353,11 +353,6 @@
                         desc: res.msg
                     });
                 }
-            }, function (e, statusText) {
-                vm.$Notice.error({
-                    title: '网络错误，服务请求失败',
-                    desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                });
             });
         },
         created () {

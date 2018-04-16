@@ -42,7 +42,7 @@
                             :before-upload="handleBeforeUpload"
                             :format="['jpg','jpeg','png', 'gif']"
                             type="drag"
-                            action="//localhost-o/api/attachment/upload">
+                            :action="actionUrl">
                         <div style="padding: 20px 0">
                             <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
                             <p>点击 或 拖拽 文件上传</p>
@@ -84,6 +84,7 @@
 </template>
 <script>
     import api from '../../api';
+    import {API_ROOT} from '../../api/config'
     import util from '@/libs/util.js';
     export default {
         name: 'img-manager',
@@ -110,6 +111,7 @@
                 page: 1,
                 total: 0,
                 pagesize: 40,
+                actionUrl: '',
                 tableColumn: [
                     {
                         title: '序号',
@@ -188,7 +190,7 @@
             },
             handleVisibleChange (flag) {
                 let vm = this;
-                if(flag) {
+                if (flag) {
                     let imgManagerModel = this.$refs.imgManagerModel.$el;
                     this.$nextTick(function () {
                         let cur = imgManagerModel.querySelectorAll("div[class='ivu-tabs-tabpane']");
@@ -301,11 +303,14 @@
                             returnImage.push(this.uploadListLast[i]);
                         }
                     }
-                    this.callback(returnImage);
+                    if (returnImage.length > 0) {
+                        this.callback(returnImage);
+                    }
                 }
             }
         },
         mounted () {
+            this.actionUrl = API_ROOT + '/attachment/upload';
         },
         created () {
             let vm = this;

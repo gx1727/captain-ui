@@ -26,6 +26,7 @@ import {
     CmsTagEditApi,
     CmsTagDelApi,
     CmsTagGetApi,
+    CmsTagByGroupApi,
     CmsArticleGetApi,
     CmsArticleListApi,
     CmsArticleCreateApi,
@@ -37,7 +38,14 @@ import {
     CmsEditorFormApi,
     CmsEditorDelApi,
     CmsEditorAuthApi,
-    CmsEditorGetApi
+    CmsEditorGetApi,
+    CmsBrandsListApi,
+    CmsBrandsAllApi,
+    CmsRvListApi,
+    CmsRvGetApi,
+    CmsRvFormApi,
+    CmsRvDelApi,
+    CmsModelListApi
 } from './config'
 
 const service = axios.create({
@@ -64,7 +72,7 @@ export default {
         service.post(this.GetApiPath(api), param).then(function (response) {
             if (response.status === 200) {
                 let res = manageResponse(response.data);
-                if(res.code === 998) { // 退出登录
+                if (res.code === 998) { // 退出登录
                     store.commit('logout');
                     store.commit('clearOpenedSubmenu');
                     location.reload();
@@ -120,6 +128,8 @@ export default {
                 return CmsTagDelApi;
             case 'CmsTagGetApi':
                 return CmsTagGetApi;
+            case 'CmsTagByGroupApi':
+                return CmsTagByGroupApi;
             case 'CmsArticleGetApi':
                 return CmsArticleGetApi;
             case 'CmsArticleListApi':
@@ -144,6 +154,20 @@ export default {
                 return CmsEditorAuthApi;
             case 'CmsEditorGetApi':
                 return CmsEditorGetApi;
+            case 'CmsBrandsListApi':
+                return CmsBrandsListApi;
+            case 'CmsBrandsAllApi':
+                return CmsBrandsAllApi;
+            case 'CmsRvListApi':
+                return CmsRvListApi;
+            case 'CmsRvGetApi':
+                return CmsRvGetApi;
+            case 'CmsRvFormApi':
+                return CmsRvFormApi;
+            case 'CmsRvDelApi':
+                return CmsRvDelApi;
+            case 'CmsModelListApi':
+                return CmsModelListApi;
         }
     }
 }

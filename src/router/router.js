@@ -81,9 +81,12 @@ export const appRouter = {
         {path: 'cms/tag_group', title: '文章TAG分组', icon: 'android-menu', name: 'cms_tag_group', component: () => import('@/views/cms/tag-group.vue')},
         {path: 'cms/tag', title: '文章TAG', icon: 'android-menu', name: 'cms_tag', component: () => import('@/views/cms/tag.vue')},
         {path: 'cms/view', title: '栏目管理', icon: 'android-menu', name: 'cms_view', component: () => import('@/views/cms/view.vue')},
-
         {path: 'cms/editor', title: '编辑列表', icon: 'android-menu', name: 'cms_editor', component: () => import('@/views/cms/editor_list.vue')},
-        {path: 'cms/editor/form/:user_id', title: '编辑人员信息', icon: 'android-menu', name: 'cms_editor_form', component: () => import('@/views/cms/editor_form.vue')}
+        {path: 'cms/editor/form/:user_id', title: '编辑人员信息', icon: 'android-menu', name: 'cms_editor_form', component: () => import('@/views/cms/editor_form.vue')},
+        {path: 'rv/brands', title: '房车品牌', icon: 'android-menu', name: 'rv_brands', component: () => import('@/views/rv/rv_brands.vue')},
+        {path: 'rv/rv', title: '房车车系', icon: 'android-menu', name: 'rv_rv', component: () => import('@/views/rv/rv_rv.vue')},
+        {path: 'rv/rv/form/:rv_id', title: '编辑车系信息', icon: 'android-menu', name: 'cms_rv_form', component: () => import('@/views/rv/rv_rv_form.vue')},
+        {path: 'rv/model', title: '房车车型', icon: 'android-menu', name: 'rv_model', component: () => import('@/views/rv/rv_model.vue')}
     ]
 };
 

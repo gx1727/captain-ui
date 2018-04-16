@@ -27,6 +27,8 @@ export const CmsTagAddApi = API_ROOT.concat('/cms/tag/add'); // 增加TAG
 export const CmsTagEditApi = API_ROOT.concat('/cms/tag/edit'); // 编辑TAG
 export const CmsTagDelApi = API_ROOT.concat('/cms/tag/del'); // 删除TAG
 export const CmsTagGetApi = API_ROOT.concat('/cms/tag/get'); // 获到TAG数据
+export const CmsTagByGroupApi = API_ROOT.concat('/cms/tag/group'); // 获到TAG数据
+
 
 export const CmsArticleGetApi = API_ROOT.concat('/cms/article/get'); // 获到文章
 export const CmsArticleListApi = API_ROOT.concat('/cms/article/list'); // 文章列表
@@ -42,3 +44,11 @@ export const CmsEditorFormApi = API_ROOT.concat('/cms/editor/form'); // 编辑�
 export const CmsEditorDelApi = API_ROOT.concat('/cms/editor/del'); // 编辑人员
 export const CmsEditorAuthApi = API_ROOT.concat('/cms/editor/auth'); // 编辑人员
 export const CmsEditorGetApi = API_ROOT.concat('/cms/editor/get'); // 编辑人员
+
+export const CmsBrandsListApi = API_ROOT.concat('/rv/brands/list'); // 品牌列表
+export const CmsBrandsAllApi = API_ROOT.concat('/rv/brands/all'); // 所有品牌
+export const CmsRvListApi = API_ROOT.concat('/rv/rv/list'); // 车系列表
+export const CmsRvGetApi = API_ROOT.concat('/rv/rv/get'); // 获取车系
+export const CmsRvFormApi = API_ROOT.concat('/rv/rv/form'); // 编辑车系
+export const CmsRvDelApi = API_ROOT.concat('/rv/rv/del'); // 删除车系
+export const CmsModelListApi = API_ROOT.concat('/rv/model/list'); // 车型列表
