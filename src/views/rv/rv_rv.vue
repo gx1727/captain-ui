@@ -8,9 +8,9 @@
         <Card>
             <p slot="title">
                 <Icon type="clipboard"></Icon>
-                品牌列表
+                车系列表
             </p>
-            <a href="#" @click="createBrands" slot="extra">
+            <a href="#" @click="createRv" slot="extra">
                 <Icon type="android-add"></Icon>
                 新增
             </a>
@@ -64,17 +64,17 @@
                     },
                     {
                         title: '房车名',
-                        align: 'center',
+                        align: 'left',
                         key: 'rv_name',
                         sortable: 'rv_name',
-                        width: 180
+                        width: 150
                     },
                     {
                         title: '图片',
                         align: 'center',
                         key: 'img',
                         type: 'html',
-                        width: 80
+                        width: 140
                     },
                     {
                         title: '品牌',
@@ -87,7 +87,18 @@
                         filterRemote (values, key) {
                         }
                     },
-
+                    {
+                        title: '级别分类',
+                        align: 'left',
+                        key: 'level',
+                        width: 150
+                    },
+                    {
+                        title: '底盘',
+                        align: 'left',
+                        key: 'chassis',
+                        width: 150
+                    },
                     {
                         title: '房车标题',
                         align: 'center',
@@ -127,7 +138,7 @@
                 this.searchParam.keyword = '';
                 this.refresh();
             },
-            createBrands () { //新建编辑
+            createRv () { //新建编辑
                 let argu = {rv_id: 0};
                 this.$router.push({
                     name: 'cms_rv_form',
@@ -157,7 +168,6 @@
                 });
             },
             handRemoteData (data) {
-                data.img = '<img src="' + data.rv_img + '" style="height:60px"/>';
                 let len = data.data.length;
                 for (let i = 0; i < len; i++) {
                     data.data[i]['img'] = '<img src="' + data.data[i].rv_img + '" style="height:60px"/>';

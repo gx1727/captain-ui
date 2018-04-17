@@ -155,43 +155,45 @@
             let vm = this;
             let rv_id = parseInt(this.$route.params.rv_id.toString());
             this.rv.rv_id = rv_id;
-            api.Post('CmsRvGetApi', {rv_id: rv_id}, function (res) {
-                if (res.code === 0) {
-                    vm.rv.rv_id = res.rv_id;
-                    vm.rv.rv_name = res.rv_name;
-                    vm.rv.rv_title = res.rv_title;
-                    vm.rv.rv_img = res.rv_img;
-                    vm.rv.rv_price_min = res.rv_price_min;
-                    vm.rv.rv_price_max = res.rv_price_max;
-                    vm.rv.rv_guide_price_min = res.rv_guide_price_min;
-                    vm.rv.rv_guide_price_max = res.rv_guide_price_max;
-                    vm.rv.rv_level = res.rv_level;
-                    vm.rv.rv_chassis = res.rv_chassis;
-                    vm.rv.rv_country = res.rv_country;
-                    vm.rv.rv_origin = res.rv_origin;
-                    vm.rv.rv_driver_license = res.rv_driver_license;
-                    vm.rv.rv_displacement = res.rv_displacement;
-                } else {
-                    vm.$Notice.warning({
-                        title: '错误',
-                        desc: res.msg
-                    });
-                }
-            });
+            if (rv_id) {
+                api.Post('CmsRvGetApi', {rv_id: rv_id}, function (res) {
+                    if (res.code === 0) {
+                        vm.rv.rv_id = res.rv_id;
+                        vm.rv.rv_name = res.rv_name;
+                        vm.rv.rv_title = res.rv_title;
+                        vm.rv.rv_img = res.rv_img;
+                        vm.rv.rv_price_min = res.rv_price_min;
+                        vm.rv.rv_price_max = res.rv_price_max;
+                        vm.rv.rv_guide_price_min = res.rv_guide_price_min;
+                        vm.rv.rv_guide_price_max = res.rv_guide_price_max;
+                        vm.rv.rv_level = res.rv_level;
+                        vm.rv.rv_chassis = res.rv_chassis;
+                        vm.rv.rv_country = res.rv_country;
+                        vm.rv.rv_origin = res.rv_origin;
+                        vm.rv.rv_driver_license = res.rv_driver_license;
+                        vm.rv.rv_displacement = res.rv_displacement;
+                    } else {
+                        vm.$Notice.warning({
+                            title: '错误',
+                            desc: res.msg
+                        });
+                    }
+                });
+            }
             api.Post('CmsTagByGroupApi', {group: 'level'}, function (res) {
-                if(res.code === 0) {
+                if (res.code === 0) {
                     vm.levelList = res.tagData;
                 }
 
             });
             api.Post('CmsTagByGroupApi', {group: 'chassis'}, function (res) {
-                if(res.code === 0) {
+                if (res.code === 0) {
                     vm.chassisList = res.tagData;
                 }
 
             });
             api.Post('CmsTagByGroupApi', {group: 'driverlicense'}, function (res) {
-                if(res.code === 0) {
+                if (res.code === 0) {
                     vm.driverLicenseList = res.tagData;
                 }
 

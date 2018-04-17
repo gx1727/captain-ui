@@ -52,3 +52,5 @@ export const CmsRvGetApi = API_ROOT.concat('/rv/rv/get'); // 获取车系
 export const CmsRvFormApi = API_ROOT.concat('/rv/rv/form'); // 编辑车系
 export const CmsRvDelApi = API_ROOT.concat('/rv/rv/del'); // 删除车系
 export const CmsModelListApi = API_ROOT.concat('/rv/model/list'); // 车型列表
+export const CmsModelGetApi = API_ROOT.concat('/rv/model/get'); // 获取车型
+export const CmsModelFormApi =  API_ROOT.concat('/rv/model/form'); // 编辑车型

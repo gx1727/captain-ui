@@ -8,9 +8,9 @@
         <Card>
             <p slot="title">
                 <Icon type="clipboard"></Icon>
-                品牌列表
+                车型列表
             </p>
-            <a href="#" @click="createBrands" slot="extra">
+            <a href="#" @click="createModel" slot="extra">
                 <Icon type="android-add"></Icon>
                 新增
             </a>
@@ -29,6 +29,7 @@
                         ref="table"
                         remote-api="CmsModelListApi"
                         @on-delete="handleDelete"
+                        :on-remote-data="handRemoteData"
                         :hover-show="true"
                         :edit-incell="false"
                         :columns-list="tableColumn"
@@ -61,38 +62,49 @@
                         align: 'center'
                     },
                     {
-                        title: '首字母',
+                        title: '图片',
                         align: 'center',
-                        key: 'rb_initials',
+                        key: 'img',
+                        type: 'html',
+                        width: 140
+                    },
+                    {
+                        title: '品牌',
+                        align: 'center',
+                        key: 'brands',
+                    },
+                    {
+                        title: '车系',
+                        align: 'center',
+                        key: 'rv',
+                    },
+                    {
+                        title: '年款',
+                        align: 'center',
+                        key: 'rm_year',
+                        sortable: 'rm_year',
                         width: 80
                     },
                     {
-                        title: '名称',
-                        align: 'center',
-                        key: 'rb_name',
-                        sortable: 'rb_name',
-                        width: 150
+                        title: '车型名',
+                        align: 'left',
+                        key: 'rm_name',
+                        width: 200
                     },
                     {
-                        title: '标题',
+                        title: '操作',
                         align: 'center',
-                        key: 'rb_title',
-                        sortable: 'rb_title',
+                        width: 200,
+                        key: 'handle',
+                        handle: [
+                            {
+                                title: '编辑',
+                                type: 'primary',
+                                fun: this.editButton
+                            },
+                            'delete'
+                        ]
                     }
-//                    ,{
-//                        title: '操作',
-//                        align: 'center',
-//                        width: 200,
-//                        key: 'handle',
-//                        handle: [
-//                            {
-//                                title: '编辑',
-//                                type: 'primary',
-//                                fun: this.editButton
-//                            },
-//                            'delete'
-//                        ]
-//                    }
                 ]
             }
         },
@@ -102,9 +114,9 @@
                 this.$refs.table.$emit('refresh'); // 解发列表刷新事件
             },
             editButton (row) {
-                let argu = {user_id: row.user_id};
+                let argu = {rm_id: row.rm_id};
                 this.$router.push({
-                    name: 'cms_editor_form',
+                    name: 'cms_model_form',
                     params: argu
                 });
             },
@@ -112,10 +124,10 @@
                 this.searchParam.keyword = '';
                 this.refresh();
             },
-            createBrands () { //新建编辑
-                let argu = {user_id: 0};
+            createModel () { //新建编辑
+                let argu = {rm_id: 0};
                 this.$router.push({
-                    name: 'cms_editor_form',
+                    name: 'cms_model_form',
                     params: argu
                 });
             },
@@ -140,6 +152,13 @@
                         });
                     }
                 });
+            },
+            handRemoteData (data) {
+                let len = data.data.length;
+                for (let i = 0; i < len; i++) {
+                    data.data[i]['img'] = '<img src="' + data.data[i].rm_img + '" style="height:60px"/>';
+                }
+                return data;
             },
         },
         mounted () {

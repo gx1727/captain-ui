@@ -10,10 +10,10 @@
                 <Icon type="clipboard"></Icon>
                 品牌列表
             </p>
-            <a href="#" @click="createBrands" slot="extra">
-                <Icon type="android-add"></Icon>
-                新增
-            </a>
+            <!--<a href="#" @click="createBrands" slot="extra">-->
+                <!--<Icon type="android-add"></Icon>-->
+                <!--新增-->
+            <!--</a>-->
             <a href="#" @click="refresh" slot="extra">
                 <Icon type="ios-loop-strong"></Icon>
                 刷新

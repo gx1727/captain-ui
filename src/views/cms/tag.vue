@@ -165,6 +165,19 @@
                         editable: true
                     },
                     {
+                        title: '上级TAG',
+                        align: 'center',
+                        width: 200,
+                        key: 'ct_parent',
+                        editable: true
+                    },
+                    {
+                        title: '下级个数',
+                        align: 'center',
+                        width: 100,
+                        key: 'ct_child  '
+                    },
+                    {
                         title: 'TAG图片',
                         align: 'center',
                         key: 'ct_img',
