@@ -161,7 +161,7 @@
                         <Button slot="extra" type="ghost" @click="handlePictureNetwork" icon="ios-cloud-upload-outline">抓取</Button>
                         <div v-if="pictureNetwork.length > 0">
                             <div v-for="item in pictureNetwork">
-                                <img  @click="handleSetAImg(item)" :src="item.url ? item.url : item.original" style="width: 100%;">
+                                <img @click="handleSetAImg(item)" :src="item.url ? item.url : item.original" style="width: 100%;">
                                 <div>原地址：<textarea style="width: 100%;" readonly>{{ item.original}}</textarea></div>
                                 <div>新地址：<textarea style="width: 100%;" readonly>{{ item.url}}</textarea></div>
                             </div>
@@ -198,6 +198,7 @@
                 commonTagDB: [],
                 article: {
                     a_id: 0,
+                    a_code: 0,
                     user_code: '',
                     a_title: '',
                     a_img: '',
@@ -223,7 +224,11 @@
                 pictureNetwork: [],  // 网络图片素材
             };
         },
-        computed: {},
+        computed: {
+            isReloadLastDraft () { // 就否显示 恢复按钮
+                return localStorage.article_a_id && parseInt(localStorage.article_a_id) !== this.article.a_id;
+            }
+        },
         methods: {
             createArticle () { // 创建新文章
                 let vm = this;
@@ -605,6 +610,7 @@
                     if (res.code === 0) {
                         console.log(res);
                         vm.article.user_code = res.user_code;
+                        vm.article.a_code = res.a_code;
                         vm.article.a_title = res.a_title;
                         vm.article.a_img = res.a_img;
                         vm.article.a_abstract = res.a_abstract;
@@ -660,8 +666,8 @@
                             vm.pictureNetwork = res.picture;
                             // 原文章中的图片地址替换
                             let content = tinymce.get('articleEditor').getContent();
-                            for(let i = 0; i < vm.pictureNetwork.length; i++) {
-                                while (content.indexOf(vm.pictureNetwork[i].original) >= 0){
+                            for (let i = 0; i < vm.pictureNetwork.length; i++) {
+                                while (content.indexOf(vm.pictureNetwork[i].original) >= 0) {
                                     content = content.replace(vm.pictureNetwork[i].original, vm.pictureNetwork[i].url);
                                 }
                             }
@@ -681,21 +687,21 @@
                 let imgReg = /<img.*?(?:>|\/>)/gi;
                 let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
                 let arr = content.match(imgReg);
-                if(arr) {
+                if (arr) {
                     for (let i = 0; i < arr.length; i++) {
                         var src = arr[i].match(srcReg);
                         //获取图片地址
-                        if(src[1]){
+                        if (src[1]) {
                             let flag = false;
-                            for(let j=0; j<this.pictureNetwork.length; j++) {
-                                if(this.pictureNetwork[j]['original'] == src[1] ||
+                            for (let j = 0; j < this.pictureNetwork.length; j++) {
+                                if (this.pictureNetwork[j]['original'] == src[1] ||
                                     this.pictureNetwork[j]['url'] == src[1]) {
                                     flag = true;
                                 }
                             }
-                            if(!flag) {
+                            if (!flag) {
                                 let url = '';
-                                if(src[1].indexOf('p7bo76bgm.bkt.clouddn.com') >= 0) {
+                                if (src[1].indexOf('p7bo76bgm.bkt.clouddn.com') >= 0) {
                                     url = src[1]; //是自己的图片
                                 }
                                 this.pictureNetwork.push({
@@ -707,8 +713,8 @@
                     }
                 }
             },
-            handleTabPaneClick: function(index) {
-                if(index === 1) { //图片
+            handleTabPaneClick: function (index) {
+                if (index === 1) { //图片
                     this.handleRefreshPicture();
                 }
             },
@@ -716,14 +722,9 @@
                 this.article.a_img = item.url;
             }
         },
-        computed: {
-            isReloadLastDraft () { // 就否显示 恢复按钮
-                return localStorage.article_a_id && parseInt(localStorage.article_a_id) !== this.article.a_id;
-            },
-        },
         mounted () {
             let a_id = 0;
-            if(this.$route.params.a_id) {
+            if (this.$route.params.a_id) {
                 a_id = parseInt(this.$route.params.a_id.toString());
             }
             if (a_id) { // 编辑

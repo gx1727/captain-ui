@@ -73,7 +73,7 @@
              */
             this.$on('refresh', function () {
                 this.remote();
-            })
+            });
         },
         methods: {
             init () {
@@ -216,7 +216,7 @@
              */
             onSortChange (sort) {
                 this.orderby = sort.key;
-                this.ordertype = sort.order == 'asc' ? 'asc' : ( sort.order == 'desc' ? 'desc' : '');
+                this.ordertype = sort.order === 'asc' ? 'asc' : (sort.order === 'desc' ? 'desc' : '');
                 this.$emit('refresh');
             },
             onPageChange (page) {
@@ -242,7 +242,7 @@
                     } else {
                         vm.$Notice.warning({
                             title: '警告',
-                            desc: response.msg,
+                            desc: response.msg
                         });
                     }
                     vm.loading = false;
@@ -259,14 +259,20 @@
              * 获到附加参数
              * @returns {({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name}))|({}&{page: *, pagesize: *, orderby: *, ordertype: *})|({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name})&W)|any}
              */
-            getParam() {
+            getParam () {
                 return Object.assign({}, {
                     page: this.page,
                     pagesize: this.pagesize,
                     orderby: this.orderby,
                     ordertype: this.ordertype
                 }, this.searchParam);
+            },
+            cacheParam () {
+
             }
+        },
+        mounted () {
+            console.log('here');
         },
         watch: {
 //            value (data) {
@@ -306,7 +312,7 @@
                         edittingRow.editting = false;
                         edittingRow.saving = false;
                         vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-//                        vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                        // vm.$emit('input', vm.handleBackdata(vm.thisTableData));
                         vm.$emit('on-change', vm.handleBackdata(vm.thisTableData[index]), index);
                     }
                 }
@@ -408,7 +414,7 @@
                 click: (event) => {
                     vm.edittingStore[param.index].edittingCell[param.column.key] = false;
                     vm.thisTableData = JSON.parse(JSON.stringify(vm.edittingStore));
-//                    vm.$emit('input', vm.handleBackdata(vm.thisTableData));
+                    // vm.$emit('input', vm.handleBackdata(vm.thisTableData));
                     vm.$emit('on-cell-change', vm.handleBackdata(vm.thisTableData[param.index]), param.index, param.column.key);
                 }
             }
