@@ -20,6 +20,9 @@
                     刷新
                 </a>
                 <Row>
+                    <Select v-model="searchParam.user_code" style="width:200px">
+                        <Option v-for="item in editorList" :value="item.user_code" :key="item.user_code">{{ item.user_name }}</Option>
+                    </Select>
                     <Input v-model="searchParam.keyword" placeholder="请输入关键字..." style="width: 200px"/>
                     <span @click="refresh" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
                     <Button @click="handleCancelSearch" type="ghost">取消</Button>
@@ -54,8 +57,10 @@
         },
         data () {
             return {
+                editorList: [], //编辑人员列表
                 searchParam: {
-                    keyword: ''
+                    keyword: '',
+                    user_code: ''
                 },
                 tagGroupList: [], // 分组数据
                 tagNode: {
@@ -76,6 +81,13 @@
                         title: '文章标题',
                         align: 'center',
                         key: 'a_title'
+                    },
+                    {
+                        title: '发布者',
+                        align: 'center',
+                        key: 'user_name',
+                        sortable: 'user_name',
+                        width: 150
                     },
                     {
                         title: '创建时间',
@@ -138,7 +150,7 @@
                 });
             },
             previewButton (row) {
-                window.open('/' + row.a_id, '_blank');
+                window.open('/' + row.a_code, '_blank');
             },
             handleCancelSearch () {
                 this.searchParam.keyword = '';

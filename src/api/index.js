@@ -48,7 +48,8 @@ import {
     CmsModelListApi,
     CmsModelGetApi,
     CmsModelFormApi,
-    SystemAttNetworkApi
+    SystemAttNetworkApi,
+    CmsRvBrandsApi
 } from './config'
 
 const service = axios.create({
@@ -177,6 +178,8 @@ export default {
                 return CmsModelFormApi;
             case 'SystemAttNetworkApi':
                 return SystemAttNetworkApi;
+            case 'CmsRvBrandsApi':
+                return CmsRvBrandsApi;
         }
     }
 }

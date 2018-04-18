@@ -19,6 +19,12 @@
                 刷新
             </a>
             <Row>
+                <Select v-model="searchParam.rb_id" @on-change="handleBrandsChange" style="width:200px" placeholder="品牌..." filterable>
+                    <Option v-for="item in brandsList" :value="item.rb_id" :key="item.rb_id">{{ item.rb_title }}</Option>
+                </Select>
+                <Select v-model="searchParam.rv_id" style="width:200px" placeholder="车系..." filterable>
+                    <Option v-for="item in rvList" :value="item.rv_id" :key="item.rv_id">{{ item.rv_title }}</Option>
+                </Select>
                 <Input v-model="searchParam.keyword" placeholder="请输入关键字..." style="width: 200px"/>
                 <span @click="refresh" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
                 <Button @click="handleCancelSearch" type="ghost">取消</Button>
@@ -29,7 +35,7 @@
                         ref="table"
                         remote-api="CmsModelListApi"
                         @on-delete="handleDelete"
-                        :on-remote-data="handRemoteData"
+                        :on-remote-data="handleRemoteData"
                         :hover-show="true"
                         :edit-incell="false"
                         :columns-list="tableColumn"
@@ -51,6 +57,8 @@
         },
         data () {
             return {
+                brandsList: [], // 品牌列表
+                rvList: [], // 车系列表
                 searchParam: {
                     keyword: ''
                 },
@@ -153,15 +161,53 @@
                     }
                 });
             },
-            handRemoteData (data) {
+            handleRemoteData (data) {
                 let len = data.data.length;
                 for (let i = 0; i < len; i++) {
                     data.data[i]['img'] = '<img src="' + data.data[i].rm_img + '" style="height:60px"/>';
                 }
                 return data;
             },
+            handleBrandsChange () {
+                let vm = this;
+                api.Post('CmsRvBrandsApi', {
+                    rb_id: vm.searchParam.rb_id
+                }, function (res) {
+                    vm.rvList = [{
+                        rv_id: 0,
+                        rv_title: '所有'
+                    }]
+                    if (res.code === 0) {
+                        for (let index in res.data){
+                            vm.rvList.push({
+                                rv_id: index,
+                                rv_title: res.data[index]
+                            });
+                        }
+
+                    }
+                });
+            }
         },
         mounted () {
+            let vm = this;
+            api.Post('CmsBrandsAllApi', {
+                keyword: ''
+            }, function (res) {
+                vm.brandsList = [{
+                    rb_id: 0,
+                    rb_title: '所有'
+                }]
+                if (res.code === 0) {
+                    for (let index in res.data){
+                        vm.brandsList.push({
+                            rb_id: index,
+                            rb_title: res.data[index]
+                        });
+                    }
+
+                }
+            });
         },
         created () {
         }

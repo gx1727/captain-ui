@@ -9,7 +9,7 @@
             <Card>
                 <Form :label-width="80">
                     <FormItem label="文章标题">
-                        <Input v-model="article.a_title" @on-blur="handleArticletitleBlur" icon="android-list"/>
+                        <Input v-model="article.a_title" icon="android-list"/>
                     </FormItem>
                     <FormItem label="文章描述">
                         <Input type="textarea" v-model="article.a_abstract"/>
@@ -34,7 +34,7 @@
                             状态：
                             <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
                             <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
-                            <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_id" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
+                            <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_code" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
                             <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
                             <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
                         </p>
@@ -225,32 +225,25 @@
         },
         computed: {},
         methods: {
-            handleArticletitleBlur () { // 文章标题blur事件
+            createArticle () { // 创建新文章
                 let vm = this;
-                if (this.article.a_title.length !== 0) {
-                    if (!this.article.a_id) { // 如果没有文章ID,则新建一篇文章
-                        api.Post('CmsArticleCreateApi', {
-                            a_title: vm.article.a_title
-                        }, function (res) {
-                            if (res.code === 0) {
-                                let argu = {a_id: res.a_id};
-                                vm.$router.push({
-                                    name: 'cms_article_publish',
-                                    params: argu
-                                });
-                                location.reload();
-                            } else {
-                                vm.$Notice.warning({
-                                    title: '错误',
-                                    desc: res.msg
-                                });
-                            }
+                api.Post('CmsArticleCreateApi', {
+                    a_title: ''
+                }, function (res) {
+                    if (res.code === 0) {
+                        let argu = {a_id: res.a_id};
+                        vm.$router.push({
+                            name: 'cms_article_publish',
+                            params: argu
+                        });
+                        location.reload();
+                    } else {
+                        vm.$Notice.warning({
+                            title: '错误',
+                            desc: res.msg
                         });
                     }
-
-                } else {
-                    this.$Message.error('文章标题不可为空哦');
-                }
+                });
             },
             /**
              * 修改发布时间按钮
@@ -737,9 +730,8 @@
                 this.article.a_id = a_id;
                 this.refreshArticle();
             } else {
-                this.initTagData();
-                this.initSortList();
-                this.initEditor();
+                // 创建新文章
+                this.createArticle();
             }
         },
         created () {

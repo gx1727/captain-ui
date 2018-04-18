@@ -50,6 +50,7 @@ export const CmsEditorGetApi = API_ROOT.concat('/cms/editor/get'); // 编辑人�
 export const CmsBrandsListApi = API_ROOT.concat('/rv/brands/list'); // 品牌列表
 export const CmsBrandsAllApi = API_ROOT.concat('/rv/brands/all'); // 所有品牌
 export const CmsRvListApi = API_ROOT.concat('/rv/rv/list'); // 车系列表
+export const CmsRvBrandsApi = API_ROOT.concat('/rv/rv/brands'); // 通过品牌获取车系列表
 export const CmsRvGetApi = API_ROOT.concat('/rv/rv/get'); // 获取车系
 export const CmsRvFormApi = API_ROOT.concat('/rv/rv/form'); // 编辑车系
 export const CmsRvDelApi = API_ROOT.concat('/rv/rv/del'); // 删除车系

@@ -8,6 +8,17 @@
             <Col span="24">
             <Card>
                 <Form :model="rv_model" :label-width="120" :rules="ruleValidate" ref="formEditor">
+                    <FormItem label="品牌">
+                        <Select v-model="rv_model.rb_id" @on-change="handleBrandsChange" placeholder="品牌..." filterable>
+                            <Option v-for="item in brandsList" :value="item.rb_id" :key="item.rb_id">{{ item.rb_title }}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="车系">
+                        <Select v-model="rv_model.rv_id" placeholder="品牌..." filterable>
+                            <Option v-for="item in rvList" :value="item.rv_id" :key="item.rv_id">{{ item.rv_title }}</Option>
+                        </Select>
+                    </FormItem>
+
                     <FormItem label="年款">
                         <Input v-model="rv_model.rm_year" icon="android-list"/>
                     </FormItem>
@@ -94,7 +105,11 @@
         },
         data () {
             return {
+                brandsList: [], // 品牌列表
+                rvList: [], // 车系列表
                 rv_model: {
+                    rb_id: 0,
+                    rv_id: 0,
                     rm_id: 0,
                     rm_year: 0,
                     rm_name: '',
@@ -144,15 +159,48 @@
                         });
                     }
                 })
+            },
+            handleBrandsChange () {
+                let vm = this;
+                api.Post('CmsRvBrandsApi', {
+                    rb_id: vm.rv_model.rb_id
+                }, function (res) {
+                    vm.rvList = [];
+                    if (res.code === 0) {
+                        for (let index in res.data){
+                            vm.rvList.push({
+                                rv_id: parseInt(index),
+                                rv_title: res.data[index]
+                            });
+                        }
+
+                    }
+                });
             }
         },
         mounted () {
             let vm = this;
+            api.Post('CmsBrandsAllApi', {
+                keyword: ''
+            }, function (res) {
+                vm.brandsList = [];
+                if (res.code === 0) {
+                    for (let index in res.data){
+                        vm.brandsList.push({
+                            rb_id: parseInt(index),
+                            rb_title: res.data[index]
+                        });
+                    }
+                }
+            });
+
             let rm_id = parseInt(this.$route.params.rm_id.toString());
             this.rv_model.rm_id = rm_id;
             if (rm_id) {
                 api.Post('CmsModelGetApi', {rm_id: rm_id}, function (res) {
                     if (res.code === 0) {
+                        vm.rv_model.rb_id = parseInt(res.rb_id);
+                        vm.rv_model.rv_id = parseInt(res.rv_id);
                         vm.rv_model.rm_id = res.rm_id;
                         vm.rv_model.rm_year = res.rm_year;
                         vm.rv_model.rm_name = res.rm_name;

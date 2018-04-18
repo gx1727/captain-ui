@@ -8,6 +8,11 @@
             <Col span="24">
             <Card>
                 <Form :model="rv" :label-width="120" :rules="ruleValidate" ref="formEditor">
+                    <FormItem label="品牌">
+                        <Select v-model="rv.rb_id" placeholder="品牌..." filterable>
+                            <Option v-for="item in brandsList" :value="item.rb_id" :key="item.rb_id">{{ item.rb_title }}</Option>
+                        </Select>
+                    </FormItem>
                     <FormItem label="房车名" prop="rv_name">
                         <Input v-model="rv.rv_name" icon="android-list"/>
                     </FormItem>
@@ -98,8 +103,10 @@
         },
         data () {
             return {
+                brandsList: [],
                 rv: {
                     rv_id: 0,
+                    rb_id: 0,
                     rv_name: '',
                     rv_title: '',
                     rv_img: '',
@@ -133,6 +140,7 @@
             },
             btnSubmit: function () {
                 let vm = this;
+
                 this.$refs['formEditor'].validate((valid) => {
                     if (valid) {
                         api.Post('CmsRvFormApi', this.rv, function (res) {
@@ -153,12 +161,27 @@
         },
         mounted () {
             let vm = this;
+            api.Post('CmsBrandsAllApi', {
+                keyword: ''
+            }, function (res) {
+                vm.brandsList = [];
+                if (res.code === 0) {
+                    for (let index in res.data){
+                        vm.brandsList.push({
+                            rb_id: parseInt(index),
+                            rb_title: res.data[index]
+                        });
+                    }
+                }
+            });
+
             let rv_id = parseInt(this.$route.params.rv_id.toString());
             this.rv.rv_id = rv_id;
             if (rv_id) {
                 api.Post('CmsRvGetApi', {rv_id: rv_id}, function (res) {
                     if (res.code === 0) {
                         vm.rv.rv_id = res.rv_id;
+                        vm.rv.rb_id = parseInt(res.rb_id);
                         vm.rv.rv_name = res.rv_name;
                         vm.rv.rv_title = res.rv_title;
                         vm.rv.rv_img = res.rv_img;
