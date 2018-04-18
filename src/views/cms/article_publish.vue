@@ -6,141 +6,142 @@
     <div>
         <Row style="margin-bottom: 200px;">
             <Col span="18">
-                <Card>
-                    <Form :label-width="80">
-                        <FormItem label="文章标题">
-                            <Input v-model="article.a_title" @on-blur="handleArticletitleBlur" icon="android-list"/>
-                        </FormItem>
-                        <FormItem label="文章描述">
-                            <Input type="textarea" v-model="article.a_abstract"/>
-                        </FormItem>
-                    </Form>
-                    <div class="margin-top-20">
-                        <textarea id="articleEditor"></textarea>
-                    </div>
-                </Card>
+            <Card>
+                <Form :label-width="80">
+                    <FormItem label="文章标题">
+                        <Input v-model="article.a_title" @on-blur="handleArticletitleBlur" icon="android-list"/>
+                    </FormItem>
+                    <FormItem label="文章描述">
+                        <Input type="textarea" v-model="article.a_abstract"/>
+                    </FormItem>
+                </Form>
+                <div class="margin-top-20">
+                    <textarea id="articleEditor"></textarea>
+                </div>
+            </Card>
             </Col>
             <Col span="6" class="padding-left-10">
-            <Tabs type="card">
+            <Tabs type="card"
+                  @on-click="handleTabPaneClick">
                 <TabPane label="属性">
-                <Card>
-                    <p slot="title">
-                        <Icon type="paper-airplane"></Icon>
-                        发布
-                    </p>
-                    <p class="margin-top-10">
-                        <Icon type="android-time"></Icon>
-                        状态：
-                        <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
-                        <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
-                        <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_id" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
-                        <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
-                        <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
-                    </p>
-                    <p class="margin-top-10" v-if="isReloadLastDraft">
-                        <Button v-show="!editPublishTime" size="small" @click="reloadLastDraft" type="dashed">恢复最后一次编辑草稿</Button>
-                    </p>
-                    <p class="margin-top-10" v-if="article.draft_etime">
-                        <Icon type="eye"></Icon>
-                        草稿：
-                        <Tag size="small"> {{ article.draft_etime }}</Tag>
-                        <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
-                    </p>
-                    <p class="margin-top-10">
-                        <Icon type="ios-calendar-outline"></Icon>
-                        <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
-                        <Button v-show="!editPublishTime" size="small" @click="handleEditPublishTime" type="text">修改</Button>
-                        <transition name="publish-time">
-                            <div v-show="editPublishTime" class="publish-time-picker-con">
-                                <div class="margin-top-10">
-                                    <DatePicker @on-change="setPublishTime" :value="article.a_publish_time" type="datetime" style="width:200px;" placeholder="选择日期和时间"></DatePicker>
-                                </div>
-                                <div class="margin-top-10">
-                                    <Button type="primary" @click="handleSavePublishTime">确认</Button>
-                                    <Button type="ghost" @click="cancelEditPublishTime">取消</Button>
-                                </div>
-                            </div>
-                        </transition>
-                    </p>
-                    <p class="margin-top-10">
-                        <Icon type="star"></Icon>
-                        <Checkbox v-model="article.a_recommend">推荐</Checkbox>
-                    </p>
-                    <Row class="margin-top-20 publish-button-con">
-                        <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
-                        <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
-                    </Row>
-                </Card>
-
-                <div class="margin-top-10">
                     <Card>
                         <p slot="title">
-                            <Icon type="navicon-round"></Icon>
-                            分类目录
+                            <Icon type="paper-airplane"></Icon>
+                            发布
                         </p>
-                        <Tabs type="card">
-                            <TabPane label="所有分类目录">
+                        <p class="margin-top-10">
+                            <Icon type="android-time"></Icon>
+                            状态：
+                            <Tag v-if="article.a_status < 0" size="small" color="yellow">等待创建新文章</Tag>
+                            <Tag v-if="article.a_status === 0" size="small" color="red">已删除</Tag>
+                            <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_id" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
+                            <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
+                            <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
+                        </p>
+                        <p class="margin-top-10" v-if="isReloadLastDraft">
+                            <Button v-show="!editPublishTime" size="small" @click="reloadLastDraft" type="dashed">恢复最后一次编辑草稿</Button>
+                        </p>
+                        <p class="margin-top-10" v-if="article.draft_etime">
+                            <Icon type="eye"></Icon>
+                            草稿：
+                            <Tag size="small"> {{ article.draft_etime }}</Tag>
+                            <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
+                        </p>
+                        <p class="margin-top-10">
+                            <Icon type="ios-calendar-outline"></Icon>
+                            <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
+                            <Button v-show="!editPublishTime" size="small" @click="handleEditPublishTime" type="text">修改</Button>
+                            <transition name="publish-time">
+                                <div v-show="editPublishTime" class="publish-time-picker-con">
+                                    <div class="margin-top-10">
+                                        <DatePicker @on-change="setPublishTime" :value="article.a_publish_time" type="datetime" style="width:200px;" placeholder="选择日期和时间"></DatePicker>
+                                    </div>
+                                    <div class="margin-top-10">
+                                        <Button type="primary" @click="handleSavePublishTime">确认</Button>
+                                        <Button type="ghost" @click="cancelEditPublishTime">取消</Button>
+                                    </div>
+                                </div>
+                            </transition>
+                        </p>
+                        <p class="margin-top-10">
+                            <Icon type="star"></Icon>
+                            <Checkbox v-model="article.a_recommend">推荐</Checkbox>
+                        </p>
+                        <Row class="margin-top-20 publish-button-con">
+                            <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
+                            <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
+                        </Row>
+                    </Card>
+
+                    <div class="margin-top-10">
+                        <Card>
+                            <p slot="title">
+                                <Icon type="navicon-round"></Icon>
+                                分类目录
+                            </p>
+                            <Tabs type="card">
+                                <TabPane label="所有分类目录">
+                                    <div class="classification-con">
+                                        <Tree :data="sortList" @on-check-change="handleSelectSort" show-checkbox></Tree>
+                                    </div>
+                                </TabPane>
+                            </Tabs>
+                        </Card>
+                    </div>
+
+                    <Card>
+                        <p slot="title">
+                            <Icon type="ios-pricetags-outline"></Icon>
+                            功能
+                        </p>
+                        <Tabs type="card" class="margin-top-10">
+                            <TabPane :label="tagGroupItem.title" v-for="tagGroupItem in tagDB" :key="tagGroupItem.name">
                                 <div class="classification-con">
-                                    <Tree :data="sortList" @on-check-change="handleSelectSort" show-checkbox></Tree>
+                                    <Row>
+                                        <Col span="24">
+                                        <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple transfer>
+                                            <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
+                                        </Select>
+                                        </Col>
+                                    </Row>
                                 </div>
                             </TabPane>
                         </Tabs>
                     </Card>
-                </div>
 
-                <Card>
-                    <p slot="title">
-                        <Icon type="ios-pricetags-outline"></Icon>
-                        功能
-                    </p>
-                    <Tabs type="card" class="margin-top-10">
-                        <TabPane :label="tagGroupItem.title" v-for="tagGroupItem in tagDB" :key="tagGroupItem.name">
-                            <div class="classification-con">
-                                <Row>
-                                    <Col span="24">
-                                    <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple transfer>
-                                        <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
-                                    </Select>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </TabPane>
-                    </Tabs>
-                </Card>
-
-                <div class="margin-top-10">
-                    <Card>
-                        <p slot="title">
-                            <Icon type="ios-pricetags-outline"></Icon>
-                            标签
-                        </p>
-                        <Row>
-                            <Col span="18">
-                            <Select v-model="articleTagSelected['common']" multiple filterable transfer @on-change="handleSelectTag" placeholder="请选择文章标签">
-                                <Option v-for="item in commonTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
-                            </Select>
-                            </Col>
-                            <Col span="6" class="padding-left-10">
-                            <Button v-show="!addingNewTag" @click="handleAddNewTag" long type="ghost">新建</Button>
-                            </Col>
-                        </Row>
-                        <transition name="add-new-tag">
-                            <div v-show="addingNewTag" class="add-new-tag-con">
-                                <Row>
-                                    <Col span="14">
-                                    <Input v-model="newTagName" placeholder="请输入标签名"/>
-                                    </Col>
-                                    <Col span="5" class="padding-left-10">
-                                    <Button @click="createNewTag" long type="primary">确定</Button>
-                                    </Col>
-                                    <Col span="5" class="padding-left-10">
-                                    <Button @click="cancelCreateNewTag" long type="ghost">取消</Button>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </transition>
-                    </Card>
-                </div>
+                    <div class="margin-top-10">
+                        <Card>
+                            <p slot="title">
+                                <Icon type="ios-pricetags-outline"></Icon>
+                                标签
+                            </p>
+                            <Row>
+                                <Col span="18">
+                                <Select v-model="articleTagSelected['common']" multiple filterable transfer @on-change="handleSelectTag" placeholder="请选择文章标签">
+                                    <Option v-for="item in commonTagDB" :value="item.name" :key="item.name">{{ item.title }}</Option>
+                                </Select>
+                                </Col>
+                                <Col span="6" class="padding-left-10">
+                                <Button v-show="!addingNewTag" @click="handleAddNewTag" long type="ghost">新建</Button>
+                                </Col>
+                            </Row>
+                            <transition name="add-new-tag">
+                                <div v-show="addingNewTag" class="add-new-tag-con">
+                                    <Row>
+                                        <Col span="14">
+                                        <Input v-model="newTagName" placeholder="请输入标签名"/>
+                                        </Col>
+                                        <Col span="5" class="padding-left-10">
+                                        <Button @click="createNewTag" long type="primary">确定</Button>
+                                        </Col>
+                                        <Col span="5" class="padding-left-10">
+                                        <Button @click="cancelCreateNewTag" long type="ghost">取消</Button>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </transition>
+                        </Card>
+                    </div>
                 </TabPane>
                 <TabPane label="图片">
                     <Card>
@@ -148,8 +149,23 @@
                             <Icon type="flag"></Icon>
                             封面图
                         </p>
-                        <Button slot="extra" type="ghost"  @click="handleSelectImg" icon="ios-cloud-upload-outline">选择文件</Button>
+                        <Button slot="extra" type="ghost" @click="handleSelectImg" icon="ios-cloud-upload-outline">选择文件</Button>
                         <img :src="article.a_img" style="width: 100%">
+                    </Card>
+                    <Card>
+                        <p slot="title">
+                            <Icon type="flag"></Icon>
+                            网络图片素材
+                        </p>
+                        <Button slot="extra" type="ghost" @click="handleRefreshPicture" icon="refresh"></Button>
+                        <Button slot="extra" type="ghost" @click="handlePictureNetwork" icon="ios-cloud-upload-outline">抓取</Button>
+                        <div v-if="pictureNetwork.length > 0">
+                            <div v-for="item in pictureNetwork">
+                                <img  @click="handleSetAImg(item)" :src="item.url ? item.url : item.original" style="width: 100%;">
+                                <div>原地址：<textarea style="width: 100%;" readonly>{{ item.original}}</textarea></div>
+                                <div>新地址：<textarea style="width: 100%;" readonly>{{ item.url}}</textarea></div>
+                            </div>
+                        </div>
                     </Card>
                 </TabPane>
                 <TabPane label="房车">
@@ -160,7 +176,7 @@
             </Col>
         </Row>
         <img-manager
-            ref="imgManager"
+                ref="imgManager"
         ></img-manager>
     </div>
 </template>
@@ -203,7 +219,8 @@
                 publishLoading: false,
                 addingNewTag: false, // 添加新标签
                 newTagName: '', // 新建标签名
-                showImgManager: true // 显示图片处理器
+                showImgManager: true, // 显示图片处理器
+                pictureNetwork: [],  // 网络图片素材
             };
         },
         computed: {},
@@ -276,7 +293,7 @@
              */
             handleSelectImg () {
                 let vm = this;
-                this.$refs.imgManager.$emit('open', function(selectedImg){
+                this.$refs.imgManager.$emit('open', function (selectedImg) {
                     selectedImg = selectedImg[0];
                     vm.article.a_img = selectedImg.url;
                 });
@@ -504,7 +521,7 @@
                     let vm = this;
                     let height = document.body.offsetHeight - 300;
 
-                    tinymce.baseURL = '/static/dist';
+                    tinymce.baseURL = '/dist'; // /static/dist
                     tinymce.init({
                         selector: '#articleEditor',
                         branding: false,
@@ -536,7 +553,7 @@
                             // Provide image and alt text for the image dialog
                             if (meta.filetype == 'image') {
                                 document.getElementById('mce-modal-block').style.zIndex = 998;
-                                if(document.getElementById('mce-modal-block').previousElementSibling) {
+                                if (document.getElementById('mce-modal-block').previousElementSibling) {
                                     document.getElementById('mce-modal-block').previousElementSibling.style.zIndex = 999;
                                 }
 
@@ -635,6 +652,74 @@
                         desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
                     });
                 });
+            },
+            /**
+             * 网络图片素材
+             */
+            handlePictureNetwork: function () {
+                let vm = this;
+                if (this.pictureNetwork.length > 0) {
+                    api.Post('SystemAttNetworkApi', {
+                        picture: JSON.stringify(vm.pictureNetwork)
+                    }, function (res) {
+                        if (res.code === 0) {
+                            vm.pictureNetwork = res.picture;
+                            // 原文章中的图片地址替换
+                            let content = tinymce.get('articleEditor').getContent();
+                            for(let i = 0; i < vm.pictureNetwork.length; i++) {
+                                while (content.indexOf(vm.pictureNetwork[i].original) >= 0){
+                                    content = content.replace(vm.pictureNetwork[i].original, vm.pictureNetwork[i].url);
+                                }
+                            }
+                            tinymce.get('articleEditor').setContent(content);
+                        } else {
+                            vm.$Notice.warning({
+                                title: '错误',
+                                desc: res.msg
+                            });
+                        }
+                    });
+                }
+            },
+            handleRefreshPicture: function () {
+                let content = tinymce.get('articleEditor').getContent();
+
+                let imgReg = /<img.*?(?:>|\/>)/gi;
+                let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+                let arr = content.match(imgReg);
+                if(arr) {
+                    for (let i = 0; i < arr.length; i++) {
+                        var src = arr[i].match(srcReg);
+                        //获取图片地址
+                        if(src[1]){
+                            let flag = false;
+                            for(let j=0; j<this.pictureNetwork.length; j++) {
+                                if(this.pictureNetwork[j]['original'] == src[1] ||
+                                    this.pictureNetwork[j]['url'] == src[1]) {
+                                    flag = true;
+                                }
+                            }
+                            if(!flag) {
+                                let url = '';
+                                if(src[1].indexOf('p7bo76bgm.bkt.clouddn.com') >= 0) {
+                                    url = src[1]; //是自己的图片
+                                }
+                                this.pictureNetwork.push({
+                                    original: src[1],
+                                    url: url
+                                })
+                            }
+                        }
+                    }
+                }
+            },
+            handleTabPaneClick: function(index) {
+                if(index === 1) { //图片
+                    this.handleRefreshPicture();
+                }
+            },
+            handleSetAImg: function (item) {
+                this.article.a_img = item.url;
             }
         },
         computed: {
@@ -643,7 +728,10 @@
             },
         },
         mounted () {
-            let a_id = parseInt(this.$route.params.a_id.toString());
+            let a_id = 0;
+            if(this.$route.params.a_id) {
+                a_id = parseInt(this.$route.params.a_id.toString());
+            }
             if (a_id) { // 编辑
                 localStorage.article_a_id = a_id.toString(); // 记录到本地缓存中
                 this.article.a_id = a_id;

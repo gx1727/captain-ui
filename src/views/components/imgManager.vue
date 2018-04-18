@@ -264,7 +264,7 @@
                 this.uploadListLast.push({
                     'id': res.att_id,
                     'name': res.att_originalname,
-                    'url': res.att_thumbnail ? res.att_thumbnail : (res.att_domain + res.att_filepath)
+                    'url': res.att_cdn ? res.att_cdn : (res.att_domain + res.att_filepath)
                 });
                 console.log(res);
                 console.log(file);

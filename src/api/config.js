@@ -2,7 +2,8 @@
  * Created by gx1727 on 2018/3/14.
  */
 // 接口地址 http://localhost-v
-export const API_ROOT = '/api';
+// export const API_ROOT = '/api';
+export const API_ROOT = 'http://localhost-v/api';
 
 export const LoginApi = API_ROOT.concat('/login'); // 登录
 export const RoleListApi = API_ROOT.concat('/role/list'); // 角色列表
@@ -38,6 +39,7 @@ export const CmsArticlePublishApi = API_ROOT.concat('/cms/article/publish'); // 
 export const CmsArticleDelApi = API_ROOT.concat('/cms/article/del'); // 删除文章
 
 export const SystemAttListApi = API_ROOT.concat('/attachment/list'); // 附件列表
+export const SystemAttNetworkApi = API_ROOT.concat('/attachment/network'); // 网络图片素材
 
 export const CmsEditorListApi = API_ROOT.concat('/cms/editor/list'); // 编辑人员列表
 export const CmsEditorFormApi = API_ROOT.concat('/cms/editor/form'); // 编辑人员
