@@ -275,12 +275,25 @@
              * @returns {({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name}))|({}&{page: *, pagesize: *, orderby: *, ordertype: *})|({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name})&W)|any}
              */
             getParam () {
+                let vm = this;
                 let param = Object.assign({}, {
                     page: this.page,
                     pagesize: this.pagesize,
                     orderby: this.orderby,
                     ordertype: this.ordertype
                 }, this.searchParam);
+                if (this.tableKey && localStorage[this.tableKey]) {
+                    let paramOld = JSON.parse(localStorage[this.tableKey]);
+                    for (let paramName in param) {
+                        if(paramName !== 'page') {
+                            if(param[paramName] != paramOld[paramName]) { //条件变更， 回到第一页
+                                param.page = 1;
+                                vm.page = 1;
+                                break;
+                            }
+                        }
+                    }
+                }
                 if (this.cacheParam && this.tableKey) { // 缓存列表参数
                     localStorage[this.tableKey] = JSON.stringify(param);
                 }

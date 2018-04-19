@@ -102,7 +102,8 @@
                 loading: true,
                 tableKey: 'tag_list', // 列表名称
                 searchParam: {
-                    keyword: ''
+                    keyword: '',
+                    ctg_name: ''
                 },
                 tagGroupList: [], // 分组数据
                 tagNode: {
@@ -343,6 +344,10 @@
                     if (param.keyword) {
                         this.searchParam.keyword = param.keyword;
                     }
+                    if (param.ctg_name) {
+                        this.searchParam.ctg_name = param.ctg_name;
+                    }
+
                 }
                 this.$refs.table.$emit('cache'); // 设置 开始缓存
                 vm.refresh();
