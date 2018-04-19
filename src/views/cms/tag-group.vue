@@ -77,7 +77,7 @@
                     },
                     {
                         title: '序号',
-                        type: 'index',
+                        key: 'ctg_id',
                         width: 80,
                         align: 'center'
                     },

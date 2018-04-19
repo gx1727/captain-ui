@@ -123,7 +123,7 @@
                 tableColumn: [
                     {
                         title: '#',
-                        type: 'index',
+                        key: 'ct_id',
                         width: 60,
                         align: 'center'
                     },

@@ -58,7 +58,7 @@
                 tableColumn: [
                     {
                         title: '#',
-                        type: 'index',
+                        key: 'rb_id',
                         width: 100,
                         align: 'center'
                     },

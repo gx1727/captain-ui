@@ -60,7 +60,7 @@
                 tableColumn: [
                     {
                         title: '#',
-                        type: 'index',
+                        key: 'user_id',
                         width: 100,
                         align: 'center'
                     },

@@ -69,7 +69,7 @@
                 tableColumn: [
                     {
                         title: '#',
-                        type: 'index',
+                        key: 'rm_id',
                         width: 100,
                         align: 'center'
                     },

@@ -82,7 +82,7 @@
                 tableColumn: [
                     {
                         title: '#',
-                        type: 'index',
+                        key: 'a_id',
                         width: 100,
                         align: 'center'
                     },

@@ -64,7 +64,7 @@
                     },
                     {
                         title: '序号',
-                        type: 'index',
+                        key: 'role_id',
                         width: 80,
                         align: 'center'
                     },

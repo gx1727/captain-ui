@@ -29,6 +29,7 @@
                             <Icon type="paper-airplane"></Icon>
                             发布
                         </p>
+                        <Button slot="extra" type="ghost" shape="circle" icon="edit" @click="createArticle('new')">新建空白文章</Button>
                         <p class="margin-top-10">
                             <Icon type="android-time"></Icon>
                             状态：
@@ -37,9 +38,6 @@
                             <Tag v-if="article.a_status === 1" size="small" color="blue"><a :href="'/' + article.a_code" target="_blank">已发布 {{ article.publish_time }}</a></Tag>
                             <Tag v-if="article.a_status === 2" size="small" color="#EF6AFF">定时发布,不显示</Tag>
                             <Tag v-if="article.a_status === 3" size="small" color="blue">正在编辑中</Tag>
-                        </p>
-                        <p class="margin-top-10" v-if="isReloadLastDraft">
-                            <Button v-show="!editPublishTime" size="small" @click="reloadLastDraft" type="dashed">恢复最后一次编辑草稿</Button>
                         </p>
                         <p class="margin-top-10" v-if="article.draft_etime">
                             <Icon type="eye"></Icon>
@@ -225,15 +223,12 @@
             };
         },
         computed: {
-            isReloadLastDraft () { // 就否显示 恢复按钮
-                return localStorage.article_a_id && parseInt(localStorage.article_a_id) !== this.article.a_id;
-            }
         },
         methods: {
-            createArticle () { // 创建新文章
+            createArticle (type) { // 创建新文章
                 let vm = this;
                 api.Post('CmsArticleCreateApi', {
-                    a_title: ''
+                    type: type
                 }, function (res) {
                     if (res.code === 0) {
                         let argu = {a_id: res.a_id};
@@ -347,29 +342,21 @@
                 this.newTagName = '';
                 this.addingNewTag = false;
             },
-            canPublish () {
-                if (this.article.a_title.length === 0) {
-                    this.$Message.error('请输入文章标题');
-                    return false;
-                } else {
-                    return true;
-                }
-            },
             /**
              * 保存草稿
              */
             handleSaveDraft (fun) {
                 let vm = this;
-                if (this.canPublish()) {
-                    this.article.a_content = tinymce.get('articleEditor').getContent();
 
-                    this.tagSelected = [];
-                    for (let key in this.articleTagSelected) {
-                        this.articleTagSelected[key].forEach((item) => {
-                            this.tagSelected.push(item);
-                        });
-                    }
+                this.article.a_content = tinymce.get('articleEditor').getContent();
 
+                this.tagSelected = [];
+                for (let key in this.articleTagSelected) {
+                    this.articleTagSelected[key].forEach((item) => {
+                        this.tagSelected.push(item);
+                    });
+                }
+                if(this.article.a_id) {
                     api.Post('CmsArticleEditApi',
                         Object.assign({}, this.article, {tag: JSON.stringify(this.tagSelected), sort: JSON.stringify(this.sortSelected)}),
                         function (res) {
@@ -386,12 +373,11 @@
                                     desc: res.msg
                                 });
                             }
-                        }, function (e, statusText) {
-                            vm.$Notice.error({
-                                title: '网络错误，服务请求失败',
-                                desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
-                            });
                         });
+                } else {
+                    vm.$Notice.error({
+                        title: '文章ID不存在'
+                    });
                 }
             },
             /**
@@ -402,23 +388,23 @@
                 if (vm.canPublish()) {
                     vm.publishLoading = true;
                     vm.handleSaveDraft(function (res) {
-                        api.Post('CmsArticlePublishApi', {
-                            a_id: vm.article.a_id,
-                            publish_time: vm.publishTimeType === 'immediately' ? '' : vm.article.publish_time
-                        }, function (res) {
-                            vm.publishLoading = false;
-                            vm.$Notice.success({
-                                title: '保存成功',
-                                desc: '文章《' + vm.article.a_title + '》保存成功'
+                        if(vm.article.a_id) {
+                            api.Post('CmsArticlePublishApi', {
+                                a_id: vm.article.a_id,
+                                publish_time: vm.publishTimeType === 'immediately' ? '' : vm.article.publish_time
+                            }, function (res) {
+                                vm.publishLoading = false;
+                                vm.$Notice.success({
+                                    title: '保存成功',
+                                    desc: '文章《' + vm.article.a_title + '》保存成功'
+                                });
+                                console.log(res);
                             });
-                            console.log(res);
-                        }, function (e, statusText) {
+                        } else {
                             vm.$Notice.error({
-                                title: '网络错误，服务请求失败',
-                                desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
+                                title: '文章ID不存在'
                             });
-                        });
-
+                        }
                     });
                 }
             },
@@ -586,16 +572,6 @@
                     });
                 });
             },
-            /**
-             * 恢复最后一次编辑草稿
-             */
-            reloadLastDraft () {
-                let argu = {a_id: localStorage.article_a_id};
-                this.$router.replace({
-                    name: 'cms_article_publish',
-                    params: argu
-                });
-            },
 
             /**
              * 刷新文章
@@ -723,20 +699,28 @@
             }
         },
         mounted () {
+            let vm = this;
+
+            setInterval(function() {
+                vm.handleSaveDraft();
+            }, 60000);
+
             let a_id = 0;
             if (this.$route.params.a_id) {
                 a_id = parseInt(this.$route.params.a_id.toString());
             }
             if (a_id) { // 编辑
-                localStorage.article_a_id = a_id.toString(); // 记录到本地缓存中
                 this.article.a_id = a_id;
                 this.refreshArticle();
             } else {
                 // 创建新文章
-                this.createArticle();
+                this.createArticle('auto');
             }
         },
         created () {
+        },
+        beforeDestroy () {
+            this.handleSaveDraft();
         },
         destroyed () {
             tinymce.get('articleEditor').destroy();
