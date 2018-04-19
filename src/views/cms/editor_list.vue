@@ -33,6 +33,7 @@
                             :hover-show="true"
                             :edit-incell="false"
                             :columns-list="tableColumn"
+                            :table-key="tableKey"
                             :search-param="searchParam"
                     ></common-table>
                     </Col>
@@ -52,6 +53,7 @@
         },
         data () {
             return {
+                tableKey: 'editor_list',
                 searchParam: {
                     keyword: ''
                 },
@@ -150,8 +152,27 @@
                     }
                 });
             },
+            /**
+             * 初始化table
+             */
+            initTable () {
+                let vm = this;
+                if (this.tableKey && localStorage[this.tableKey]) {
+                    // 读取缓存列表参数
+                    let param = JSON.parse(localStorage[this.tableKey]);
+                    if (param.keyword) {
+                        this.searchParam.keyword = param.keyword;
+                    }
+                    if (param.rb_id) {
+                        this.searchParam.rb_id = param.rb_id;
+                    }
+                }
+                this.$refs.table.$emit('cache'); // 设置 开始缓存
+                vm.refresh();
+            }
         },
         mounted () {
+            this.initTable();
         },
         created () {
         }

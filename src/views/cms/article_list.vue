@@ -20,8 +20,14 @@
                     刷新
                 </a>
                 <Row>
-                    <Select v-model="searchParam.user_code" style="width:200px">
+                    <Select v-model="searchParam.user_code" style="width:200px" placeholder="编辑人员...">
                         <Option v-for="item in editorList" :value="item.user_code" :key="item.user_code">{{ item.user_name }}</Option>
+                    </Select>
+                    <Select v-model="searchParam.a_status" style="width:100px" placeholder="文章状态...">
+                        <Option value="0">所有</Option>
+                        <Option value="1">正常显示</Option>
+                        <Option value="2">未发布,不显示</Option>
+                        <Option value="3">草稿中</Option>
                     </Select>
                     <Input v-model="searchParam.keyword" placeholder="请输入关键字..." style="width: 200px"/>
                     <span @click="refresh" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
@@ -38,6 +44,7 @@
                             :hover-show="true"
                             :edit-incell="true"
                             :columns-list="tableColumn"
+                            :table-key="tableKey"
                             :search-param="searchParam"
                     ></common-table>
                     </Col>
@@ -58,9 +65,11 @@
         data () {
             return {
                 editorList: [], //编辑人员列表
+                tableKey: 'article_list', // 列表名称
                 searchParam: {
                     keyword: '',
-                    user_code: ''
+                    user_code: '',
+                    a_status: '1'
                 },
                 tagGroupList: [], // 分组数据
                 tagNode: {
@@ -153,6 +162,8 @@
                 window.open('/' + row.a_code, '_blank');
             },
             handleCancelSearch () {
+                this.searchParam.user_code = '';
+                this.searchParam.a_status = '1';
                 this.searchParam.keyword = '';
                 this.refresh();
             },
@@ -242,9 +253,28 @@
                     }
                 });
             },
+            /**
+             * 初始化table
+             */
+            initTable () {
+                let vm = this;
+                if (this.tableKey && localStorage[this.tableKey]) {
+                    // 读取缓存列表参数
+                    let param = JSON.parse(localStorage[this.tableKey]);
+                    if (param.keyword) {
+                        this.searchParam.keyword = param.keyword;
+                    }
+                    if (param.user_code) {
+                        this.searchParam.user_code = param.user_code;
+                    }
+                }
+                this.$refs.table.$emit('cache'); // 设置 开始缓存
+                vm.refresh();
+            }
         },
         mounted () {
             let vm = this;
+            this.initTable();
             api.Post('CmsTagGroupListApi', {
                 keyword: ''
             }, function (res) {

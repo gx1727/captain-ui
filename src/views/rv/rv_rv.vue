@@ -33,6 +33,7 @@
                         :hover-show="true"
                         :edit-incell="false"
                         :columns-list="tableColumn"
+                        :table-key="tableKey"
                         :search-param="searchParam"
                 ></common-table>
                 </Col>
@@ -51,6 +52,7 @@
         },
         data () {
             return {
+                tableKey: 'rv_list', // 列表名称
                 searchParam: {
                     keyword: '',
                     rb_id: ''
@@ -58,7 +60,7 @@
                 tableColumn: [
                     {
                         title: '#',
-                        type: 'index',
+                        key: 'rv_id',
                         width: 100,
                         align: 'center'
                     },
@@ -174,16 +176,35 @@
                 }
                 return data;
             },
+            /**
+             * 初始化table
+             */
+            initTable () {
+                let vm = this;
+                if (this.tableKey && localStorage[this.tableKey]) {
+                    // 读取缓存列表参数
+                    let param = JSON.parse(localStorage[this.tableKey]);
+                    if (param.keyword) {
+                        this.searchParam.keyword = param.keyword;
+                    }
+                    if (param.rb_id) {
+                        this.searchParam.rb_id = param.rb_id;
+                    }
+                }
+                this.$refs.table.$emit('cache'); // 设置 开始缓存
+                vm.refresh();
+            }
         },
         mounted () {
             let vm = this;
+            this.initTable();
+
             api.Post('CmsBrandsAllApi', {
                 keyword: ''
             }, function (res) {
-                console.log(res);
                 if (res.code === 0) {
                     let filters = [];
-                    for (let index in res.data){
+                    for (let index in res.data) {
                         filters.push({
                             label: res.data[index],
                             value: index
@@ -192,7 +213,7 @@
 
                     vm.tableColumn[3].filters = filters;
                     vm.tableColumn[3].filterRemote = function (values, key) {
-                        if(key === 'brands') {
+                        if (key === 'brands') {
                             key = 'rb_id';
                         }
                         if (values.length <= 0) {

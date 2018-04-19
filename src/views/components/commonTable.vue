@@ -48,6 +48,10 @@
                 type: Boolean,
                 default: false
             },
+            tableKey: { // 本列表的标识
+                type: String,
+                default: ''
+            },
             searchParam: Object // api额外参数
         },
         data () {
@@ -62,11 +66,12 @@
                 columns: [],
                 thisTableData: [],
                 edittingStore: [],
-                pageSizeOpts: [10, 20, 50, 100]
+                pageSizeOpts: [10, 20, 50, 100],
+                cacheParam: false // 是否缓存
             };
         },
         created () {
-            this.remote();
+            this.init();
 
             /**
              * 定义 refresh事件处理函数
@@ -74,6 +79,13 @@
             this.$on('refresh', function () {
                 this.remote();
             });
+
+            /**
+             * 设置 开始缓存
+             */
+            this.$on('cache', function () {
+                this.cacheParam = true;
+            })
         },
         methods: {
             init () {
@@ -166,10 +178,13 @@
                         item.render = (h, param) => {
                             let currentRowData = this.thisTableData[param.index];
                             let children = [];
+
                             item.handle.forEach(itemNode => {
+
                                 if (itemNode === 'edit') {
                                     children.push(editButton(this, h, currentRowData, param.index));
                                 } else if (itemNode === 'delete') {
+
                                     children.push(deleteButton(this, h, currentRowData, param.index));
                                 } else {
                                     // 其它按钮
@@ -260,24 +275,28 @@
              * @returns {({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name}))|({}&{page: *, pagesize: *, orderby: *, ordertype: *})|({}&{page: *, pagesize: *, orderby: *, ordertype: *}&(ObjectConstructor|Object|*|searchParam|{name})&W)|any}
              */
             getParam () {
-                return Object.assign({}, {
+                let param = Object.assign({}, {
                     page: this.page,
                     pagesize: this.pagesize,
                     orderby: this.orderby,
                     ordertype: this.ordertype
                 }, this.searchParam);
-            },
-            cacheParam () {
+                if (this.cacheParam && this.tableKey) { // 缓存列表参数
+                    localStorage[this.tableKey] = JSON.stringify(param);
+                }
 
+                return param;
             }
         },
         mounted () {
-            console.log('here');
-        },
-        watch: {
-//            value (data) {
-//                this.init();
-//            }
+            if (this.tableKey && localStorage[this.tableKey]) {
+                // 读取缓存列表参数
+                let param = JSON.parse(localStorage[this.tableKey]);
+                this.page = param.page;
+                this.pagesize = param.pagesize;
+                this.orderby = param.orderby;
+                this.ordertype = param.ordertype;
+            }
         }
     };
 

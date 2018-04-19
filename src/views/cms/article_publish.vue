@@ -519,8 +519,8 @@
                     let vm = this;
                     let height = document.body.offsetHeight - 300;
 
-//                    tinymce.baseURL = '/dist'; // /static/dist
-                    tinymce.baseURL = '/static/dist';
+                    tinymce.baseURL = '/dist';
+//                    tinymce.baseURL = '/static/dist';
                     tinymce.init({
                         selector: '#articleEditor',
                         branding: false,

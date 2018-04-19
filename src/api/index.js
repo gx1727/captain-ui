@@ -53,7 +53,7 @@ import {
 } from './config'
 
 const service = axios.create({
-    timeout: 5000, // 请求的超时时间
+    timeout: 60000, // 请求的超时时间
     withCredentials: true // 允许携带cookie
 });
 

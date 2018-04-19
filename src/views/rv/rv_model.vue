@@ -39,6 +39,7 @@
                         :hover-show="true"
                         :edit-incell="false"
                         :columns-list="tableColumn"
+                        :table-key="tableKey"
                         :search-param="searchParam"
                 ></common-table>
                 </Col>
@@ -59,8 +60,11 @@
             return {
                 brandsList: [], // 品牌列表
                 rvList: [], // 车系列表
+                tableKey: 'model_list', // 列表名称
                 searchParam: {
-                    keyword: ''
+                    keyword: '',
+                    rb_id: '0',
+                    rv_id: '0'
                 },
                 tableColumn: [
                     {
@@ -129,6 +133,8 @@
                 });
             },
             handleCancelSearch () {
+                this.searchParam.rb_id = '';
+                this.searchParam.rv_id = '';
                 this.searchParam.keyword = '';
                 this.refresh();
             },
@@ -187,10 +193,33 @@
 
                     }
                 });
+            },
+            /**
+             * 初始化table
+             */
+            initTable () {
+                let vm = this;
+                if (this.tableKey && localStorage[this.tableKey]) {
+                    // 读取缓存列表参数
+                    let param = JSON.parse(localStorage[this.tableKey]);
+                    if (param.keyword) {
+                        this.searchParam.keyword = param.keyword;
+                    }
+                    if (param.rb_id) {
+                        this.searchParam.rb_id = param.rb_id;
+                    }
+                    if (param.rv_id) {
+                        this.searchParam.rv_id = param.rv_id;
+                    }
+                }
+                this.$refs.table.$emit('cache'); // 设置 开始缓存
+                vm.refresh();
             }
         },
         mounted () {
             let vm = this;
+            this.initTable();
+
             api.Post('CmsBrandsAllApi', {
                 keyword: ''
             }, function (res) {
