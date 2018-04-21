@@ -222,8 +222,7 @@
                 pictureNetwork: [],  // 网络图片素材
             };
         },
-        computed: {
-        },
+        computed: {},
         methods: {
             createArticle (type) { // 创建新文章
                 let vm = this;
@@ -356,7 +355,7 @@
                         this.tagSelected.push(item);
                     });
                 }
-                if(this.article.a_id) {
+                if (this.article.a_id) {
                     api.Post('CmsArticleEditApi',
                         Object.assign({}, this.article, {tag: JSON.stringify(this.tagSelected), sort: JSON.stringify(this.sortSelected)}),
                         function (res) {
@@ -385,28 +384,26 @@
              */
             handlePublish () {
                 let vm = this;
-                if (vm.canPublish()) {
-                    vm.publishLoading = true;
-                    vm.handleSaveDraft(function (res) {
-                        if(vm.article.a_id) {
-                            api.Post('CmsArticlePublishApi', {
-                                a_id: vm.article.a_id,
-                                publish_time: vm.publishTimeType === 'immediately' ? '' : vm.article.publish_time
-                            }, function (res) {
-                                vm.publishLoading = false;
-                                vm.$Notice.success({
-                                    title: '保存成功',
-                                    desc: '文章《' + vm.article.a_title + '》保存成功'
-                                });
-                                console.log(res);
+                vm.publishLoading = true;
+                vm.handleSaveDraft(function (res) {
+                    if (vm.article.a_id) {
+                        api.Post('CmsArticlePublishApi', {
+                            a_id: vm.article.a_id,
+                            publish_time: vm.publishTimeType === 'immediately' ? '' : vm.article.publish_time
+                        }, function (res) {
+                            vm.publishLoading = false;
+                            vm.$Notice.success({
+                                title: '保存成功',
+                                desc: '文章《' + vm.article.a_title + '》保存成功'
                             });
-                        } else {
-                            vm.$Notice.error({
-                                title: '文章ID不存在'
-                            });
-                        }
-                    });
-                }
+                            console.log(res);
+                        });
+                    } else {
+                        vm.$Notice.error({
+                            title: '文章ID不存在'
+                        });
+                    }
+                });
             },
             handleSelectTag () {
                 localStorage.tagsList = JSON.stringify(this.articleTagSelected); // 本地存储文章标签列表
@@ -505,8 +502,8 @@
                     let vm = this;
                     let height = document.body.offsetHeight - 300;
 
-                    tinymce.baseURL = '/dist';
-//                    tinymce.baseURL = '/static/dist';
+//                    tinymce.baseURL = '/dist';
+                    tinymce.baseURL = '/static/dist';
                     tinymce.init({
                         selector: '#articleEditor',
                         branding: false,
@@ -701,7 +698,7 @@
         mounted () {
             let vm = this;
 
-            setInterval(function() {
+            setInterval(function () {
                 vm.handleSaveDraft();
             }, 60000);
 
