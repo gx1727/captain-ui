@@ -30,7 +30,6 @@ export const CmsTagDelApi = API_ROOT.concat('/cms/tag/del'); // 删除TAG
 export const CmsTagGetApi = API_ROOT.concat('/cms/tag/get'); // 获到TAG数据
 export const CmsTagByGroupApi = API_ROOT.concat('/cms/tag/group'); // 获到TAG数据
 
-
 export const CmsArticleGetApi = API_ROOT.concat('/cms/article/get'); // 获到文章
 export const CmsArticleListApi = API_ROOT.concat('/cms/article/list'); // 文章列表
 export const CmsArticleCreateApi = API_ROOT.concat('/cms/article/create'); // 创建文章
@@ -56,4 +55,8 @@ export const CmsRvFormApi = API_ROOT.concat('/rv/rv/form'); // 编辑车系
 export const CmsRvDelApi = API_ROOT.concat('/rv/rv/del'); // 删除车系
 export const CmsModelListApi = API_ROOT.concat('/rv/model/list'); // 车型列表
 export const CmsModelGetApi = API_ROOT.concat('/rv/model/get'); // 获取车型
-export const CmsModelFormApi =  API_ROOT.concat('/rv/model/form'); // 编辑车型
+export const CmsModelFormApi = API_ROOT.concat('/rv/model/form'); // 编辑车型
+
+export const UserGetApi = API_ROOT.concat('/user/get'); // 获到用户信息
+export const UserEditApi = API_ROOT.concat('/user/edit'); // 编辑用户信息
+export const UserChangePwdApi = API_ROOT.concat('/user/change/pwd'); // 修改密码

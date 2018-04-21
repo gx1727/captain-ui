@@ -1,7 +1,7 @@
 /**
  * Created by gx1727 on 2018/3/14.
  */
-import axios from 'axios'
+import axios from 'axios';
 import Vue from 'vue';
 import store from '../store';
 
@@ -49,8 +49,11 @@ import {
     CmsModelGetApi,
     CmsModelFormApi,
     SystemAttNetworkApi,
-    CmsRvBrandsApi
-} from './config'
+    CmsRvBrandsApi,
+    UserGetApi,
+    UsereditApi,
+    UserChangePwdApi
+} from './config';
 
 const service = axios.create({
     timeout: 60000, // 请求的超时时间
@@ -62,15 +65,14 @@ export default {
         let vm = Vue.prototype;
         vm.$Notice.error({
             title: '网络错误，服务请求失败',
-            desc: typeof e == 'object' ? e.message : (e + '[' + statusText + ']')
+            desc: typeof e === 'object' ? e.message : (e + '[' + statusText + ']')
         });
     },
     Login (param) {
         return service.post(LoginApi, param);
     },
     Post (api, param, success, faild) {
-
-        if (typeof faild != 'function') {
+        if (typeof faild !== 'function') {
             faild = this.ManageFaild;
         }
         service.post(this.GetApiPath(api), param).then(function (response) {
@@ -180,9 +182,15 @@ export default {
                 return SystemAttNetworkApi;
             case 'CmsRvBrandsApi':
                 return CmsRvBrandsApi;
+            case 'UserGetApi':
+                return UserGetApi;
+            case 'UsereditApi':
+                return UsereditApi;
+            case 'UserChangePwdApi':
+                return UserChangePwdApi;
         }
     }
-}
+};
 
 const manageResponse = function (response) {
     let res = response;

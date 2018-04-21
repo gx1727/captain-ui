@@ -70,6 +70,7 @@ export const appRouter = {
     children: [
         {path: 'admin/home', title: {i18n: 'home'}, name: 'admin_home', component: () => import('@/views/admin/admin_home.vue')}, // 管理员home
         {path: 'manager/home', title: {i18n: 'home'}, name: 'manager_home', component: () => import('@/views/manager/manager_home.vue')}, // manager home
+        {path: 'ownspace_index', title: '个人中心', icon: 'android-menu', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue')},
 
         {path: 'auth/role', title: '角色管理', icon: 'android-people', name: 'auth_role', component: () => import('@/views/auth/role.vue')},
         {path: 'auth/menu', title: '菜单管理', icon: 'android-menu', name: 'auth_menu', component: () => import('@/views/auth/menu.vue')},
