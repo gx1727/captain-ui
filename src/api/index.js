@@ -33,12 +33,14 @@ import {
     CmsArticleEditApi,
     CmsArticlePublishApi,
     CmsArticleDelApi,
+    CmsArticleLanmuApi,
     SystemAttListApi,
     CmsEditorListApi,
     CmsEditorFormApi,
     CmsEditorDelApi,
     CmsEditorAuthApi,
     CmsEditorGetApi,
+    CmsEditorInfoApi,
     CmsBrandsListApi,
     CmsBrandsAllApi,
     CmsRvListApi,
@@ -148,6 +150,8 @@ export default {
                 return CmsArticlePublishApi;
             case 'CmsArticleDelApi':
                 return CmsArticleDelApi;
+            case 'CmsArticleLanmuApi':
+                return CmsArticleLanmuApi;
             case 'SystemAttListApi':
                 return SystemAttListApi;
             case 'CmsEditorListApi':
@@ -160,6 +164,8 @@ export default {
                 return CmsEditorAuthApi;
             case 'CmsEditorGetApi':
                 return CmsEditorGetApi;
+            case 'CmsEditorInfoApi':
+                return CmsEditorInfoApi;
             case 'CmsBrandsListApi':
                 return CmsBrandsListApi;
             case 'CmsBrandsAllApi':

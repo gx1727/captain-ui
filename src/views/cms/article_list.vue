@@ -23,6 +23,9 @@
                     <Select v-model="searchParam.user_code" style="width:200px" placeholder="编辑人员...">
                         <Option v-for="item in editorList" :value="item.user_code" :key="item.user_code">{{ item.user_name }}</Option>
                     </Select>
+                    <Select v-model="searchParam.lanmu" style="width:200px" placeholder="栏目...">
+                        <Option v-for="item in lanmuList" :value="item.name" :key="item.name">{{ item.title }}</Option>
+                    </Select>
                     <Select v-model="searchParam.a_status" style="width:100px" placeholder="文章状态...">
                         <Option value="0">所有</Option>
                         <Option value="1">正常显示</Option>
@@ -64,12 +67,14 @@
         },
         data () {
             return {
-                editorList: [], //编辑人员列表
+                editorList: [], // 编辑人员列表
+                lanmuList: [], // 栏目
                 tableKey: 'article_list', // 列表名称
                 searchParam: {
                     keyword: '',
                     user_code: '',
-                    a_status: '1'
+                    a_status: '1',
+                    lanmu: ''
                 },
                 tagGroupList: [], // 分组数据
                 tagNode: {
@@ -88,29 +93,35 @@
                     },
                     {
                         title: '文章标题',
-                        align: 'center',
-                        key: 'a_title'
+                        align: 'left',
+                        key: 'a_title',
+                        width: 300
                     },
                     {
                         title: '发布者',
                         align: 'center',
                         key: 'user_name',
-                        sortable: 'user_name',
                         width: 150
                     },
                     {
-                        title: '创建时间',
+                        title: '发布时间',
                         align: 'center',
-                        key: 'a_atime',
-                        sortable: 'a_atime',
+                        key: 'a_ptime',
+                        sortable: 'a_ptime',
                         width: 150
                     },
                     {
-                        title: '修改时间',
+                        title: '栏目',
                         align: 'center',
-                        key: 'a_etime',
-                        sortable: 'a_etime',
-                        width: 150
+                        key: 'lanmu',
+                        width: 100
+                    },
+
+                    {
+                        title: '状态',
+                        align: 'center',
+                        key: 'a_status_title',
+                        width: 100
                     },
                     {
                         title: '查看次数',
@@ -120,25 +131,42 @@
                         width: 100
                     },
                     {
-                        title: '状态',
+                        title: 'TAG',
                         align: 'center',
-                        key: 'a_status_title',
+                        key: 'tags',
+                        type: 'html',
                         width: 100
+                    },
+                    {
+                        title: '其它分类',
+                        align: 'center',
+                        key: 'sorts',
+                        type: 'html',
+                        width: 100
+                    },
+                    {
+                        title: '修改时间',
+                        align: 'center',
+                        key: 'a_etime',
+                        sortable: 'a_etime',
+                        width: 150
                     },
                     {
                         title: '操作',
                         align: 'center',
-                        width: 200,
+                        width: 180,
                         key: 'handle',
+                        fixed: 'right',
                         handle: [
+                            {
+                                title: '预览',
+                                type: '',
+                                fun: this.previewButton
+                            },
                             {
                                 title: '编辑',
                                 type: 'primary',
                                 fun: this.editButton
-                            }, {
-                                title: '预览',
-                                type: '',
-                                fun: this.previewButton
                             },
                             'delete'
                         ]
@@ -165,6 +193,7 @@
                 this.searchParam.user_code = '';
                 this.searchParam.a_status = '1';
                 this.searchParam.keyword = '';
+                this.searchParam.lanmu = '';
                 this.refresh();
             },
             createArticle () { //新建文章
@@ -275,36 +304,17 @@
         mounted () {
             let vm = this;
             this.initTable();
-            api.Post('CmsTagGroupListApi', {
+            api.Post('CmsArticleLanmuApi', {
                 keyword: ''
             }, function (res) {
+                vm.lanmuList = [{name: '', title: '全部'}]
                 if (res.code === 0) {
-                    if (res.total > 0) {
-                        vm.tagGroupList = res.data;
-                        let filters = []
-                        res.data.forEach(item => {
-                            filters.push({
-                                label: item.ctg_title,
-                                value: item.ctg_name
-                            });
-
-                        });
-                        vm.tableColumn[1].filters = filters;
-                        vm.tableColumn[1].filterRemote = function (values, key) {
-                            if (key == 'ctg_name_title') {
-                                key = 'ctg_name';
-                            }
-                            if (values.length <= 0) {
-                                delete vm.searchParam[key];
-                            } else {
-                                vm.searchParam[key] = JSON.stringify(values);
-                            }
-                            vm.refresh();
-                        }
+                    for (let i in res.lanmu) {
+                        vm.lanmuList.push(res.lanmu[i]);
                     }
                 } else {
                     vm.$Notice.warning({
-                        title: '获取分组失败',
+                        title: '获取栏目失败',
                         desc: res.msg
                     });
                 }

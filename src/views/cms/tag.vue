@@ -170,7 +170,7 @@
                     {
                         title: '上级TAG',
                         align: 'center',
-                        width: 200,
+                        width: 100,
                         key: 'ct_parent',
                         editable: true
                     },
@@ -178,7 +178,7 @@
                         title: '下级个数',
                         align: 'center',
                         width: 100,
-                        key: 'ct_child  '
+                        key: 'ct_child'
                     },
                     {
                         title: 'TAG图片',
@@ -194,10 +194,18 @@
                         type: 'html'
                     },
                     {
+                        title: '模板',
+                        align: 'center',
+                        width: 100,
+                        key: 'ct_template   ',
+                        editable: true
+                    },
+                    {
                         title: '操作',
                         align: 'center',
                         width: 150,
                         key: 'handle',
+                        fixed: 'right',
                         handle: [
                             'edit', 'delete'
                         ]
@@ -212,6 +220,7 @@
             },
             handleCancelSearch () {
                 this.searchParam.keyword = '';
+                this.searchParam.ctg_name = '';
                 this.refresh();
             },
             handleCellChange (val, index, key) {

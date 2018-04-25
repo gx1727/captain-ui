@@ -67,19 +67,19 @@
             </Col>
             <Col :md="24" :lg="16">
             <Row :gutter="5">
-                <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
+                <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}" @click.native="redirect('article_list')">
                 <infor-card
                         id-name="user_created_count"
-                        :end-val="count.createUser"
+                        :end-val="count.article"
                         iconType="social-buffer"
                         color="#2d8cf0"
                         intro-text="发布文章数"
                 ></infor-card>
                 </Col>
-                <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
+                <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}" @click.native="redirect('article_edit')">
                 <infor-card
                         id-name="visit_count"
-                        :end-val="count.visit"
+                        :end-val="count.draft"
                         iconType="edit"
                         color="#64d572"
                         :iconSize="50"
@@ -97,7 +97,7 @@
     import toDoListItem from '../components/toDoListItem.vue';
     import inforCard from '../components/inforCard.vue';
     import util from '@/libs/util.js';
-
+    import api from '../../api';
 
     export default {
         name: 'manager_home',
@@ -111,10 +111,8 @@
                 toDoList: [
                 ],
                 count: {
-                    createUser: 0,
-                    visit: 0,
-                    collection: 0,
-                    transfer: 0
+                    article: 0,
+                    draft: 0,
                 },
                 showAddNewTodo: false,
                 newToDoItemValue: ''
@@ -152,7 +150,34 @@
             cancelAdd () {
                 this.showAddNewTodo = false;
                 this.newToDoItemValue = '';
+            },
+            redirect (key) {
+                if(key === 'article_list') {
+                    this.$router.push({
+                        name: 'cms_article_list'
+                    });
+                } else if(key === 'article_edit') {
+                    this.$router.push({
+                        name: 'cms_article_publish'
+                    });
+                }
             }
+        },
+        mounted () {
+            let vm = this;
+            api.Post('CmsEditorInfoApi', {
+
+            }, function(res){
+                if(res) {
+                    vm.count.article = res.article;
+                    vm.count.draft = res.draft ? res.draft.length : 0;
+                } else {
+                    vm.$Notice.warning({
+                        title: '错误',
+                        desc: res.msg
+                    });
+                }
+            });
         }
     };
 </script>

@@ -18,7 +18,46 @@
                 <div class="margin-top-20">
                     <textarea id="articleEditor"></textarea>
                 </div>
+                <Row class="margin-top-10" :gutter="5">
+                    <Col span="6">
+                        <Alert type="warning">
+                            分页
+                            <template slot="desc">
+                                ~~~page~~~
+                            </template>
+                        </Alert>
+                    </Col>
+                    <Col span="6">
+                    <Alert type="warning">
+                        分页标题
+                        <template slot="desc">
+                            [title:这里是自定义的分页标题]
+                        </template>
+                    </Alert>
+                    </Col>
+                </Row>
             </Card>
+            <Row class="margin-top-10">
+                <Col span="12">
+                <Card>
+                    <Form :label-width="80" >
+                        <FormItem label="文章模板" class="padding-top-10">
+                            <Input v-model="article.a_template" icon="android-list"/>
+                        </FormItem>
+                    </Form>
+                </Card>
+                </Col>
+                <Col span="12">
+                <Card>
+                    <Form >
+                        <FormItem label="扩展数据" class="padding-top-10">
+                            <Input v-model="article.a_extended" type="textarea"/>
+                        </FormItem>
+                    </Form>
+                </Card>
+                </Col>
+            </Row>
+
             </Col>
             <Col span="6" class="padding-left-10">
             <Tabs type="card"
@@ -87,26 +126,6 @@
                         </Card>
                     </div>
 
-                    <Card>
-                        <p slot="title">
-                            <Icon type="ios-pricetags-outline"></Icon>
-                            功能
-                        </p>
-                        <Tabs type="card" class="margin-top-10">
-                            <TabPane :label="tagGroupItem.title" v-for="tagGroupItem in tagDB" :key="tagGroupItem.name">
-                                <div class="classification-con">
-                                    <Row>
-                                        <Col span="24">
-                                        <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple transfer>
-                                            <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
-                                        </Select>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </TabPane>
-                        </Tabs>
-                    </Card>
-
                     <div class="margin-top-10">
                         <Card>
                             <p slot="title">
@@ -140,6 +159,29 @@
                             </transition>
                         </Card>
                     </div>
+
+                    <div class="margin-top-10">
+                        <Card v-for="item in tagGroup">
+                            <p slot="title">
+                                <Icon type="ios-pricetags-outline"></Icon>
+                                {{ item.title }}
+                            </p>
+                            <Tabs type="card" class="margin-top-10">
+                                <TabPane v-if="tagGroupItem.type === item.type" :label="tagGroupItem.title" v-for="tagGroupItem in tagDB" :key="tagGroupItem.name">
+                                    <div class="classification-con">
+                                        <Row>
+                                            <Col span="24">
+                                            <Select v-model="articleTagSelected[tagGroupItem.name]" filterable multiple transfer>
+                                                <Option v-for="tag in tagGroupItem.tagList" :value="tag.name" :key="tag.name">{{ tag.title }}</Option>
+                                            </Select>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </TabPane>
+                            </Tabs>
+                        </Card>
+                    </div>
+
                 </TabPane>
                 <TabPane label="图片">
                     <Card>
@@ -192,6 +234,16 @@
             return {
                 showCurrentTableData: true,
                 articleTagSelected: {}, // 文章选中的标签
+                tagGroup: [
+                    {
+                        type: 2,
+                        title: '车型库'
+                    },
+                    {
+                        type: 4,
+                        title: '功能'
+                    }
+                ], // tag分组
                 tagDB: [],
                 commonTagDB: [],
                 article: {
@@ -206,6 +258,7 @@
                     a_extended: '',
                     a_publish_time: '', // 计划发布时间
                     a_recommend: false,
+                    a_template: '', // 文章模板
                     a_status: -1,
                     publish_time: '', // 最新已发布时间
                     draft_etime: '' // 最新草稿时间 2018-03-28 12:03:00
@@ -405,8 +458,7 @@
                     }
                 });
             },
-            handleSelectTag () {
-                localStorage.tagsList = JSON.stringify(this.articleTagSelected); // 本地存储文章标签列表
+            handleSelectTag () { // 选择tag
             },
 
             /**
@@ -444,6 +496,7 @@
                                 vm.tagDB.push({
                                     name: res.tagData[ctg_name].ctg_name,
                                     title: res.tagData[ctg_name].ctg_title,
+                                    type: res.tagData[ctg_name].ctg_type,
                                     tagList: tagList
                                 });
                             }
@@ -581,10 +634,10 @@
                     a_id: this.article.a_id
                 }, function (res) {
                     if (res.code === 0) {
-                        console.log(res);
                         vm.article.user_code = res.user_code;
                         vm.article.a_code = res.a_code;
                         vm.article.a_title = res.a_title;
+                        vm.article.a_template = res.a_template;
                         vm.article.a_img = res.a_img;
                         vm.article.a_abstract = res.a_abstract;
                         vm.article.a_content = res.a_content;

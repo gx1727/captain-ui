@@ -37,6 +37,8 @@ export const CmsArticleEditApi = API_ROOT.concat('/cms/article/edit'); // 编辑
 export const CmsArticlePublishApi = API_ROOT.concat('/cms/article/publish'); // 发布文章
 export const CmsArticleDelApi = API_ROOT.concat('/cms/article/del'); // 删除文章
 
+export const CmsArticleLanmuApi = API_ROOT.concat('/cms/article/lanmu'); // 获到栏目数据
+
 export const SystemAttListApi = API_ROOT.concat('/attachment/list'); // 附件列表
 export const SystemAttNetworkApi = API_ROOT.concat('/attachment/network'); // 网络图片素材
 
@@ -45,6 +47,7 @@ export const CmsEditorFormApi = API_ROOT.concat('/cms/editor/form'); // 编辑�
 export const CmsEditorDelApi = API_ROOT.concat('/cms/editor/del'); // 编辑人员
 export const CmsEditorAuthApi = API_ROOT.concat('/cms/editor/auth'); // 编辑人员
 export const CmsEditorGetApi = API_ROOT.concat('/cms/editor/get'); // 编辑人员
+export const CmsEditorInfoApi = API_ROOT.concat('/cms/editor/info'); // 编辑人员的的文章数据
 
 export const CmsBrandsListApi = API_ROOT.concat('/rv/brands/list'); // 品牌列表
 export const CmsBrandsAllApi = API_ROOT.concat('/rv/brands/all'); // 所有品牌
