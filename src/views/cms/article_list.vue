@@ -296,6 +296,12 @@
                     if (param.user_code) {
                         this.searchParam.user_code = param.user_code;
                     }
+                    if (param.a_status) {
+                        this.searchParam.a_status = param.a_status;
+                    }
+                    if (param.lanmu) {
+                        this.searchParam.lanmu = param.lanmu;
+                    }
                 }
                 this.$refs.table.$emit('cache'); // 设置 开始缓存
                 vm.refresh();

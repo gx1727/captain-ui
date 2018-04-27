@@ -87,6 +87,7 @@
                 ></infor-card>
                 </Col>
             </Row>
+            <Table border :columns="draftColumns" :data="draftList"></Table>
             </Col>
         </Row>
     </div>
@@ -115,7 +116,86 @@
                     draft: 0,
                 },
                 showAddNewTodo: false,
-                newToDoItemValue: ''
+                newToDoItemValue: '',
+                draftColumns:[
+                    {
+                        title: '文章ID',
+                        key: 'a_id',
+                        width: 80
+
+                    },
+                    {
+                        title: '文章标题',
+                        key: 'a_title',
+                        type: 'html'
+                    },
+                    {
+                        title: '草稿时间',
+                        key: 'a_etime'
+                    },
+                    {
+                        title: '是否已发布',
+                        key: 'publish',
+                        width: 80
+
+                    },
+                    {
+                        title: '发布时间',
+                        key: 'a_ptime'
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        fixed: 'right',
+                        width: 120,
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            let argu = {a_id: params.row.a_id};
+                                            this.$router.push({
+                                                name: 'cms_article_publish',
+                                                params: argu
+                                            });
+                                        }
+                                    }
+                                }, '编辑'),
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: '您确定要删除这条数据吗?',
+                                        transfer: true
+                                    },
+                                    on: {
+                                        'on-ok': () => {
+                                            this.handleDelete(params.row);
+                                        }
+                                    }
+                                }, [
+                                    h('Button', {
+                                        style: {
+                                            margin: '0 5px'
+                                        },
+                                        props: {
+                                            type: 'error',
+                                            placement: 'top',
+                                            size: 'small'
+                                        }
+                                    }, '删除')
+                                ])
+                            ]);
+                        }
+                    }
+                ],
+                draftList: []
             };
         },
         computed: {
@@ -161,23 +241,49 @@
                         name: 'cms_article_publish'
                     });
                 }
+            },
+            handleDelete(val) {
+                let vm = this;
+                vm.$Message.info('提交中...');
+
+                api.Post('CmsArticleDelDraftApi', {
+                    a_id: val.a_id,
+                    postData: JSON.stringify(val)
+                }, function (res) {
+                    vm.$Message.destroy();
+                    if (res.code === 0) {
+                        vm.refresh();
+                        vm.$Notice.success({
+                            title: '删除成功'
+                        });
+                    } else {
+                        vm.$Notice.warning({
+                            title: '删除',
+                            desc: res.msg
+                        });
+                    }
+                });
+            },
+            refresh () {
+                let vm = this;
+                api.Post('CmsEditorInfoApi', {
+
+                }, function(ret){
+                    if(ret) {
+                        vm.count.article = ret.article;
+                        vm.count.draft = ret.draft ? ret.draft.length : 0;
+                        vm.draftList = ret.draft
+                    } else {
+                        vm.$Notice.warning({
+                            title: '错误',
+                            desc: res.msg
+                        });
+                    }
+                });
             }
         },
         mounted () {
-            let vm = this;
-            api.Post('CmsEditorInfoApi', {
-
-            }, function(res){
-                if(res) {
-                    vm.count.article = res.article;
-                    vm.count.draft = res.draft ? res.draft.length : 0;
-                } else {
-                    vm.$Notice.warning({
-                        title: '错误',
-                        desc: res.msg
-                    });
-                }
-            });
+            this.refresh();
         }
     };
 </script>

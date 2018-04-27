@@ -33,6 +33,7 @@ import {
     CmsArticleEditApi,
     CmsArticlePublishApi,
     CmsArticleDelApi,
+    CmsArticleDelDraftApi,
     CmsArticleLanmuApi,
     SystemAttListApi,
     CmsEditorListApi,
@@ -150,6 +151,8 @@ export default {
                 return CmsArticlePublishApi;
             case 'CmsArticleDelApi':
                 return CmsArticleDelApi;
+            case 'CmsArticleDelDraftApi':
+                return CmsArticleDelDraftApi;
             case 'CmsArticleLanmuApi':
                 return CmsArticleLanmuApi;
             case 'SystemAttListApi':

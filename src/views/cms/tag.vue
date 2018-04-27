@@ -139,6 +139,13 @@
                         }
                     },
                     {
+                        title: '分组名',
+                        width: 200,
+                        align: 'center',
+                        key: 'ctg_name',
+                        editable: true
+                    },
+                    {
                         title: 'TAG名称',
                         width: 200,
                         align: 'center',

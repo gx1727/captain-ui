@@ -83,7 +83,13 @@
                             草稿：
                             <Tag size="small"> {{ article.draft_etime }}</Tag>
                             <a :href="'/preview/' + article.a_id" target="_blank">预览</a>
+                            <Button size="small" @click="resetDraftFlag = !resetDraftFlag" type="text"><Icon type="chevron-down"></Icon></Button>
                         </p>
+                        <transition name="reset-draft">
+                            <div v-show="resetDraftFlag">
+                                <Button type="text"  @click="handleDelete(article.a_id)">重置草稿</Button>(注：原草稿将无法搞回)
+                            </div>
+                        </transition>
                         <p class="margin-top-10">
                             <Icon type="ios-calendar-outline"></Icon>
                             <span v-if="publishTimeType === 'immediately'">立即发布</span><span v-else>定时：{{ article.a_publish_time }}</span>
@@ -102,7 +108,10 @@
                         </p>
                         <p class="margin-top-10">
                             <Icon type="star"></Icon>
-                            <Checkbox v-model="article.a_recommend">推荐</Checkbox>
+                            <Checkbox v-model="article.recommend">推荐</Checkbox>
+                            <Checkbox v-model="article.top">置顶</Checkbox>
+                            <Checkbox v-model="article.cover">封面</Checkbox>
+                            <Checkbox v-model="article.special">特殊</Checkbox>
                         </p>
                         <Row class="margin-top-20 publish-button-con">
                             <span class="publish-button"><Button @click="handleSaveDraft">保存草稿</Button></span>
@@ -208,10 +217,6 @@
                         </div>
                     </Card>
                 </TabPane>
-                <TabPane label="房车">
-                </TabPane>
-                <TabPane label="营地">
-                </TabPane>
             </Tabs>
             </Col>
         </Row>
@@ -257,7 +262,10 @@
                     a_count: '',
                     a_extended: '',
                     a_publish_time: '', // 计划发布时间
-                    a_recommend: false,
+                    recommend: false,
+                    top: false,
+                    cover: false,
+                    special: false,
                     a_template: '', // 文章模板
                     a_status: -1,
                     publish_time: '', // 最新已发布时间
@@ -273,6 +281,9 @@
                 newTagName: '', // 新建标签名
                 showImgManager: true, // 显示图片处理器
                 pictureNetwork: [],  // 网络图片素材
+                saveDraftFlag: false, // 是否自动保存草稿
+                intervalID: false, // 定时器指针,
+                resetDraftFlag: false // 重置草稿按钮
             };
         },
         computed: {},
@@ -400,6 +411,7 @@
             handleSaveDraft (fun) {
                 let vm = this;
 
+                vm.saveDraftFlag = true; // 开启自动保存
                 this.article.a_content = tinymce.get('articleEditor').getContent();
 
                 this.tagSelected = [];
@@ -419,6 +431,7 @@
                                 } else {
                                     vm.$Message.info('草稿保存成功');
                                 }
+
                             } else {
                                 vm.$Notice.warning({
                                     title: '错误',
@@ -446,9 +459,10 @@
                         }, function (res) {
                             vm.publishLoading = false;
                             vm.$Notice.success({
-                                title: '保存成功',
+                                title: '发布文章成功',
                                 desc: '文章《' + vm.article.a_title + '》保存成功'
                             });
+                            vm.saveDraftFlag = false;
                             console.log(res);
                         });
                     } else {
@@ -644,11 +658,13 @@
                         vm.article.a_count = res.a_count;
                         vm.article.a_extended = res.a_extended;
                         vm.article.a_publish_time = res.a_publish_time;
-                        vm.article.a_recommend = res.a_recommend ? true : false;
                         vm.article.a_status = res.a_status;
                         vm.article.publish_time = res.publish_time;
                         vm.article.draft_etime = res.draft_etime;
-
+                        vm.article.arecommend = res.flag.arecommend ? true : false;
+                        vm.article.top = res.flag.top ? true : false;
+                        vm.article.cover = res.flag.cover ? true : false;
+                        vm.article.special = res.flag.special ? true : false;
 
                         vm.sortSelected = [];
                         res.sort.forEach((item) => {
@@ -659,6 +675,10 @@
                         res.tag.forEach((item) => {
                             vm.tagSelected.push(item.ct_name);
                         });
+
+                        if(res.a_status == 3) { // 如何当前是草稿，开始自始
+                            vm.saveDraftFlag = true;
+                        }
                     } else {
                         vm.$Notice.warning({
                             title: '错误',
@@ -746,13 +766,43 @@
             },
             handleSetAImg: function (item) {
                 this.article.a_img = item.url;
-            }
+            },
+            handleDelete(a_id) {
+                let vm = this;
+                vm.$Message.info('提交中...');
+
+                api.Post('CmsArticleDelDraftApi', {
+                    a_id: a_id,
+                }, function (res) {
+                    vm.$Message.destroy();
+                    if (res.code === 0) {
+                        vm.refreshArticle();
+                        if(vm.intervalID) {
+                            clearInterval(vm.intervalID);
+                        }
+
+                        if(vm.saveDraftFlag) {
+                            vm.saveDraftFlag = false;
+                        }
+                        vm.$Notice.success({
+                            title: '草稿已删除'
+                        });
+                    } else {
+                        vm.$Notice.warning({
+                            title: '删除',
+                            desc: res.msg
+                        });
+                    }
+                });
+            },
         },
         mounted () {
             let vm = this;
 
-            setInterval(function () {
-                vm.handleSaveDraft();
+            this.intervalID = setInterval(function () {
+                if(vm.saveDraftFlag) {
+                    vm.handleSaveDraft();
+                }
             }, 60000);
 
             let a_id = 0;
@@ -770,7 +820,14 @@
         created () {
         },
         beforeDestroy () {
-            this.handleSaveDraft();
+            if(this.intervalID) {
+                clearInterval(this.intervalID);
+            }
+
+            if(this.saveDraftFlag) {
+                this.handleSaveDraft();
+                this.saveDraftFlag = false;
+            }
         },
         destroyed () {
             tinymce.get('articleEditor').destroy();
