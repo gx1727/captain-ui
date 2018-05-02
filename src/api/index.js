@@ -61,7 +61,11 @@ import {
     CmsTemplateFormApi,
     CmsTemplateBackupApi,
     CmsTemplatePublishApi,
-    CmsTemplateDelApi
+    CmsTemplateDelApi,
+    CmsSpecialListApi,
+    CmsSpecialGetApi,
+    CmsSpecialFormApi,
+    CmsSpecialDelApi
 } from './config';
 
 const service = axios.create({
@@ -215,6 +219,14 @@ export default {
                 return CmsTemplatePublishApi;
             case 'CmsTemplateDelApi':
                 return CmsTemplateDelApi;
+            case 'CmsSpecialListApi':
+                return CmsSpecialListApi;
+            case 'CmsSpecialGetApi':
+                return CmsSpecialGetApi;
+            case 'CmsSpecialFormApi':
+                return CmsSpecialFormApi;
+            case 'CmsSpecialDelApi':
+                return CmsSpecialDelApi;
         }
     }
 };

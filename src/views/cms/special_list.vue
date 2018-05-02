@@ -9,9 +9,9 @@
             <Card>
                 <p slot="title">
                     <Icon type="clipboard"></Icon>
-                    模板
+                    专题
                 </p>
-                <a href="#" @click="createTemplate" slot="extra">
+                <a href="#" @click="createSpecial" slot="extra">
                     <Icon type="android-add"></Icon>
                     新增
                 </a>
@@ -28,7 +28,7 @@
                     <Col span="24">
                     <common-table
                             ref="table"
-                            remote-api="CmsTemplateListApi"
+                            remote-api="CmsSpecialListApi"
                             @on-delete="handleDelete"
                             :hover-show="true"
                             :edit-incell="false"
@@ -47,51 +47,51 @@
     import commonTable from '../components/commonTable.vue';
     import api from '../../api';
     export default {
-        name: 'template-list',
+        name: 'special-list',
         components: {
             commonTable
         },
         data () {
             return {
-                tableKey: 'template_list',
+                tableKey: 'special_list',
                 searchParam: {
                     keyword: ''
                 },
                 tableColumn: [
                     {
                         title: '#',
-                        key: 't_id',
+                        key: 's_id',
                         width: 100,
                         align: 'center'
                     },
                     {
-                        title: '模板名称',
+                        title: '专题名称',
                         align: 'left',
-                        key: 't_name',
-                        width: 100
-                    },
-                    {
-                        title: '模板标题',
-                        align: 'left',
-                        key: 't_title',
+                        key: 's_name',
                         width: 300
                     },
                     {
-                        title: '模板种类',
+                        title: '专题标题',
+                        align: 'left',
+                        key: 's_title',
+                        width: 300
+                    },
+                    {
+                        title: '专题标志',
                         align: 'center',
-                        key: 't_type',
+                        key: 'flag',
                         width: 100
                     },
                     {
-                        title: '模板分类',
+                        title: '专题模板',
                         align: 'center',
-                        key: 't_class',
+                        key: 's_template',
                         width: 100
                     },
                     {
-                        title: '模板路径',
-                        align: 'center',
-                        key: 't_path'
+                        title: '扩展参数',
+                        align: 'left',
+                        key: 's_extended'
                     },
                     {
                         title: '操作',
@@ -116,17 +116,17 @@
             refresh () { // 刷新列表
                 this.$refs.table.$emit('refresh'); // 解发列表刷新事件
             },
-            createTemplate () { //新建文章
-                let argu = {t_id: 0};
+            createSpecial () { // 新建专题
+                let argu = {s_id: 0};
                 this.$router.push({
-                    name: 'template_form',
+                    name: 'special_form',
                     params: argu
                 });
             },
             editButton (row) {
-                let argu = {t_id: row.t_id};
+                let argu = {s_id: row.s_id};
                 this.$router.push({
-                    name: 'template_form',
+                    name: 'special_form',
                     params: argu
                 });
             },
@@ -134,12 +134,12 @@
                 this.searchParam.keyword = '';
                 this.refresh();
             },
-            handleDelete(val, index) {
+            handleDelete (val, index) {
                 let vm = this;
                 vm.$Message.info('提交中...');
 
-                api.Post('CmsTemplateDelApi', {
-                    t_id: val.t_id,
+                api.Post('CmsSpecialDelApi', {
+                    s_id: val.s_id
                 }, function (res) {
                     vm.$Message.destroy();
                     if (res.code === 0) {

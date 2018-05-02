@@ -2,8 +2,8 @@
  * Created by gx1727 on 2018/3/14.
  */
 // 接口地址 http://localhost-v
-export const API_ROOT = '/api';
-// export const API_ROOT = 'http://localhost-v/api';
+// export const API_ROOT = '/api';
+export const API_ROOT = 'http://localhost-v/api';
 
 export const LoginApi = API_ROOT.concat('/login'); // 登录
 export const RoleListApi = API_ROOT.concat('/role/list'); // 角色列表
@@ -65,10 +65,14 @@ export const UserGetApi = API_ROOT.concat('/user/get'); // 获到用户信息
 export const UserEditApi = API_ROOT.concat('/user/edit'); // 编辑用户信息
 export const UserChangePwdApi = API_ROOT.concat('/user/change/pwd'); // 修改密码
 
-
 export const CmsTemplateListApi = API_ROOT.concat('/cms/template/list'); // 模板列表
 export const CmsTemplateGetApi = API_ROOT.concat('/cms/template/get'); // 获取模板
 export const CmsTemplateFormApi = API_ROOT.concat('/cms/template/form'); // 编辑模板
 export const CmsTemplateBackupApi = API_ROOT.concat('/cms/template/backup'); // 备份模板
 export const CmsTemplatePublishApi = API_ROOT.concat('/cms/template/publish'); // 发布模板
 export const CmsTemplateDelApi = API_ROOT.concat('/cms/template/del'); // 删除模板
+
+export const CmsSpecialListApi = API_ROOT.concat('/cms/special/list'); // 专题列表
+export const CmsSpecialGetApi = API_ROOT.concat('/cms/special/get'); // 获取专题
+export const CmsSpecialFormApi = API_ROOT.concat('/cms/special/form'); // 编辑专题
+export const CmsSpecialDelApi = API_ROOT.concat('/cms/special/del'); // 删除专题

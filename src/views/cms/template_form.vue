@@ -49,10 +49,11 @@
                         <Option value="A">文章</Option>
                         <Option value="L">列表</Option>
                         <Option value="S">专有</Option>
+                        <Option value="C">组件</Option>
                     </Select>
                 </p>
                 <Row class="margin-top-20 publish-button-con">
-                    <a :href="'/template/preview/' + template.t_id" target="_blank">预览</a>
+                    <a :href="'/preview/template/' + template.t_id" target="_blank">预览</a>
                     <span class="publish-button"><Button @click="handleSaveTemplate">保存</Button></span>
                     <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
                 </Row>
@@ -71,7 +72,7 @@
                             slot="extra"
                             title="你确定要删除该备份吗?"
                             @on-ok="handleDeleteHistory(item.t_id)">
-                        <Button  type="dashed" size="small" icon="android-delete">删除</Button>
+                        <Button type="dashed" size="small" icon="android-delete">删除</Button>
                     </Poptip>
                     <p>{{ item.t_des }}</p>
                     <p>{{ item.atime }}</p>
@@ -102,7 +103,7 @@
                     t_status: '',
                     history: []
                 }
-            }
+            };
         },
         computed: {},
         methods: {
@@ -111,7 +112,7 @@
                 api.Post('CmsTemplateGetApi', {
                     t_id: this.template.t_id
                 }, function (res) {
-                    if (res.code == 0) {
+                    if (res.code === 0) {
                         vm.template.t_id = res.t_id;
                         vm.template.t_name = res.t_name;
                         vm.template.t_title = res.t_title;
@@ -129,9 +130,11 @@
             handleSaveTemplate: function () {
                 let vm = this;
                 api.Post('CmsTemplateFormApi', this.template, function (ret) {
-                    if(ret.code == 0) {
+                    if (ret.code === 0) {
                         vm.$Message.info('保存成功');
-                        vm.template.t_id = ret.id;
+                        if (!vm.template.t_id) {
+                            vm.template.t_id = ret.id;
+                        }
                         vm.refresh();
                     } else {
                         vm.$Notice.warning({
@@ -143,36 +146,36 @@
             },
             backup () {
                 let vm = this;
-              if(this.template.t_id) {
-                  api.Post('CmsTemplateBackupApi', this.template, function (ret) {
-                      if(ret.code == 0) {
-                          vm.$Message.info('保存成功');
-                          vm.refresh();
-                      } else {
-                          vm.$Notice.warning({
-                              title: '错误',
-                              desc: ret.msg
-                          });
-                      }
-                  })
-              }
+                if (this.template.t_id) {
+                    api.Post('CmsTemplateBackupApi', this.template, function (ret) {
+                        if (ret.code === 0) {
+                            vm.$Message.info('保存成功');
+                            vm.refresh();
+                        } else {
+                            vm.$Notice.warning({
+                                title: '错误',
+                                desc: ret.msg
+                            });
+                        }
+                    });
+                }
             },
-            handleViewHistory: function(t_id) {
+            handleViewHistory: function (t_id) {
                 let vm = this;
                 api.Post('CmsTemplateGetApi', {
                     t_id: t_id
                 }, function (res) {
-                    if (res.code == 0) {
+                    if (res.code === 0) {
                         vm.template.t_title = res.t_title;
                         vm.template.t_des = res.t_des;
                         vm.template.t_content = res.t_content;
                     }
-                })
+                });
             },
-            handleDeleteHistory: function(t_id) {
+            handleDeleteHistory: function (t_id) {
                 let vm = this;
                 api.Post('CmsTemplateDelApi', {t_id: t_id}, function (ret) {
-                    if(ret.code == 0) {
+                    if (ret.code === 0) {
                         vm.$Message.info('保存成功');
                         vm.refresh();
                     } else {
@@ -181,11 +184,12 @@
                             desc: ret.msg
                         });
                     }
-                })
+                });
             },
             handlePublish: function () {
-                api.Post('CmsTemplatePublishApi', this.template, function (ret) {
-                    if(ret.code == 0) {
+                let vm = this;
+                api.Post('CmsTemplatePublishApi', {t_id: this.template.t_id}, function (ret) {
+                    if (ret.code === 0) {
                         vm.$Message.info('发布成功');
                         vm.refresh();
                     } else {
@@ -194,11 +198,10 @@
                             desc: ret.msg
                         });
                     }
-                })
+                });
             }
         },
         mounted () {
-            let vm = this;
             let t_id = 0;
             if (this.$route.params.t_id) {
                 t_id = parseInt(this.$route.params.t_id.toString());
@@ -210,5 +213,5 @@
         },
         created () {
         }
-    }
+    };
 </script>
