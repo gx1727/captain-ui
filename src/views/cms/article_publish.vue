@@ -423,11 +423,11 @@
                 if (this.article.a_id) {
                     api.Post('CmsArticleEditApi',
                         Object.assign({}, this.article, {tag: JSON.stringify(this.tagSelected), sort: JSON.stringify(this.sortSelected)}),
-                        function (res) {
-                            if (res.code === 0) {
-                                vm.article.draft_etime = res.draft_etime;
+                        function (ret) {
+                            if (ret.code === 0) {
+                                vm.article.draft_etime = ret.draft_etime;
                                 if (typeof fun === 'function') { // callback ，可以作发布用
-                                    fun(res);
+                                    fun(ret);
                                 } else {
                                     vm.$Message.info('草稿保存成功');
                                 }
@@ -435,7 +435,7 @@
                             } else {
                                 vm.$Notice.warning({
                                     title: '错误',
-                                    desc: res.msg
+                                    desc: ret.msg
                                 });
                             }
                         });
@@ -661,7 +661,7 @@
                         vm.article.a_status = res.a_status;
                         vm.article.publish_time = res.publish_time;
                         vm.article.draft_etime = res.draft_etime;
-                        vm.article.arecommend = res.flag.arecommend ? true : false;
+                        vm.article.recommend = res.flag.recommend ? true : false;
                         vm.article.top = res.flag.top ? true : false;
                         vm.article.cover = res.flag.cover ? true : false;
                         vm.article.special = res.flag.special ? true : false;

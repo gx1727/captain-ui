@@ -55,7 +55,13 @@ import {
     CmsRvBrandsApi,
     UserGetApi,
     UsereditApi,
-    UserChangePwdApi
+    UserChangePwdApi,
+    CmsTemplateListApi,
+    CmsTemplateGetApi,
+    CmsTemplateFormApi,
+    CmsTemplateBackupApi,
+    CmsTemplatePublishApi,
+    CmsTemplateDelApi
 } from './config';
 
 const service = axios.create({
@@ -197,6 +203,18 @@ export default {
                 return UsereditApi;
             case 'UserChangePwdApi':
                 return UserChangePwdApi;
+            case 'CmsTemplateListApi':
+                return CmsTemplateListApi;
+            case 'CmsTemplateGetApi':
+                return CmsTemplateGetApi;
+            case 'CmsTemplateFormApi':
+                return CmsTemplateFormApi;
+            case 'CmsTemplateBackupApi':
+                return CmsTemplateBackupApi;
+            case 'CmsTemplatePublishApi':
+                return CmsTemplatePublishApi;
+            case 'CmsTemplateDelApi':
+                return CmsTemplateDelApi;
         }
     }
 };

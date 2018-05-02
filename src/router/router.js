@@ -88,7 +88,9 @@ export const appRouter = {
         {path: 'rv/rv', title: '房车车系', icon: 'android-menu', name: 'rv_rv', component: () => import('@/views/rv/rv_rv.vue')},
         {path: 'rv/rv/form/:rv_id', title: '编辑车系信息', icon: 'android-menu', name: 'cms_rv_form', component: () => import('@/views/rv/rv_rv_form.vue')},
         {path: 'rv/model', title: '房车车型', icon: 'android-menu', name: 'rv_model', component: () => import('@/views/rv/rv_model.vue')},
-        {path: 'rv/model/form/:rm_id', title: '编辑车型信息', icon: 'android-menu', name: 'cms_model_form', component: () => import('@/views/rv/rv_model_form.vue')}
+        {path: 'rv/model/form/:rm_id', title: '编辑车型信息', icon: 'android-menu', name: 'cms_model_form', component: () => import('@/views/rv/rv_model_form.vue')},
+        {path: 'cms/template/list', title: '模板列表', icon: 'android-menu', name: 'template_list', component: () => import('@/views/cms/template_list.vue')},
+        {path: 'cms/template/form/:t_id', title: '编辑模板', icon: 'android-menu', name: 'template_form', component: () => import('@/views/cms/template_form.vue')}
     ]
 };
 

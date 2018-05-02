@@ -64,3 +64,11 @@ export const CmsModelFormApi = API_ROOT.concat('/rv/model/form'); // 编辑车�
 export const UserGetApi = API_ROOT.concat('/user/get'); // 获到用户信息
 export const UserEditApi = API_ROOT.concat('/user/edit'); // 编辑用户信息
 export const UserChangePwdApi = API_ROOT.concat('/user/change/pwd'); // 修改密码
+
+
+export const CmsTemplateListApi = API_ROOT.concat('/cms/template/list'); // 模板列表
+export const CmsTemplateGetApi = API_ROOT.concat('/cms/template/get'); // 获取模板
+export const CmsTemplateFormApi = API_ROOT.concat('/cms/template/form'); // 编辑模板
+export const CmsTemplateBackupApi = API_ROOT.concat('/cms/template/backup'); // 备份模板
+export const CmsTemplatePublishApi = API_ROOT.concat('/cms/template/publish'); // 发布模板
+export const CmsTemplateDelApi = API_ROOT.concat('/cms/template/del'); // 删除模板

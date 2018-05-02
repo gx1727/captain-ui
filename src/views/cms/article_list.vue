@@ -116,7 +116,12 @@
                         key: 'lanmu',
                         width: 100
                     },
-
+                    {
+                        title: '标志',
+                        align: 'center',
+                        key: 'flag',
+                        width: 100
+                    },
                     {
                         title: '状态',
                         align: 'center',
