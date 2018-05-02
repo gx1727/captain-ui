@@ -52,6 +52,7 @@
                     </Select>
                 </p>
                 <Row class="margin-top-20 publish-button-con">
+                    <a :href="'/template/preview/' + template.t_id" target="_blank">预览</a>
                     <span class="publish-button"><Button @click="handleSaveTemplate">保存</Button></span>
                     <span class="publish-button"><Button @click="handlePublish" :loading="publishLoading" icon="ios-checkmark" style="width:90px;" type="primary">发布</Button></span>
                 </Row>
