@@ -49,6 +49,9 @@
                     <FormItem label="分类标题" prop="cs_title">
                         <Input v-model="cmsSort.cs_title" placeholder="请输入分类标题"/>
                     </FormItem>
+                    <FormItem label="文章模板">
+                        <Input v-model="cmsSort.cs_article_template" placeholder="请输入分类下文章的模板"/>
+                    </FormItem>
                     <FormItem label="分类模板">
                         <Input v-model="cmsSort.cs_template" placeholder="请输入分类模板"/>
                     </FormItem>
@@ -100,6 +103,7 @@
                     cs_parent: 0,
                     cs_name: '',
                     cs_title: '',
+                    cs_article_template: '',
                     cs_template: '',
                     cs_order: 0,
                     cs_img: ''
@@ -164,6 +168,7 @@
                 this.cmsSort.cs_parent = 0;
                 this.cmsSort.cs_name = '';
                 this.cmsSort.cs_title = '';
+                this.cmsSort.cs_article_template = '';
                 this.cmsSort.cs_template = '';
                 this.cmsSort.cs_order = 0;
                 this.cmsSort.cs_img = '';
@@ -176,6 +181,7 @@
                             vm.cmsSort.cs_parent = res.cs_parent;
                             vm.cmsSort.cs_name = res.cs_name;
                             vm.cmsSort.cs_title = res.cs_title;
+                            vm.cmsSort.cs_article_template = res.cs_article_template;
                             vm.cmsSort.cs_template = res.cs_template;
                             vm.cmsSort.cs_order = res.cs_order;
                             vm.cmsSort.cs_img = res.cs_img;

@@ -62,6 +62,7 @@ import {
     CmsTemplateBackupApi,
     CmsTemplatePublishApi,
     CmsTemplateDelApi,
+    CmsTemplateSelectApi,
     CmsSpecialListApi,
     CmsSpecialGetApi,
     CmsSpecialFormApi,
@@ -219,6 +220,8 @@ export default {
                 return CmsTemplatePublishApi;
             case 'CmsTemplateDelApi':
                 return CmsTemplateDelApi;
+            case 'CmsTemplateSelectApi':
+                return CmsTemplateSelectApi;
             case 'CmsSpecialListApi':
                 return CmsSpecialListApi;
             case 'CmsSpecialGetApi':

@@ -24,7 +24,14 @@
                 <Card>
                     <Form :label-width="80">
                         <FormItem label="专题模板" class="padding-top-10">
-                            <Input v-model="special.s_template" icon="android-list"/>
+                            <Select v-model="special.s_template">
+                                <OptionGroup :label="group.title" v-for="group in templates">
+                                    <Option :value="item.t_name" :label="item.t_title"  v-for="item in group.template">
+                                        <span>{{ item.t_title }}</span>
+                                        <span style="float:right;color:#ccc">{{ item.t_des }}</span>
+                                    </Option>
+                                </OptionGroup>
+                            </Select>
                         </FormItem>
                     </Form>
                 </Card>
@@ -90,6 +97,7 @@
         data () {
             return {
                 publishLoading: false,
+                templates: [], // 所有模板
                 special: {
                     s_id: 0,
                     s_name: '',
@@ -229,6 +237,7 @@
             }
         },
         mounted () {
+            let vm = this;
             let s_id = 0;
             if (this.$route.params.s_id) {
                 s_id = parseInt(this.$route.params.s_id.toString());
@@ -239,6 +248,19 @@
             } else {
                 this.initEditor();
             }
+
+            api.Post('CmsTemplateSelectApi', {
+                test: 0
+            }, function (res) {
+                if (res.code === 0) {
+                    vm.templates = res.data;
+                } else {
+                    vm.$Notice.warning({
+                        title: '错误',
+                        desc: res.msg
+                    });
+                }
+            });
         },
         created () {
         },

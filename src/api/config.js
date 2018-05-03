@@ -2,8 +2,8 @@
  * Created by gx1727 on 2018/3/14.
  */
 // 接口地址 http://localhost-v
-export const API_ROOT = '/api';
-// export const API_ROOT = 'http://localhost-v/api';
+// export const API_ROOT = '/api';
+export const API_ROOT = 'http://localhost-v/api';
 
 export const LoginApi = API_ROOT.concat('/login'); // 登录
 export const RoleListApi = API_ROOT.concat('/role/list'); // 角色列表
@@ -71,6 +71,7 @@ export const CmsTemplateFormApi = API_ROOT.concat('/cms/template/form'); // 编�
 export const CmsTemplateBackupApi = API_ROOT.concat('/cms/template/backup'); // 备份模板
 export const CmsTemplatePublishApi = API_ROOT.concat('/cms/template/publish'); // 发布模板
 export const CmsTemplateDelApi = API_ROOT.concat('/cms/template/del'); // 删除模板
+export const CmsTemplateSelectApi = API_ROOT.concat('/cms/template/select'); // 所有模板
 
 export const CmsSpecialListApi = API_ROOT.concat('/cms/special/list'); // 专题列表
 export const CmsSpecialGetApi = API_ROOT.concat('/cms/special/get'); // 获取专题

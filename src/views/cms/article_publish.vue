@@ -42,7 +42,14 @@
                 <Card>
                     <Form :label-width="80" >
                         <FormItem label="文章模板" class="padding-top-10">
-                            <Input v-model="article.a_template" icon="android-list"/>
+                            <Select v-model="article.a_template">
+                                <OptionGroup :label="group.title" v-for="group in templates">
+                                    <Option :value="item.t_name" :label="item.t_title"  v-for="item in group.template">
+                                        <span>{{ item.t_title }}</span>
+                                        <span style="float:right;color:#ccc">{{ item.t_des }}</span>
+                                    </Option>
+                                </OptionGroup>
+                            </Select>
                         </FormItem>
                     </Form>
                 </Card>
@@ -276,6 +283,7 @@
                 sortList: [], // 分类树
                 sortSelected: [], // 最后实际选择的目录
                 tagSelected: [], // 最后实际选择的tag
+                templates: [], // 所有模板
                 publishLoading: false,
                 addingNewTag: false, // 添加新标签
                 newTagName: '', // 新建标签名
@@ -816,6 +824,19 @@
                 // 创建新文章
                 this.createArticle('auto');
             }
+
+            api.Post('CmsTemplateSelectApi', {
+                test: 0
+            }, function (res) {
+                if (res.code === 0) {
+                    vm.templates = res.data;
+                } else {
+                    vm.$Notice.warning({
+                        title: '错误',
+                        desc: res.msg
+                    });
+                }
+            });
         },
         created () {
         },
