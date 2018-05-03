@@ -204,7 +204,7 @@
                         title: '模板',
                         align: 'center',
                         width: 100,
-                        key: 'ct_template   ',
+                        key: 'ct_template',
                         editable: true
                     },
                     {

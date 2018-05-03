@@ -188,9 +188,23 @@
             },
             handlePublish: function () {
                 let vm = this;
-                api.Post('CmsTemplatePublishApi', {t_id: this.template.t_id}, function (ret) {
+                api.Post('CmsTemplateFormApi', this.template, function (ret) {
                     if (ret.code === 0) {
-                        vm.$Message.info('发布成功');
+                        vm.$Message.info('保存成功');
+                        if (!vm.template.t_id) {
+                            vm.template.t_id = ret.id;
+                        }
+                        api.Post('CmsTemplatePublishApi', {t_id: vm.template.t_id}, function (ret) {
+                            if (ret.code === 0) {
+                                vm.$Message.info('发布成功');
+                                vm.refresh();
+                            } else {
+                                vm.$Notice.warning({
+                                    title: '错误',
+                                    desc: ret.msg
+                                });
+                            }
+                        });
                         vm.refresh();
                     } else {
                         vm.$Notice.warning({
@@ -198,7 +212,7 @@
                             desc: ret.msg
                         });
                     }
-                });
+                })
             }
         },
         mounted () {

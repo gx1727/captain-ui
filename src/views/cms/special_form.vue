@@ -25,6 +25,12 @@
                     <Form :label-width="80">
                         <FormItem label="专题模板" class="padding-top-10">
                             <Select v-model="special.s_template">
+                                <OptionGroup label="默认">
+                                    <Option value="" label="" >
+                                        <span>默认</span>
+                                        <span style="float:right;color:#ccc">系统默认模板</span>
+                                    </Option>
+                                </OptionGroup>
                                 <OptionGroup :label="group.title" v-for="group in templates">
                                     <Option :value="item.t_name" :label="item.t_title"  v-for="item in group.template">
                                         <span>{{ item.t_title }}</span>
