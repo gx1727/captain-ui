@@ -64,7 +64,7 @@
                     版本
                 </p>
                 <Button slot="extra" type="ghost" shape="circle" icon="edit" @click="backup()">备份</Button>
-                <Card :bordered="false" class="margin-top-10" v-for="(item, index) in template.history">
+                <Card :bordered="false" class="margin-top-10" v-for="(item, index) in template.history" :key="'template_history_' + item.t_id">
                     <p slot="title">{{ item.t_title }}</p>
                     <Button slot="extra" type="dashed" size="small" icon="eye" @click="handleViewHistory(item.t_id)">查看</Button>
                     <Poptip

@@ -49,8 +49,8 @@
                                         <span style="float:right;color:#ccc">系统默认模板</span>
                                     </Option>
                                 </OptionGroup>
-                                <OptionGroup :label="group.title" v-for="group in templates">
-                                    <Option :value="item.t_name" :label="item.t_title"  v-for="item in group.template">
+                                <OptionGroup :label="group.title" :key="group.title" v-for="group in templates">
+                                    <Option :value="item.t_name" :key="item.t_name" :label="item.t_title"  v-for="item in group.template">
                                         <span>{{ item.t_title }}</span>
                                         <span style="float:right;color:#ccc">{{ item.t_des }}</span>
                                     </Option>
@@ -183,7 +183,7 @@
                     </div>
 
                     <div class="margin-top-10">
-                        <Card v-for="item in tagGroup">
+                        <Card v-for="item in tagGroup" :key="'tag_group_' + item.type">
                             <p slot="title">
                                 <Icon type="ios-pricetags-outline"></Icon>
                                 {{ item.title }}
