@@ -472,12 +472,18 @@
                             publish_time: vm.publishTimeType === 'immediately' ? '' : vm.article.publish_time
                         }, function (res) {
                             vm.publishLoading = false;
-                            vm.$Notice.success({
-                                title: '发布文章成功',
-                                desc: '文章《' + vm.article.a_title + '》保存成功'
-                            });
-                            vm.saveDraftFlag = false;
-                            console.log(res);
+                            if(res.code === 0) {
+                                vm.$Notice.success({
+                                    title: '发布文章成功',
+                                    desc: '文章《' + vm.article.a_title + '》保存成功'
+                                });
+                                vm.saveDraftFlag = false;
+                            } else {
+                                vm.$Notice.error({
+                                    title: '发布文章失败',
+                                    desc: res.msg
+                                });
+                            }
                         });
                     } else {
                         vm.$Notice.error({
